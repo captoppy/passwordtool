@@ -1,0 +1,2227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>88 MPH — Password Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #05070d;
+      --surface:   #0b0f1a;
+      --surface2:  #111827;
+      --border:    #1e2a3a;
+      --border2:   #2a3d54;
+      --orange:    #f97316;
+      --orange-hi: #fb923c;
+      --orange-lo: #7c2d0a;
+      --orange-dim:#1a0d05;
+      --blue:      #38bdf8;
+      --blue-hi:   #7dd3fc;
+      --blue-dim:  #082233;
+      --blue-lo:   #0c3450;
+      --yellow:    #fde047;
+      --text:      #e8eaf0;
+      --muted:     #4a5568;
+      --muted2:    #8896a8;
+      --red:       #f87171;
+      --mono:      'Share Tech Mono', monospace;
+      --display:   'Oswald', sans-serif;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      overflow-x: hidden;
+    }
+
+    body {
+      display: block;
+      padding: 2rem 1rem;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 500px;
+      min-width: 0;
+      box-sizing: border-box;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      animation: fadeUp 0.45s ease both;
+      overflow: hidden;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── HEADER ── */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    .header-sub {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: var(--blue);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+      transition: color 0.4s;
+    }
+
+    /* Title wrapper — needed for fire canvas overlay */
+    .title-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .header-title {
+      font-family: var(--display);
+      font-size: 52px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1;
+      position: relative;
+      z-index: 2;
+      transition: text-shadow 0.3s;
+    }
+    .header-title.shaking {
+      animation: titleShake 0.08s infinite alternate;
+    }
+    @keyframes titleShake {
+      from { transform: translateX(-2px) rotate(-0.5deg); }
+      to   { transform: translateX(2px) rotate(0.5deg); }
+    }
+
+    /* Fire canvas sits behind the text */
+    #fireCanvas {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    /* Lightning flash overlay on the whole page at 88 */
+    #flashOverlay {
+      position: fixed;
+      inset: 0;
+      background: white;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 200;
+    }
+
+    .header-divider {
+      margin: 10px auto 0;
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--orange), transparent);
+      transition: background 0.4s;
+    }
+
+    /* ── PASSWORD CARD ── */
+    .pw-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+      position: relative;
+      transition: border-color 0.4s;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .pw-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--orange), var(--yellow), transparent);
+      transition: background 0.4s;
+    }
+    .pw-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .pw-label {
+      font-family: var(--display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--orange);
+      text-transform: uppercase;
+      transition: color 0.4s;
+    }
+    .pw-chars-count {
+      font-size: 10px;
+      color: var(--muted2);
+      letter-spacing: 0.08em;
+      transition: color 0.3s;
+    }
+    .pw-text {
+      font-family: var(--mono);
+      font-size: 14px;
+      word-break: break-all;
+      overflow-wrap: break-word;
+      line-height: 1.7;
+      height: calc(1.7em * 2);
+      letter-spacing: 0.04em;
+      width: 100%;
+      overflow: hidden;
+    }
+    .pw-text .c-u { color: var(--blue-hi); }
+    .pw-text .c-l { color: var(--text); }
+    .pw-text .c-n { color: var(--yellow); }
+    .pw-text .c-s { color: var(--orange-hi); }
+
+    .pw-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .btn {
+      font-family: var(--display);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 7px 16px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid var(--border2);
+      background: transparent;
+      color: var(--muted2);
+    }
+    .btn:hover { color: var(--text); border-color: var(--blue); background: var(--blue-dim); }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { border-color: var(--orange-lo); color: var(--orange); background: var(--orange-dim); }
+    .btn-primary:hover { border-color: var(--orange); background: #2a1205; }
+    .btn-copied { border-color: var(--blue) !important; color: var(--blue) !important; background: var(--blue-dim) !important; }
+    .btn-spacer { flex: 1; }
+
+    /* ── STRENGTH ── */
+    .strength-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+      min-height: calc(1.4em * 2 + 4px);
+    }
+    .str-lbl {
+      font-family: var(--display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      color: var(--muted2);
+      text-transform: uppercase;
+      flex-shrink: 0;
+      width: 64px;
+    }
+    .str-bars { display: flex; gap: 4px; flex: 1; }
+    .sbar { flex: 1; height: 4px; border-radius: 2px; background: var(--border); transition: background 0.3s; }
+    .str-name {
+      font-family: var(--display);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      width: 80px;
+      height: calc(1.4em * 2);
+      line-height: 1.4;
+      text-align: right;
+      flex-shrink: 0;
+      transition: color 0.3s;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 1.25rem; }
+    .section-label {
+      font-family: var(--display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--orange);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.4s;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── SLIDER ── */
+    .length-row { display: flex; align-items: center; gap: 16px; }
+    .slider-wrap { flex: 1; position: relative; }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+      background: var(--border); /* overridden by JS */
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--orange);
+      border: 2px solid var(--bg);
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(249,115,22,0.5);
+      transition: box-shadow 0.15s, background 0.3s;
+    }
+    input[type=range]:hover::-webkit-slider-thumb { box-shadow: 0 0 16px rgba(249,115,22,0.9); }
+    input[type=range]::-moz-range-thumb {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--orange);
+      border: 2px solid var(--bg);
+    }
+
+    /* ── LENGTH DISPLAY / INPUT ── */
+    .len-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 6px 4px 5px;
+      width: 68px;
+      flex-shrink: 0;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .len-number {
+      font-family: var(--mono);
+      font-size: 26px;
+      line-height: 1;
+      width: 100%;
+      text-align: center;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 0;
+      transition: color 0.3s, text-shadow 0.3s;
+      -moz-appearance: textfield;
+    }
+    .len-number::-webkit-outer-spin-button,
+    .len-number::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .len-unit {
+      font-family: var(--display);
+      font-size: 8px;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    /* ── CHECKBOXES ── */
+    .checkboxes-grid { display: flex; flex-direction: column; gap: 6px; }
+
+    .always-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      opacity: 0.5;
+    }
+    .always-box {
+      width: 18px; height: 18px;
+      border: 2px solid var(--blue-lo);
+      border-radius: 3px;
+      background: var(--blue);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .always-tick {
+      width: 10px; height: 7px;
+      border-left: 2px solid var(--bg);
+      border-bottom: 2px solid var(--bg);
+      transform: rotate(-45deg) translateY(-1px);
+    }
+    .always-label {
+      font-family: var(--display);
+      font-size: 13px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted2);
+    }
+    .always-note {
+      margin-left: auto;
+      font-family: var(--display);
+      font-size: 9px; letter-spacing: 0.12em;
+      color: var(--muted); text-transform: uppercase;
+    }
+
+    .checkbox-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      user-select: none;
+    }
+    .checkbox-row:hover { border-color: var(--border2); }
+    .checkbox-row.active { border-color: var(--orange-lo); background: var(--orange-dim); }
+    .checkbox-box {
+      width: 18px; height: 18px;
+      border: 2px solid var(--border2);
+      border-radius: 3px;
+      background: var(--surface2);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .checkbox-row.active .checkbox-box { border-color: var(--orange); background: var(--orange); }
+    .checkbox-tick {
+      display: none;
+      width: 10px; height: 7px;
+      border-left: 2px solid var(--bg);
+      border-bottom: 2px solid var(--bg);
+      transform: rotate(-45deg) translateY(-1px);
+    }
+    .checkbox-row.active .checkbox-tick { display: block; }
+    .checkbox-label {
+      font-family: var(--display);
+      font-size: 13px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted2);
+      transition: color 0.15s;
+    }
+    .checkbox-row.active .checkbox-label { color: var(--text); }
+    .checkbox-sample {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--orange-hi);
+      opacity: 0.5;
+      transition: opacity 0.15s;
+    }
+    .checkbox-row.active .checkbox-sample { opacity: 1; }
+
+    /* ── FOOTER ── */
+    .footer { margin-top: 1.75rem; text-align: center; overflow: hidden; max-width: 100%; }
+    .footer-text { font-size: 9px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
+    .footer-speed {
+      font-family: var(--display);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--orange);
+      letter-spacing: 0.08em;
+      margin-top: 5px;
+      font-style: italic;
+      transition: color 0.3s;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+      max-width: 100%;
+    }
+
+    /* ── INFO BUTTON ── */
+    .info-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid var(--border2);
+      background: transparent;
+      color: var(--muted2);
+      font-family: var(--display);
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      margin-left: 8px;
+    }
+    .info-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-dim); }
+
+    /* ── MODAL ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5,7,13,0.88);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      width: 100%;
+      max-width: 460px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: fadeUp 0.25s ease both;
+    }
+    .modal::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--orange), var(--yellow), transparent);
+      border-radius: 6px 6px 0 0;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.25rem 0;
+      margin-bottom: 1rem;
+    }
+    .modal-title {
+      font-family: var(--display);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #f97316, #fde047);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .modal-close {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px solid var(--border2);
+      background: transparent;
+      color: var(--muted2);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .modal-close:hover { border-color: var(--red); color: var(--red); }
+    .modal-body {
+      padding: 0 1.25rem 1.25rem;
+    }
+    .modal-section {
+      margin-bottom: 1.1rem;
+    }
+    .modal-section-title {
+      font-family: var(--display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .modal-section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .modal-text {
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--muted2);
+    }
+    .modal-text strong {
+      color: var(--text);
+      font-weight: 400;
+    }
+    .modal-quote {
+      font-family: var(--display);
+      font-size: 11px;
+      font-style: italic;
+      color: var(--orange);
+      letter-spacing: 0.06em;
+      margin-top: 1.1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    /* ── THEME SELECTOR ── */
+    .theme-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+    .theme-label {
+      font-family: var(--display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .theme-select {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted2);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 5px 10px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      flex: 1;
+    }
+    .theme-select:hover { border-color: var(--border2); color: var(--text); }
+    .theme-select option { background: var(--surface2); color: var(--text); }
+
+    /* ── PLUTONIUM BUTTON ── */
+    .plutonium-wrap {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .plutonium-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      color: var(--muted2);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .plutonium-btn:hover {
+      color: var(--orange-hi);
+      border-color: var(--orange-lo);
+    }
+    .plutonium-icon { font-size: 13px; line-height: 1; }
+
+    /* ── AD PLACEHOLDER ── */
+    .ad-zone {
+      margin-top: 2rem;
+      width: 100%;
+      max-width: 500px;
+      box-sizing: border-box;
+      min-height: 90px;
+      background: var(--surface);
+      border: 1px dashed var(--border2);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ad-zone-inner {
+      font-family: var(--display);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    body.maxspeed { background: var(--bg); }
+    body.maxspeed .pw-card { border-color: var(--orange); box-shadow: 0 0 30px rgba(var(--orange-rgb, 249,115,22),0.15); }
+    body.maxspeed .pw-card::before {
+      background: linear-gradient(90deg, transparent, var(--yellow), var(--orange), var(--yellow), transparent);
+      animation: shimmer 1s linear infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+  </style>
+</head>
+<body>
+  <div id="flashOverlay"></div>
+
+  <div class="shell">
+    <!-- [THEME:dropdown] — add new theme IDs to the select options -->
+    <div class="theme-row">
+      <label class="theme-label" for="themeSelect">Theme</label>
+      <select class="theme-select" id="themeSelect" onchange="applyTheme(this.value)">
+        <option value="bttf">Back to the Future</option>
+        <option value="spinal_tap">This Is Spinal Tap</option>
+        <option value="top_gun">Top Gun</option>
+      </select>
+    </div>
+
+    <div class="header">
+      <div class="header-sub" id="headerSub">Secure Password Generator</div>
+      <div class="title-wrap">
+        <canvas id="fireCanvas" width="320" height="90"></canvas>
+        <div class="header-title" id="headerTitle">30&nbsp;MPH</div>
+      </div>
+      <div class="header-divider" id="headerDivider"></div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; margin-bottom:6px;">
+      <button class="info-btn" onclick="openModal()" title="How does this work?">?</button>
+    </div>
+
+    <div class="pw-card" id="pwCard">
+      <div class="pw-meta">
+        <span class="pw-label" id="pwLabel">Generated Password</span>
+        <span class="pw-chars-count" id="charCount">30 characters</span>
+      </div>
+      <div class="pw-text" id="pwDisplay"></div>
+      <div class="pw-actions">
+        <button class="btn btn-primary" onclick="generate()">&#8635; Regenerate</button>
+        <div class="btn-spacer"></div>
+        <button class="btn" id="copyBtn" onclick="copyPw()">Copy</button>
+      </div>
+    </div>
+
+    <div class="strength-row">
+      <span class="str-lbl">Strength</span>
+      <div class="str-bars">
+        <div class="sbar" id="sb1"></div>
+        <div class="sbar" id="sb2"></div>
+        <div class="sbar" id="sb3"></div>
+        <div class="sbar" id="sb4"></div>
+        <div class="sbar" id="sb5"></div>
+        <div class="sbar" id="sb6"></div>
+      </div>
+      <span class="str-name" id="strName"></span>
+    </div>
+
+    <div class="section">
+      <div class="section-label" id="lenLabel">Length</div>
+
+      <!-- Standard slider (BTTF and future themes) -->
+      <div class="length-row" id="sliderRow">
+        <div class="slider-wrap">
+          <input type="range" id="slider" min="8" max="88" value="30" step="1" oninput="syncSlider()" />
+        </div>
+        <div class="len-display" id="lenDisplay">
+          <input type="number" class="len-number" id="lenNum" value="30" min="8" max="88" onblur="clampInput()" onkeydown="if(event.key==='Enter'){clampInput();this.blur();}" />
+          <span class="len-unit">characters</span>
+        </div>
+      </div>
+
+      <!-- Amp dial (Spinal Tap theme only) -->
+      <div id="dialRow" style="display:none; flex-direction:column; align-items:center; gap:14px;">
+        <div style="position:relative; width:220px; height:220px; flex-shrink:0;" id="dialWrap">
+          <canvas id="dialCanvas" width="220" height="220" style="display:block; cursor:grab; touch-action:none;"></canvas>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; justify-content:center;">
+          <span style="display:flex; align-items:baseline; gap:8px; justify-content:center;">
+            <span id="dialPrefixLabel" style="font-family:var(--display); font-size:13px; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase;">VOLUME</span>
+            <span id="dialNotchDisplay" style="font-family:var(--display); font-size:36px; font-weight:700; line-height:1;">3</span>
+          </span>
+          <div class="len-display" id="dialLenDisplay" style="width:72px;">
+            <input type="number" class="len-number" id="dialLenInput" value="30" min="1" max="110"
+              onblur="clampDialInput()"
+              onkeydown="if(event.key==='Enter'){clampDialInput();this.blur();}" />
+            <span class="len-unit">chars</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Characters</div>
+      <div class="checkboxes-grid">
+        <div class="always-row">
+          <div class="always-box"><div class="always-tick"></div></div>
+          <span class="always-label">Uppercase &amp; Lowercase</span>
+          <span class="always-note">Always on</span>
+        </div>
+        <div class="always-row">
+          <div class="always-box"><div class="always-tick"></div></div>
+          <span class="always-label">Numbers</span>
+          <span class="always-note">Always on</span>
+        </div>
+        <div class="checkbox-row active" id="symToggle" onclick="toggleSymbols()">
+          <div class="checkbox-box"><div class="checkbox-tick"></div></div>
+          <span class="checkbox-label">Symbols</span>
+          <span class="checkbox-sample">!@#$%^&amp;*</span>
+        </div>
+
+        <div class="checkbox-row" id="ambigToggle" onclick="toggleNoAmbig()">
+          <div class="checkbox-box"><div class="checkbox-tick"></div></div>
+          <span class="checkbox-label">Exclude ambiguous</span>
+          <span class="checkbox-sample">l 1 0 O i I |</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-text">Generated in-browser — never transmitted, never stored</div>
+      <!-- [THEME:footer-quote] -->
+      <div class="footer-speed" id="themeFooterQuote"></div>
+    </div>
+
+    <!-- [THEME:support-button] — swap href to your Ko-fi URL -->
+    <div class="plutonium-wrap">
+      <a class="plutonium-btn" href="https://ko-fi.com/tobyo" target="_blank" rel="noopener">
+        <span class="plutonium-icon" id="supportIcon">☢️</span>
+        <span id="supportText">Enjoyed this? Send a coffee in the form of plutonium</span>
+      </a>
+    </div>
+
+    <!-- Ad zone — replace .ad-zone-inner with your Google AdSense unit when ready -->
+    <div class="ad-zone">
+      <div class="ad-zone-inner">Advertisement</div>
+    </div>
+  </div><!-- /.shell -->
+
+  <!-- Info modal -->
+  <div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <!-- [THEME:modal-title] -->
+        <span class="modal-title" id="modalTitle">Great Scott!</span>
+        <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- [THEME:modal-uppercase] -->
+        <div class="modal-section">
+          <div class="modal-section-title" id="modalUpperTitle">Why uppercase &amp; numbers are always on</div>
+          <p class="modal-text" id="modalUpperBody">A password using only lowercase is exponentially easier to crack. <strong>Mixing cases and numbers massively expands the search space</strong> — going from 26 possible characters per slot to 62. At 30 characters that's the difference between 26³⁰ and 62³⁰ combinations. That's not a small gap. That's the difference between a DeLorean doing 30 mph and 88 mph.</p>
+        </div>
+
+        <!-- [THEME:modal-symbols] -->
+        <div class="modal-section">
+          <div class="modal-section-title" id="modalSymTitle">Why symbols push it further</div>
+          <p class="modal-text" id="modalSymBody">Symbols expand the pool to ~95 characters per slot. <strong>Every extra character type multiplies total combinations</strong>, not just adds to them. A 30-character password with symbols has more possible combinations than there are atoms in the observable universe. Even the Libyans couldn't crack that.</p>
+        </div>
+
+        <!-- [THEME:modal-randomiser] -->
+        <div class="modal-section">
+          <div class="modal-section-title" id="modalRandTitle">The randomiser — Doc's secret formula</div>
+          <p class="modal-text" id="modalRandBody">Every password is forged using <strong>the same class of ultimate cryptic formulae</strong> that power the most secure systems on the planet. Each character is selected through a process so unpredictable, not even Doc Brown could calculate the outcome in advance. The laws of probability are respected to the letter — every character gets a perfectly equal shot. No patterns. No shortcuts. Pure entropy, straight from the flux capacitor.</p>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-section-title">Exclude ambiguous characters</div>
+          <p class="modal-text">Characters like <strong>l, 1, 0, O, i, I, |</strong> look nearly identical depending on the font. If you ever need to type a password manually, tick this to strip them out. The password stays just as strong — the pool is only slightly smaller.</p>
+        </div>
+
+        <!-- [THEME:modal-privacy] -->
+        <div class="modal-section">
+          <div class="modal-section-title" id="modalPrivTitle">Your password never leaves this page</div>
+          <p class="modal-text" id="modalPrivBody">Everything runs in your browser. <strong>No passwords are transmitted, logged, or stored anywhere.</strong> There's no server involved. Close the tab and it's gone — just like Marty's memory of the alternate timeline.</p>
+        </div>
+
+        <!-- [THEME:modal-quote] -->
+        <div class="modal-quote" id="modalQuote">"Your future is whatever you make it. So make it a good one." — Doc Brown</div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const LOWER = 'abcdefghijklmnopqrstuvwxyz';
+    const NUMS  = '0123456789';
+    const SYMS  = '!@#$%^&*()-_=+[]{}|;:,.<>?';
+    const AMBIGUOUS = new Set(['l','1','0','O','i','I','|']);
+
+    let useSymbols  = true;
+    let useNoAmbig  = false;
+    let at88 = false;
+    let fireParticles = [];
+    let fireRAF = null;
+
+    // ── Colour gradient: 8=blue → 48=orange → 88=yellow-white ──
+    // Colour helpers — use THEME.colourStops for theme-aware gradient
+    function lerpChannel(a, b, t) { return Math.round(a + t * (b - a)); }
+
+    function lerpColour(t) {
+      const stops = THEME.colourStops;
+      const seg = 1 / (stops.length - 1);
+      const i = Math.min(Math.floor(t / seg), stops.length - 2);
+      const s = Math.min((t - i * seg) / seg, 1);
+      const a = stops[i] || stops[stops.length - 1];
+      const b = stops[i + 1] || stops[stops.length - 1];
+      return `rgb(${lerpChannel(a.r,b.r,s)},${lerpChannel(a.g,b.g,s)},${lerpChannel(a.b,b.b,s)})`;
+    }
+
+    function hexFromT(t) {
+      const stops = THEME.colourStops;
+      const seg = 1 / (stops.length - 1);
+      const i = Math.min(Math.floor(t / seg), stops.length - 2);
+      const s = Math.min((t - i * seg) / seg, 1);
+      const a = stops[i] || stops[stops.length - 1];
+      const b = stops[i + 1] || stops[stops.length - 1];
+      return '#' + [
+        lerpChannel(a.r,b.r,s),
+        lerpChannel(a.g,b.g,s),
+        lerpChannel(a.b,b.b,s)
+      ].map(v => v.toString(16).padStart(2,'0')).join('');
+    }
+
+    function applySpeedTheme(len) {
+      const range = THEME.maxSpeed - THEME.minSpeed;
+      const t = Math.min((len - THEME.minSpeed) / range, 1);
+      const col = lerpColour(t);
+      const hex = hexFromT(t);
+
+      // Main title — dial themes use formatted notch, slider themes use raw len
+      const title = document.getElementById('headerTitle');
+      if (THEME.useDial) {
+        const dialDisplay = THEME.dialLabelFormat ? THEME.dialLabelFormat(dialNotch) : dialNotch;
+        // Top Gun: "MACH 0.3" — unit first. Others (Spinal Tap): "VOL 3" — unit first too, consistent
+        title.innerHTML = THEME.speedUnit + '&nbsp;' + dialDisplay;
+      } else {
+        // Slider themes: "30 MPH" — number first
+        const displayVal = THEME.formatSpeed ? THEME.formatSpeed(len) : len;
+        title.innerHTML = displayVal + '&nbsp;' + THEME.speedUnit;
+      }
+      title.style.background = 'none';
+      title.style.webkitTextFillColor = col;
+      title.style.textShadow = `0 0 24px ${col}66`;
+
+      if (!THEME.useDial) {
+        // Length input box — show actual chars for charMap themes
+        const lenNum = document.getElementById('lenNum');
+        lenNum.value = THEME.charMap ? getLen() : len;
+        lenNum.style.color = col;
+        lenNum.style.textShadow = `0 0 14px ${col}88`;
+        // Len display border glow
+        const ld = document.getElementById('lenDisplay');
+        ld.style.borderColor = hex;
+        ld.style.boxShadow = `0 0 10px ${hex}44`;
+        // Slider track gradient
+        const pct = ((len - THEME.minSpeed) / range) * 100;
+        document.getElementById('slider').style.background =
+          `linear-gradient(to right, ${col} 0%, ${col} ${pct}%, #1e2a3a ${pct}%, #1e2a3a 100%)`;
+      }
+
+      // charCount — skip when dial is active (setDialNotch handles it directly)
+      if (!THEME.useDial) {
+        const actualLen = getLen();
+        document.getElementById('charCount').textContent = actualLen + ' characters';
+        document.getElementById('charCount').style.color = col;
+      }
+
+      // Section label for length
+      document.getElementById('lenLabel').style.color = col;
+
+      // Update divider
+      document.getElementById('headerDivider').style.background =
+        `linear-gradient(90deg, transparent, ${col}, transparent)`;
+    }
+
+    // ── Fire canvas ──
+    function startFire() {
+      const canvas = document.getElementById('fireCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.style.opacity = '1';
+      fireParticles = [];
+
+      function spawnParticle() {
+        const cx = canvas.width / 2;
+        fireParticles.push({
+          x: cx + (Math.random() - 0.5) * 140,
+          y: canvas.height * 0.75,
+          vx: (Math.random() - 0.5) * 2.5,
+          vy: -(Math.random() * 3 + 2),
+          life: 1.0,
+          decay: Math.random() * 0.025 + 0.015,
+          size: Math.random() * 14 + 6,
+          type: Math.random() > 0.3 ? 'fire' : 'spark'
+        });
+      }
+
+      function tick() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Spawn new particles
+        for (let i = 0; i < 6; i++) spawnParticle();
+
+        fireParticles = fireParticles.filter(p => p.life > 0);
+
+        for (const p of fireParticles) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx += (Math.random() - 0.5) * 0.3;
+          p.vy *= 0.98;
+          p.life -= p.decay;
+          p.size *= 0.985;
+
+          const a = Math.max(0, p.life);
+
+          if (p.type === 'fire') {
+            // Fire particle: yellow → orange → red → transparent
+            const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+            if (p.life > 0.7) {
+              grad.addColorStop(0, `rgba(255,255,180,${a})`);
+              grad.addColorStop(0.4, `rgba(253,224,71,${a * 0.9})`);
+              grad.addColorStop(1, `rgba(249,115,22,0)`);
+            } else if (p.life > 0.35) {
+              grad.addColorStop(0, `rgba(251,146,60,${a})`);
+              grad.addColorStop(0.5, `rgba(249,115,22,${a * 0.8})`);
+              grad.addColorStop(1, `rgba(124,45,10,0)`);
+            } else {
+              grad.addColorStop(0, `rgba(239,68,68,${a * 0.6})`);
+              grad.addColorStop(1, `rgba(127,29,29,0)`);
+            }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+          } else {
+            // Spark
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size * 0.25, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(253,224,71,${a})`;
+            ctx.fill();
+          }
+        }
+
+        if (at88) fireRAF = requestAnimationFrame(tick);
+        else {
+          // Fade out
+          canvas.style.transition = 'opacity 0.8s';
+          canvas.style.opacity = '0';
+          setTimeout(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.style.transition = '';
+          }, 800);
+        }
+      }
+
+      fireRAF = requestAnimationFrame(tick);
+    }
+
+    function stopFire() {
+      at88 = false; // canvas loop sees this and fades out
+    }
+
+    // ── Spinal Tap: amp sparks / lightning bolts ──
+    let sparkParticles = [];
+    let sparkRAF = null;
+
+    function startSparks() {
+      const canvas = document.getElementById('fireCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.style.opacity = '1';
+      sparkParticles = [];
+
+      function spawnSpark() {
+        const cx = canvas.width / 2;
+        sparkParticles.push({
+          x: cx + (Math.random() - 0.5) * 160,
+          y: canvas.height * 0.6 + (Math.random() - 0.5) * 30,
+          vx: (Math.random() - 0.5) * 5,
+          vy: -(Math.random() * 4 + 1),
+          life: 1.0,
+          decay: Math.random() * 0.04 + 0.02,
+          len: Math.random() * 18 + 8,
+          angle: Math.random() * Math.PI * 2,
+          type: Math.random() > 0.4 ? 'bolt' : 'spark'
+        });
+      }
+
+      function tick() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 5; i++) spawnSpark();
+        sparkParticles = sparkParticles.filter(p => p.life > 0);
+
+        for (const p of sparkParticles) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx += (Math.random() - 0.5) * 0.8;
+          p.vy *= 0.96;
+          p.life -= p.decay;
+          const a = Math.max(0, p.life);
+
+          if (p.type === 'bolt') {
+            // Jagged lightning segment
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.angle + p.life * 2);
+            ctx.strokeStyle = p.life > 0.5
+              ? `rgba(255,255,255,${a})`
+              : `rgba(220,50,50,${a})`;
+            ctx.lineWidth = p.life > 0.5 ? 1.5 : 1;
+            ctx.shadowColor = 'rgba(220,50,50,0.8)';
+            ctx.shadowBlur = 6;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(p.len * 0.4, -p.len * 0.3);
+            ctx.lineTo(p.len * 0.2, -p.len * 0.5);
+            ctx.lineTo(p.len * 0.7, -p.len * 0.9);
+            ctx.stroke();
+            ctx.restore();
+          } else {
+            // White/red dot spark
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = p.life > 0.6
+              ? `rgba(255,255,255,${a})`
+              : `rgba(200,30,30,${a})`;
+            ctx.fill();
+          }
+        }
+
+        if (at88) sparkRAF = requestAnimationFrame(tick);
+        else {
+          canvas.style.transition = 'opacity 0.8s';
+          canvas.style.opacity = '0';
+          setTimeout(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.style.transition = '';
+          }, 800);
+        }
+      }
+      sparkRAF = requestAnimationFrame(tick);
+    }
+
+    function stopSparks() {
+      at88 = false;
+    }
+
+    // ── Top Gun: afterburner trail ──
+    let afterburnerParticles = [];
+    let afterburnerRAF = null;
+
+    function startAfterburner() {
+      const canvas = document.getElementById('fireCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.style.opacity = '1';
+      afterburnerParticles = [];
+
+      function spawnParticle() {
+        const cx = canvas.width / 2;
+        afterburnerParticles.push({
+          x: cx + (Math.random() - 0.5) * 160,
+          y: canvas.height * 0.7,
+          vx: (Math.random() - 0.5) * 3,
+          vy: -(Math.random() * 2 + 1),
+          life: 1.0,
+          decay: Math.random() * 0.02 + 0.012,
+          size: Math.random() * 16 + 8,
+          type: Math.random() > 0.4 ? 'trail' : 'spark'
+        });
+      }
+
+      function tick() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 7; i++) spawnParticle();
+        afterburnerParticles = afterburnerParticles.filter(p => p.life > 0);
+
+        for (const p of afterburnerParticles) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx += (Math.random() - 0.5) * 0.2;
+          p.vy *= 0.97;
+          p.life -= p.decay;
+          p.size *= 0.988;
+          const a = Math.max(0, p.life);
+
+          if (p.type === 'trail') {
+            const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+            if (p.life > 0.65) {
+              // Hot white-blue core
+              grad.addColorStop(0, `rgba(220,240,255,${a})`);
+              grad.addColorStop(0.3, `rgba(100,180,255,${a * 0.9})`);
+              grad.addColorStop(1, `rgba(255,106,0,0)`);
+            } else if (p.life > 0.3) {
+              // Orange mid
+              grad.addColorStop(0, `rgba(255,180,50,${a})`);
+              grad.addColorStop(0.5, `rgba(255,106,0,${a * 0.8})`);
+              grad.addColorStop(1, `rgba(180,40,0,0)`);
+            } else {
+              // Red fade
+              grad.addColorStop(0, `rgba(255,80,0,${a * 0.6})`);
+              grad.addColorStop(1, `rgba(100,20,0,0)`);
+            }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+          } else {
+            // Streak spark
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size * 0.2, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(220,240,255,${a})`;
+            ctx.fill();
+          }
+        }
+
+        if (at88) afterburnerRAF = requestAnimationFrame(tick);
+        else {
+          canvas.style.transition = 'opacity 0.8s';
+          canvas.style.opacity = '0';
+          setTimeout(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.style.transition = '';
+          }, 800);
+        }
+      }
+      afterburnerRAF = requestAnimationFrame(tick);
+    }
+
+    function stopAfterburner() {
+      at88 = false;
+    }
+
+    // ── Lightning flash ──
+    function triggerFlash() {
+      const el = document.getElementById('flashOverlay');
+      el.style.transition = 'none';
+      el.style.opacity = '0.85';
+      setTimeout(() => {
+        el.style.transition = 'opacity 0.4s ease-out';
+        el.style.opacity = '0';
+      }, 60);
+    }
+
+    // ── Max speed mode (theme-aware) ──
+    function enterMax() {
+      if (at88) return;
+      at88 = true;
+      triggerFlash();
+      document.body.classList.add('maxspeed');
+      const title = document.getElementById('headerTitle');
+      title.classList.add('shaking');
+      title.style.background = 'none';
+      title.style.webkitTextFillColor = THEME.maxColour;
+      // Show the max-speed quote
+      const fq = document.getElementById('themeFooterQuote');
+      if (fq) { fq.textContent = THEME.maxQuote; fq.style.color = THEME.maxColour; }
+      THEME.startEffect();
+    }
+
+    function exitMax() {
+      if (!at88) return;
+      THEME.stopEffect();
+      document.body.classList.remove('maxspeed');
+      const title = document.getElementById('headerTitle');
+      title.classList.remove('shaking');
+      const len = getLen();
+      const t = (len - THEME.minSpeed) / (THEME.maxSpeed - THEME.minSpeed);
+      const col = lerpColour(Math.min(t, 1));
+      title.style.webkitTextFillColor = col;
+      title.style.textShadow = `0 0 24px ${col}66`;
+      // Refresh random quote when coming back from max, reset colour
+      const fq = document.getElementById('themeFooterQuote');
+      if (fq) fq.style.color = '';
+      setRandomFooterQuote();
+    }
+
+    // ── Core ──
+    // ── CSPRNG — bias-free rejection sampling ──
+    // crypto.getRandomValues is already a CSPRNG (ChaCha20 or AES-CTR depending on OS).
+    // The old code used modulo which introduces bias when pool size doesn't divide 2^32 evenly.
+    // Rejection sampling: discard any value in the "biased tail" and redraw.
+    // We also XOR with a high-res timing salt — won't weaken crypto but adds an independent
+    // entropy source, so even a theoretical implementation bug in one source doesn't compromise both.
+
+    function entropyMix() {
+      // Mix in performance.now() as extra entropy salt (sub-millisecond, unique per call)
+      const t = Math.floor(performance.now() * 1000) & 0xFFFFFFFF;
+      return t >>> 0;
+    }
+
+    function secureRandInt(max) {
+      // Returns a uniform random integer in [0, max) with no modulo bias
+      // Uses rejection sampling: discard values in the biased remainder region
+      const reject = (0x100000000 % max) >>> 0;
+      const buf = new Uint32Array(1);
+      let val;
+      do {
+        crypto.getRandomValues(buf);
+        // XOR with timing entropy — stays within Uint32 range
+        val = (buf[0] ^ entropyMix()) >>> 0;
+      } while (val < reject); // reject the biased tail
+      return val % max;
+    }
+
+    function randChar(pool) {
+      return pool[secureRandInt(pool.length)];
+    }
+
+    function shuffle(arr) {
+      // Fisher-Yates with per-swap fresh entropy — no single bulk draw
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = secureRandInt(i + 1);
+        const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+      }
+      return arr;
+    }
+
+    function charClass(c) {
+      if (UPPER.includes(c)) return 'c-u';
+      if (LOWER.includes(c)) return 'c-l';
+      if (NUMS.includes(c))  return 'c-n';
+      return 'c-s';
+    }
+
+    function getLen() {
+      if (THEME.useDial) {
+        const v = parseInt(document.getElementById('dialLenInput').value, 10);
+        return isNaN(v) ? notchToChars(dialNotch) : v;
+      }
+      const raw = parseInt(document.getElementById('slider').value, 10);
+      if (THEME.charMap) return THEME.charMap[Math.max(0, Math.min(THEME.charMap.length - 1, raw))];
+      return raw;
+    }
+
+    function clampDialInput() {
+      const inp = document.getElementById('dialLenInput');
+      const maxChars = THEME.dialMaxChars || 110;
+      const raw = parseInt(inp.value, 10);
+      const clamped = isNaN(raw) ? notchToChars(dialNotch) : Math.min(maxChars, Math.max(1, raw));
+      inp.value = clamped;
+
+      // With 1:1 mapping, notch = char count directly (clamped to dialNotches)
+      const map = dialCharMap();
+      let bestNotch;
+      if (map) {
+        let bestDist = Infinity;
+        bestNotch = 0;
+        for (let i = 0; i < map.length; i++) {
+          const d = Math.abs(map[i] - clamped);
+          if (d < bestDist) { bestDist = d; bestNotch = i; }
+        }
+      } else {
+        bestNotch = Math.max(0, Math.min(dialNotches(), clamped));
+      }
+
+      dialNotch = bestNotch;
+      drawDial(dialNotch);
+      const displayVal = THEME.dialLabelFormat ? THEME.dialLabelFormat(dialNotch) : dialNotch;
+      const el = document.getElementById('dialNotchDisplay');
+      if (el) el.textContent = displayVal;
+
+      document.getElementById('charCount').textContent = clamped + ' characters';
+      const t = dialNotch / dialNotches();
+      const col = lerpColour(t);
+      if (el) el.style.color = col;
+      inp.style.color = col;
+      inp.style.textShadow = `0 0 14px ${col}88`;
+
+      applySpeedTheme(dialNotch);
+      if (dialNotch === dialNotches()) enterMax();
+      else exitMax();
+      generate();
+    }
+
+    function clampInput() {
+      const raw = parseInt(document.getElementById('lenNum').value, 10);
+
+      if (THEME.charMap) {
+        // Find the charMap index whose value is closest to what the user typed
+        const map = THEME.charMap;
+        const target = isNaN(raw) ? getLen() : raw;
+        let bestIdx = 1;
+        let bestDist = Infinity;
+        for (let i = 1; i < map.length; i++) {
+          const d = Math.abs(map[i] - target);
+          if (d < bestDist) { bestDist = d; bestIdx = i; }
+        }
+        document.getElementById('slider').value = bestIdx;
+        document.getElementById('lenNum').value = map[bestIdx];
+        applySpeedTheme(bestIdx);
+        if (bestIdx === THEME.maxSpeed) enterMax();
+        else exitMax();
+        generate();
+        return;
+      }
+
+      const def = Math.round((THEME.minSpeed + THEME.maxSpeed) / 2);
+      const clamped = isNaN(raw) ? def : Math.min(THEME.maxSpeed, Math.max(THEME.minSpeed, raw));
+      document.getElementById('lenNum').value = clamped;
+      document.getElementById('slider').value = clamped;
+      applySpeedTheme(clamped);
+      if (clamped === THEME.maxSpeed) enterMax();
+      else exitMax();
+      generate();
+    }
+
+    function generate() {
+      const len = getLen();
+
+      // Notch 0 = silence — show nothing
+      if (len === 0) {
+        document.getElementById('pwDisplay').innerHTML = '';
+        document.getElementById('charCount').textContent = '0 characters';
+        updateStrength('', 0);
+        resetCopy();
+        return;
+      }
+
+      const filter = s => useNoAmbig ? s.split('').filter(c => !AMBIGUOUS.has(c)).join('') : s;
+
+      let baseUpper = filter(UPPER);
+      let baseLower = filter(LOWER);
+      let baseNums  = filter(NUMS);
+      let baseSyms  = filter(SYMS);
+
+      let pool = baseUpper + baseLower + baseNums;
+      const required = [randChar(baseUpper), randChar(baseLower), randChar(baseNums)];
+      if (useSymbols) { pool += baseSyms; required.push(randChar(baseSyms)); }
+
+      const rands = new Uint32Array(len);
+      crypto.getRandomValues(rands);
+      let chars = [...required];
+      for (let i = required.length; i < len; i++) chars.push(pool[secureRandInt(pool.length)]);
+      chars = shuffle(chars);
+
+      const pw = chars.join('');
+      document.getElementById('pwDisplay').innerHTML =
+        pw.split('').map(c => `<span class="${charClass(c)}">${c}</span>`).join('');
+
+      updateStrength(pw, len);
+      resetCopy();
+    }
+
+    function updateStrength(pw, len) {
+      // For dial themes, score off the notch (0–11); for slider, score off len vs min/max
+      const useDial = THEME.useDial;
+      const val = useDial ? dialNotch : len;
+      const min = useDial ? 0 : THEME.minSpeed;
+      const max = useDial ? dialNotches() : THEME.maxSpeed;
+      const range = max - min;
+
+      let score = 0;
+      if (val >= min + range * 0.10) score++;
+      if (val >= min + range * 0.30) score++;
+      if (val >= min + range * 0.50) score++;
+      if (val >= min + range * 0.65) score++;
+      if (val >= min + range * 0.85) score++;
+      // Symbols boost one tier, capped at 5 — score 6 is max only
+      if (useSymbols && score < 5) score++;
+      // Top label exclusively earned by hitting max
+      if (val >= max) score = 6;
+
+      // [THEME:strength-labels]
+      const labels = THEME.strengthLabels;
+      const t = (val - min) / range;
+      const col = lerpColour(Math.min(t, 1));
+
+      document.getElementById('strName').textContent = labels[score];
+      document.getElementById('strName').style.color = col;
+      for (let i = 1; i <= 6; i++) {
+        document.getElementById('sb' + i).style.background = i <= score ? col : 'var(--border)';
+      }
+    }
+
+    function syncSlider() {
+      const len = getLen();
+      applySpeedTheme(len);
+      if (len === THEME.maxSpeed) enterMax();
+      else exitMax();
+      generate();
+    }
+
+    // ── AMP DIAL (Spinal Tap) ─────────────────────────────────────
+    // Notch 0–11 maps to char length 8–100
+    // Sweep: -135° (notch 0) to +135° (notch max) = 270° total
+
+    const DIAL_MIN_DEG = -135;
+    const DIAL_MAX_DEG =  135;
+
+    // Theme-driven dial helpers
+    function dialNotches()  { return THEME.dialNotches || 11; }
+    function dialCharMap()  { return THEME.dialCharMap || null; }
+    function notchToChars(n) {
+      const map = dialCharMap();
+      if (map) return map[Math.max(0, Math.min(map.length - 1, n))];
+      return Math.max(0, Math.min(dialNotches(), n)); // 1:1 passthrough
+    }
+    function notchToDeg(n)   { return DIAL_MIN_DEG + (n / dialNotches()) * (DIAL_MAX_DEG - DIAL_MIN_DEG); }
+
+    let dialNotch      = 3;
+    let dialDragging   = false;
+    let dialPrevAngle  = 0;
+    let dialAccumDeg   = 0;
+    let dialStartNotch = 3;
+    let dialEventsInit = false;
+
+    function pointerAngle(e, rect) {
+      const cx = rect.left + rect.width  / 2;
+      const cy = rect.top  + rect.height / 2;
+      const ex = (e.touches ? e.touches[0].clientX : e.clientX);
+      const ey = (e.touches ? e.touches[0].clientY : e.clientY);
+      // angle in degrees, 0 = straight up, clockwise positive
+      return Math.atan2(ex - cx, -(ey - cy)) * 180 / Math.PI;
+    }
+
+    function drawDial(notch) {
+      if (THEME.id === 'top_gun') { drawMachIndicator(notch); return; }
+      drawAmpKnob(notch);
+    }
+
+    function drawAmpKnob(notch) {
+      const canvas = document.getElementById('dialCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      const cx = W/2, cy = H/2;
+      const outerR = 96, knobR = 62, innerR = 18;
+      ctx.clearRect(0, 0, W, H);
+
+      const VISUAL_LABELS = 11; // always show 0-11 on face
+      const n = dialNotches();  // actual notches (110)
+      const t = Math.min(notch / n, 1);
+      const accentHex = hexFromT(t);
+      const isMax = notch === n;
+
+      // visual position helper — maps a visual label (0-11) to canvas angle
+      function labelToRad(label) {
+        const deg = -135 + (label / VISUAL_LABELS) * 270;
+        return (deg - 90) * Math.PI / 180;
+      }
+      // actual notch to canvas angle
+      function notchToRad(nt) {
+        const deg = -135 + (nt / n) * 270;
+        return (deg - 90) * Math.PI / 180;
+      }
+
+      // Bezel
+      const bezelGrad = ctx.createRadialGradient(cx-20, cy-20, outerR*0.3, cx, cy, outerR);
+      bezelGrad.addColorStop(0, '#4a4a4a');
+      bezelGrad.addColorStop(0.5, '#222');
+      bezelGrad.addColorStop(1, '#111');
+      ctx.beginPath(); ctx.arc(cx, cy, outerR, 0, Math.PI*2);
+      ctx.fillStyle = bezelGrad; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, cy, outerR-1, Math.PI*1.1, Math.PI*1.9);
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 3; ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx, cy, outerR-1, Math.PI*0.1, Math.PI*0.9);
+      ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 3; ctx.stroke();
+
+      // Tick marks at visual label positions (0-11) — these are cosmetic
+      ctx.save();
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (let v = 0; v <= VISUAL_LABELS; v++) {
+        const rad = labelToRad(v);
+        // Is this visual position "active"? Compare fractional position
+        const visualFrac = v / VISUAL_LABELS;
+        const notchFrac  = notch / n;
+        const active = v === 0 || (v / VISUAL_LABELS) < (notch / n) || notch === n;
+        const isMaxLabel = v === VISUAL_LABELS;
+
+        // Major tick
+        const t1 = outerR-4, t2 = isMaxLabel ? outerR-18 : outerR-13;
+        ctx.beginPath();
+        ctx.moveTo(cx+t1*Math.cos(rad), cy+t1*Math.sin(rad));
+        ctx.lineTo(cx+t2*Math.cos(rad), cy+t2*Math.sin(rad));
+        ctx.strokeStyle = active ? (isMaxLabel ? accentHex : '#bb3333') : '#555';
+        ctx.lineWidth = isMaxLabel ? 3 : 2; ctx.lineCap = 'round'; ctx.stroke();
+
+        // Minor ticks between labels
+        if (v < VISUAL_LABELS) {
+          for (let m = 1; m < 4; m++) {
+            const mv = v + m/4;
+            const mRad = labelToRad(mv);
+            const mActive = (mv / VISUAL_LABELS) <= notchFrac;
+            ctx.beginPath();
+            ctx.moveTo(cx+(outerR-4)*Math.cos(mRad), cy+(outerR-4)*Math.sin(mRad));
+            ctx.lineTo(cx+(outerR-10)*Math.cos(mRad), cy+(outerR-10)*Math.sin(mRad));
+            ctx.strokeStyle = mActive ? '#aa2222' : '#3a3a3a';
+            ctx.lineWidth = 1; ctx.stroke();
+          }
+        }
+
+        // Label — bright white when active, dim when not
+        const lr = outerR-22, lx = cx+lr*Math.cos(rad), ly = cy+lr*Math.sin(rad);
+        ctx.fillStyle = isMaxLabel && active ? accentHex : active ? '#ffffff' : '#666';
+        ctx.font = (isMaxLabel ? 'bold 14px' : 'bold 12px') + " 'Oswald',sans-serif";
+        ctx.fillText(v, lx, ly);
+      }
+      ctx.restore();
+
+      // Knob body
+      const kg = ctx.createRadialGradient(cx-knobR*0.3, cy-knobR*0.35, knobR*0.05, cx, cy, knobR);
+      kg.addColorStop(0,'#5a5a5a'); kg.addColorStop(0.35,'#2e2e2e');
+      kg.addColorStop(0.7,'#1a1a1a'); kg.addColorStop(1,'#0d0d0d');
+      ctx.beginPath(); ctx.arc(cx, cy, knobR, 0, Math.PI*2);
+      ctx.fillStyle = kg; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, cy, knobR-1, Math.PI*1.15, Math.PI*1.85);
+      ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = 2.5; ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx, cy, knobR-1, Math.PI*0.15, Math.PI*0.85);
+      ctx.strokeStyle = 'rgba(0,0,0,0.7)'; ctx.lineWidth = 2.5; ctx.stroke();
+      if (isMax) {
+        ctx.beginPath(); ctx.arc(cx, cy, knobR+3, 0, Math.PI*2);
+        ctx.strokeStyle = accentHex; ctx.lineWidth = 3;
+        ctx.globalAlpha = 0.4 + 0.2*Math.sin(Date.now()/200); ctx.stroke(); ctx.globalAlpha = 1;
+      }
+
+      // Indicator dot — follows actual notch position
+      const prad = notchToRad(notch);
+      const dr = knobR-14, dx = cx+dr*Math.cos(prad), dy = cy+dr*Math.sin(prad);
+      ctx.beginPath(); ctx.arc(dx+1, dy+1, 6, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fill();
+      const dg = ctx.createRadialGradient(dx-1.5,dy-1.5,0,dx,dy,6);
+      dg.addColorStop(0,'#fff'); dg.addColorStop(1,accentHex);
+      ctx.beginPath(); ctx.arc(dx, dy, 6, 0, Math.PI*2);
+      ctx.fillStyle = dg; ctx.fill();
+
+      // Rivet
+      const rg = ctx.createRadialGradient(cx-2,cy-2,1,cx,cy,innerR);
+      rg.addColorStop(0,'#666'); rg.addColorStop(1,'#111');
+      ctx.beginPath(); ctx.arc(cx, cy, innerR, 0, Math.PI*2);
+      ctx.fillStyle = rg; ctx.fill();
+
+      if (isMax && at88) requestAnimationFrame(() => drawDial(dialNotch));
+    }
+
+    function drawMachIndicator(notch) {
+      const canvas = document.getElementById('dialCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      const cx = W/2, cy = H/2 + 8;
+      ctx.clearRect(0, 0, W, H);
+
+      const VISUAL_MAX = 10;  // face always shows MACH 0-10
+      const n = dialNotches(); // actual notches (100)
+      const t = Math.min(notch / n, 1);
+      const acc = hexFromT(t);
+      const isMax = notch === n;
+
+      // Map a visual label (0-10) to arc angle
+      function vLabelToAngle(v) {
+        return (-135 + (v / VISUAL_MAX) * 270) * Math.PI / 180; // standard math
+      }
+      // Actual notch to angle (same formula, different denominator)
+      function notchToAngle(nt) {
+        return (-135 + (nt / n) * 270) * Math.PI / 180;
+      }
+
+      // Chrome bezel
+      const chrome = ctx.createLinearGradient(cx-104, cy-104, cx+104, cy+104);
+      chrome.addColorStop(0,'#9a9a9a'); chrome.addColorStop(0.4,'#4a4a4a'); chrome.addColorStop(1,'#b8b8b8');
+      ctx.beginPath(); ctx.arc(cx, cy, 104, 0, Math.PI*2);
+      ctx.fillStyle = chrome; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, cy, 100, 0, Math.PI*2);
+      ctx.fillStyle = '#111'; ctx.fill();
+
+      // Face
+      const face = ctx.createRadialGradient(cx, cy-20, 10, cx, cy, 98);
+      face.addColorStop(0,'#1a2018'); face.addColorStop(1,'#0a0e09');
+      ctx.beginPath(); ctx.arc(cx, cy, 98, 0, Math.PI*2);
+      ctx.fillStyle = face; ctx.fill();
+
+      // Arc zones — keyed to VISUAL positions (0-10)
+      function zone(fromV, toV, col) {
+        const a1 = vLabelToAngle(fromV) - Math.PI/2; // convert to canvas arc convention
+        const a2 = vLabelToAngle(toV)   - Math.PI/2;
+        ctx.beginPath(); ctx.arc(cx, cy, 80, a1, a2);
+        ctx.strokeStyle = col; ctx.lineWidth = 9; ctx.stroke();
+      }
+      // Background dim zones
+      zone(0, 3,  'rgba(0,160,50,0.25)');     // green  MACH 0-3
+      zone(3, 6,  'rgba(100,200,255,0.25)');   // cyan   MACH 3-6
+      zone(6, 8,  'rgba(255,180,0,0.25)');     // amber  MACH 6-8
+      zone(8, 10, 'rgba(220,30,30,0.25)');     // red    MACH 8-10
+
+      // Active arc — follows actual notch
+      if (notch > 0) {
+        const a1 = vLabelToAngle(0) - Math.PI/2;
+        const a2 = notchToAngle(notch) - Math.PI/2;
+        ctx.beginPath(); ctx.arc(cx, cy, 80, a1, a2);
+        ctx.strokeStyle = acc; ctx.lineWidth = 5; ctx.lineCap = 'butt'; ctx.stroke();
+        ctx.lineCap = 'round';
+      }
+
+      // Tick marks at visual label positions
+      ctx.save();
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (let v = 0; v <= VISUAL_MAX; v++) {
+        const vAngle = vLabelToAngle(v);
+        const canvasRad = vAngle - Math.PI/2; // for arc trig
+        const active = v === 0 || (v / VISUAL_MAX) < (notch / n) || notch === n;
+        const isMaxLabel = v === VISUAL_MAX;
+
+        // Major tick
+        const outerT = 91, innerT = isMaxLabel ? 72 : 76;
+        ctx.beginPath();
+        ctx.moveTo(cx + outerT*Math.cos(canvasRad), cy + outerT*Math.sin(canvasRad));
+        ctx.lineTo(cx + innerT*Math.cos(canvasRad), cy + innerT*Math.sin(canvasRad));
+        ctx.strokeStyle = active ? acc : 'rgba(180,210,180,0.6)';
+        ctx.lineWidth = isMaxLabel ? 3 : 2.5; ctx.lineCap = 'round'; ctx.stroke();
+
+        // Minor ticks between labels
+        if (v < VISUAL_MAX) {
+          for (let m = 1; m < 5; m++) {
+            const mv = v + m/5;
+            const mAngle = vLabelToAngle(mv) - Math.PI/2;
+            const mActive = (mv / VISUAL_MAX) < (notch / n) || notch === n;
+            ctx.beginPath();
+            ctx.moveTo(cx + 91*Math.cos(mAngle), cy + 91*Math.sin(mAngle));
+            ctx.lineTo(cx + 85*Math.cos(mAngle), cy + 85*Math.sin(mAngle));
+            ctx.strokeStyle = mActive ? acc : 'rgba(140,180,140,0.3)';
+            ctx.lineWidth = 1; ctx.stroke();
+          }
+        }
+
+        // Label — bright when active
+        const lr = 62, lx = cx + lr*Math.cos(canvasRad), ly = cy + lr*Math.sin(canvasRad);
+        ctx.fillStyle = active ? (isMaxLabel ? acc : '#e0ffe0') : 'rgba(200,220,200,0.75)';
+        ctx.font = (isMaxLabel ? 'bold 13px' : '11px') + " 'Share Tech Mono',monospace";
+        ctx.fillText(v, lx, ly);
+      }
+      ctx.restore();
+
+      // Face labels
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(140,170,140,0.45)';
+      ctx.font = "bold 8px 'Oswald',sans-serif";
+      ctx.fillText('MACHMETER', cx, cy-44);
+      ctx.font = "7px 'Share Tech Mono',monospace";
+      ctx.fillText('F-14 TOMCAT', cx, cy-33);
+
+      // Needle — follows actual notch
+      const needleRad = notchToAngle(notch) * Math.PI / 180 * (180 / Math.PI);
+      const nr = notchToAngle(notch);
+      // nr is in radians already. Needle points up in local space, rotate by nr.
+      // notchToAngle returns degrees*PI/180 — wait, it returns radians now.
+      // Let me recalc: notchToAngle gives angle in standard degrees then *PI/180
+      // Actually vLabelToAngle already multiplied by PI/180. Let me use raw degrees for needle.
+      const needleDeg = -135 + (notch / n) * 270; // degrees clockwise from 12 o'clock
+      const needleRadians = needleDeg * Math.PI / 180;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(needleRadians);
+      ctx.beginPath(); ctx.moveTo(1.5, 12); ctx.lineTo(0.5, -74);
+      ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.stroke();
+      const ng = ctx.createLinearGradient(0, 12, 0, -74);
+      ng.addColorStop(0,   'rgba(255,255,255,0.2)');
+      ng.addColorStop(0.35, isMax ? '#00e5ff' : acc);
+      ng.addColorStop(1,    isMax ? '#ffffff'  : acc);
+      ctx.beginPath(); ctx.moveTo(0, 12); ctx.lineTo(0, -74);
+      ctx.strokeStyle = ng; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.stroke();
+      ctx.restore();
+
+      // Pivot
+      const pg = ctx.createRadialGradient(cx-2,cy-2,1,cx,cy,11);
+      pg.addColorStop(0,'#777'); pg.addColorStop(1,'#1a1a1a');
+      ctx.beginPath(); ctx.arc(cx, cy, 11, 0, Math.PI*2);
+      ctx.fillStyle = pg; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, cy, 11, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 1; ctx.stroke();
+
+      // Digital readout — show visual MACH value
+      const visualMach = notch === n ? VISUAL_MAX : Math.floor(notch / n * VISUAL_MAX);
+      ctx.textAlign = 'center';
+      ctx.font = "bold 18px 'Share Tech Mono',monospace";
+      ctx.fillStyle = isMax ? '#00e5ff' : acc;
+      ctx.fillText('MACH ' + visualMach, cx, cy+46);
+
+      if (isMax && at88) requestAnimationFrame(() => drawDial(dialNotch));
+    }
+
+    function setDialNotch(notch, andGenerate = true) {
+      dialNotch = Math.max(0, Math.min(dialNotches(), notch));
+      const chars = notchToChars(dialNotch);
+      drawDial(dialNotch);
+
+      const el  = document.getElementById('dialNotchDisplay');
+      const inp = document.getElementById('dialLenInput');
+      const ld  = document.getElementById('dialLenDisplay');
+      const pre = document.getElementById('dialPrefixLabel');
+      const displayVal = THEME.dialLabelFormat ? THEME.dialLabelFormat(dialNotch) : dialNotch;
+      if (el)  el.textContent  = displayVal;
+      if (pre) pre.textContent = THEME.dialLabel || 'VOLUME';
+      if (inp) { inp.value = chars; inp.min = 1; inp.max = THEME.dialMaxChars || 110; }
+      document.getElementById('charCount').textContent = chars + ' characters';
+
+      const t   = dialNotch / dialNotches();
+      const col = lerpColour(t);
+      if (el)  el.style.color = col;
+      if (ld)  { ld.style.borderColor = col; ld.style.boxShadow = `0 0 10px ${col}44`; }
+      if (inp) { inp.style.color = col; inp.style.textShadow = `0 0 14px ${col}88`; }
+
+      applySpeedTheme(dialNotch);
+      if (dialNotch === dialNotches()) enterMax();
+      else exitMax();
+      if (andGenerate) generate();
+    }
+
+    function initDialEvents() {
+      if (dialEventsInit) return;
+      dialEventsInit = true;
+      const canvas = document.getElementById('dialCanvas');
+
+      function startDrag(e) {
+        dialDragging   = true;
+        dialPrevAngle  = pointerAngle(e, canvas.getBoundingClientRect());
+        dialAccumDeg   = 0;
+        dialStartNotch = dialNotch;
+        canvas.style.cursor = 'grabbing';
+        e.preventDefault();
+      }
+
+      function moveDrag(e) {
+        if (!dialDragging) return;
+        const rect = canvas.getBoundingClientRect();
+        const curAngle = pointerAngle(e, rect);
+
+        // Frame-to-frame delta — wrap into -180..180 so crossing 0°/360° never jumps
+        let frameDelta = curAngle - dialPrevAngle;
+        if (frameDelta >  180) frameDelta -= 360;
+        if (frameDelta < -180) frameDelta += 360;
+
+        dialPrevAngle  = curAngle;
+        dialAccumDeg  += frameDelta;
+
+        // Hard-clamp accumulator to the physical sweep of the dial
+        const totalSweep = DIAL_MAX_DEG - DIAL_MIN_DEG; // 270°
+        const maxAccum   =  totalSweep * (dialNotches() - dialStartNotch) / dialNotches();
+        const minAccum   = -totalSweep * dialStartNotch / dialNotches();
+        dialAccumDeg = Math.max(minAccum, Math.min(maxAccum, dialAccumDeg));
+
+        const degsPerNotch = totalSweep / dialNotches();
+        const rawNotch = dialStartNotch + dialAccumDeg / degsPerNotch;
+        const newNotch = Math.max(0, Math.min(dialNotches(), Math.round(rawNotch)));
+        if (newNotch !== dialNotch) setDialNotch(newNotch);
+      }
+
+      function endDrag() {
+        dialDragging = false;
+        canvas.style.cursor = 'grab';
+      }
+
+      canvas.addEventListener('mousedown',  startDrag, { passive: false });
+      window.addEventListener('mousemove',  moveDrag);
+      window.addEventListener('mouseup',    endDrag);
+      canvas.addEventListener('touchstart', startDrag, { passive: false });
+      window.addEventListener('touchmove',  e => {
+        if (dialDragging) { moveDrag(e); e.preventDefault(); }
+      }, { passive: false });
+      window.addEventListener('touchend',   endDrag);
+    }
+
+    function toggleSymbols() {
+      useSymbols = !useSymbols;
+      document.getElementById('symToggle').classList.toggle('active', useSymbols);
+      generate();
+    }
+
+    function toggleNoAmbig() {
+      useNoAmbig = !useNoAmbig;
+      document.getElementById('ambigToggle').classList.toggle('active', useNoAmbig);
+      generate();
+    }
+
+    // ── THEME SYSTEM ──────────────────────────────────────────────
+    // To add a new movie theme, duplicate a THEMES entry and update all fields.
+    // All [THEME:x] tagged strings in the app pull from the active THEME object.
+    // ─────────────────────────────────────────────────────────────
+
+    const THEMES = {
+
+      bttf: {
+        id:            'bttf',
+        label:         'Back to the Future',
+        pageTitle:     '88 MPH — Password Generator',
+        headerSub:     'Secure Password Generator',
+        speedUnit:     'MPH',
+        minSpeed:      8,
+        maxSpeed:      88,
+        defaultLen:    30,
+        useDial:       false,
+        maxColour:     '#fde047',
+        maxQuote:      '⚡ MAXIMUM VELOCITY REACHED — This password is uncrackable. Even the Libyans wouldn\'t bother. ⚡',
+        // [THEME:colour-stops] — gradient from min to max speed
+        colourStops: [
+          { r: 0x38, g: 0xbd, b: 0xf8 }, // blue  (min)
+          { r: 0xf9, g: 0x73, b: 0x16 }, // orange (mid)
+          { r: 0xfd, g: 0xe0, b: 0x47 }, // yellow (max)
+        ],
+        cssVars: {
+          '--orange':    '#f97316',
+          '--orange-hi': '#fb923c',
+          '--orange-lo': '#7c2d0a',
+          '--orange-dim':'#1a0d05',
+          '--blue':      '#38bdf8',
+          '--blue-hi':   '#7dd3fc',
+          '--blue-dim':  '#082233',
+          '--blue-lo':   '#0c3450',
+          '--yellow':    '#fde047',
+          '--bg':        '#05070d',
+          '--surface':   '#0b0f1a',
+          '--surface2':  '#111827',
+          '--border':    '#1e2a3a',
+          '--border2':   '#2a3d54',
+        },
+        startEffect:   () => startFire(),
+        stopEffect:    () => stopFire(),
+        footerQuote:   '"Your future is whatever you make it. So make it a good one." — Doc Brown',
+        supportIcon:   '☢️',
+        supportText:   'Enjoyed this? Send a coffee in the form of plutonium',
+        modalTitle:    'Great Scott!',
+        modalUpperTitle: 'Why uppercase & numbers are always on',
+        modalUpperBody:  'A password using only lowercase is exponentially easier to crack. <strong>Mixing cases and numbers massively expands the search space</strong> — going from 26 possible characters per slot to 62. At 30 characters that\'s the difference between 26³⁰ and 62³⁰ combinations. That\'s not a small gap. That\'s the difference between a DeLorean doing 30 mph and 88 mph.',
+        modalSymTitle:  'Why symbols push it further',
+        modalSymBody:   'Symbols expand the pool to ~95 characters per slot. <strong>Every extra character type multiplies total combinations</strong>, not just adds to them. A 30-character password with symbols has more possible combinations than there are atoms in the observable universe. Even the Libyans couldn\'t crack that.',
+        modalRandTitle: "The randomiser — Doc's secret formula",
+        modalRandBody:  'Every password is forged using <strong>the same class of ultimate cryptic formulae</strong> that power the most secure systems on the planet. Each character is selected through a process so unpredictable, not even Doc Brown could calculate the outcome in advance. The laws of probability are respected to the letter — every character gets a perfectly equal shot. No patterns. No shortcuts. Pure entropy, straight from the flux capacitor.',
+        modalPrivTitle: 'Your password never leaves this page',
+        modalPrivBody:  'Everything runs in your browser. <strong>No passwords are transmitted, logged, or stored anywhere.</strong> There\'s no server involved. Close the tab and it\'s gone — just like Marty\'s memory of the alternate timeline.',
+        modalQuote:    '"Your future is whatever you make it. So make it a good one." — Doc Brown',
+        strengthLabels: [
+          'Flat Battery',
+          'Needs a Kick',
+          'Clock Tower Ready',
+          'Fast',
+          'Faster',
+          'Blazing',
+          'Great Scott!'
+        ],
+        quotes: [
+          '"Roads? Where we\'re going, we don\'t need roads."',
+          '"If my calculations are correct, when this baby hits 88 miles per hour... you\'re gonna see some serious s**t."',
+          '"This is heavy, Doc."',
+          '"Why don\'t you make like a tree and get out of here?"',
+          '"I\'m your density. I mean... your destiny."',
+          '"Nobody calls me chicken."',
+          '"Marty, you\'re not thinking fourth-dimensionally!"',
+          '"Last night, Darth Vader came down from Planet Vulcan and told me that if I didn\'t take Lorraine out, he\'d melt my brain."',
+          '"Do you have a nuclear reaction? A plutonium-powered something?"',
+          '"We\'re sending you back to the future!"',
+          '"Are you telling me you built a time machine... out of a DeLorean?"',
+          '"The appropriate question is, when the hell are they?"',
+        ],
+      },
+
+      spinal_tap: {
+        id:              'spinal_tap',
+        label:           'This Is Spinal Tap',
+        pageTitle:       'These Go to 11 — Password Generator',
+        headerSub:       'Maximum Password Amplification',
+        speedUnit:       'VOL',
+        minSpeed:        0,
+        maxSpeed:        110,
+        defaultLen:      30,
+        defaultDialNotch: 30,
+        useDial:         true,
+        dialLabel:       'VOLUME',
+        dialLabelFormat: n => n === 110 ? '11' : String(Math.floor(n / 110 * 11)),
+        dialNotches:     110,
+        dialCharMap:     null,  // 1:1 passthrough — notch = char count
+        dialMaxChars:    110,
+        dialMinChars:    8,
+        dialMaxChars:    100,
+        maxColour:       '#ffffff',
+        maxQuote:        '🎸 VOLUME MAXED — Your password is now louder than God. Hackers can\'t even hear this. 🎸',
+        // [THEME:colour-stops] — charcoal grey → blood red → white hot
+        colourStops: [
+          { r: 0x6b, g: 0x6b, b: 0x6b }, // grey   (min)
+          { r: 0xdc, g: 0x14, b: 0x14 }, // crimson (mid)
+          { r: 0xff, g: 0xff, b: 0xff }, // white  (max=11)
+        ],
+        cssVars: {
+          '--orange':    '#dc1414',
+          '--orange-hi': '#f03030',
+          '--orange-lo': '#6b0a0a',
+          '--orange-dim':'#1a0505',
+          '--blue':      '#a0a0a0',
+          '--blue-hi':   '#d0d0d0',
+          '--blue-dim':  '#1a1a1a',
+          '--blue-lo':   '#2a2a2a',
+          '--yellow':    '#ffffff',
+          '--bg':        '#0a0a0a',
+          '--surface':   '#111111',
+          '--surface2':  '#1a1a1a',
+          '--border':    '#2a2020',
+          '--border2':   '#3d2a2a',
+        },
+        startEffect:   () => startSparks(),
+        stopEffect:    () => stopSparks(),
+        footerQuote:   '"It\'s one louder. Why don\'t you just make ten louder?" — Nigel Tufnel',
+        supportIcon:   '🎸',
+        supportText:   'Enjoyed this? Buy us an amp that goes to 11',
+        modalTitle:    'But This One Goes to 11!',
+        modalUpperTitle: 'Why uppercase & numbers are always on',
+        modalUpperBody:  'A password using only lowercase is like playing through a broken amp — weak, thin, and easy to overpower. <strong>Mixing uppercase, lowercase, and numbers massively expands the search space</strong> — from 26 possible characters per slot to 62. At volume 5 that\'s the difference between playing Wembley and playing a pub car park. You want Wembley.',
+        modalSymTitle:  'Why symbols push it to 11',
+        modalSymBody:   'Symbols crank the pool up to ~95 characters per slot. <strong>Every extra character type multiplies total combinations</strong> — it doesn\'t just add, it multiplies. A password at full volume with symbols has more possible combinations than there are atoms in the observable universe. That\'s not loud. That\'s <em>one louder</em>.',
+        modalRandTitle: 'The randomiser — none more random',
+        modalRandBody:  'Every password is generated using <strong>the same arcane, classified formulae</strong> that underpin the most secretive systems on the planet. Each character is chosen through a process so chaotic, not even the band\'s manager could predict it. The mathematics are ruthlessly fair — every character gets a perfectly equal shot. No favourites. No patterns. It\'s like the loudest password on Earth. But one louder.',
+        modalPrivTitle: 'Your password never leaves this room',
+        modalPrivBody:  'Everything runs in your browser. <strong>No passwords are transmitted, logged, or stored anywhere.</strong> There\'s no server involved. Close the tab and it\'s gone — like the mystery of what happened to their original drummer.',
+        modalQuote:     '"It\'s such a fine line between stupid and clever." — David St. Hubbins',
+        strengthLabels: [
+          'Unplugged',
+          'Barely Audible',
+          'Sound Check',
+          'Getting Loud',
+          'Stonehenge',
+          'This Is Spinal Tap',
+          'Goes to 11!'
+        ],
+        quotes: [
+          '"It\'s one louder."',
+          '"These go to eleven."',
+          '"It\'s such a fine line between stupid and clever."',
+          '"We\'re very lucky in the sense that we\'ve always been very much in demand."',
+          '"We\'re not gonna take it... we\'re not gonna take it... we\'re not gonna take it anymore."',
+          '"The music business is a cruel and shallow money trench."',
+          '"I do not, for one, think that the problem was that the band was down. I think that the problem may have been... that there was a Stonehenge monument on the stage that was in danger of being crushed by a dwarf."',
+          '"Dozens of people spontaneously combust each year. It\'s just not that widely reported."',
+          '"We say \'put it up to eleven.\' Where can you go from there? Nowhere."',
+          '"The review you gave us... I don\'t think it captured the... the scope and the... the hugeness."',
+          '"We\'re lucky to have been in the right place at the right time."',
+          '"Rock\'n\'roll is the highest form of art... but this goes to eleven."',
+        ],
+      },
+
+      top_gun: {
+        id:            'top_gun',
+        label:         'Top Gun',
+        pageTitle:     'Mach 1 — Password Generator',
+        headerSub:     'Classified Password Systems — Miramar',
+        speedUnit:     'MACH',
+        minSpeed:      1,
+        maxSpeed:      100,
+        defaultLen:    30,
+        useDial:       true,
+        defaultDialNotch: 30,
+        dialNotches:   100,
+        dialLabel:     'MACH',
+        dialCharMap:   null,  // 1:1 passthrough — notch = char count
+        dialMaxChars:  100,
+        dialLabelFormat: n => n === 100 ? '10' : String(Math.floor(n / 100 * 10)),
+        maxColour:     '#00e5ff',
+        maxQuote:        '🛩️ MACH 10 — SOUND BARRIER BROKEN — This password just went supersonic. No bogey can touch it. 🛩️',
+        // [THEME:colour-stops] — deep navy → electric cyan → bright white-cyan
+        colourStops: [
+          { r: 0x0d, g: 0x14, b: 0x2e }, // deep navy (min)
+          { r: 0x00, g: 0xb4, b: 0xd8 }, // jet exhaust cyan (mid)
+          { r: 0x00, g: 0xe5, b: 0xff }, // radar white-cyan (max)
+        ],
+        cssVars: {
+          '--orange':    '#00b4d8',
+          '--orange-hi': '#48cae4',
+          '--orange-lo': '#023e52',
+          '--orange-dim':'#00141a',
+          '--blue':      '#90e0ef',
+          '--blue-hi':   '#caf0f8',
+          '--blue-dim':  '#071428',
+          '--blue-lo':   '#0d2040',
+          '--yellow':    '#00e5ff',
+          '--bg':        '#070d1a',
+          '--surface':   '#0c1526',
+          '--surface2':  '#0d1e30',
+          '--border':    '#0e2033',
+          '--border2':   '#163348',
+        },
+        startEffect:   () => startAfterburner(),
+        stopEffect:    () => stopAfterburner(),
+        footerQuote:   '"I feel the need... the need for speed." — Maverick & Goose',
+        supportIcon:   '🛩️',
+        supportText:   'Enjoyed this? Buy Maverick a round at the O-Club',
+        modalTitle:    'You Can Be My Wingman Any Time.',
+        modalUpperTitle: 'Why uppercase & numbers are always on',
+        modalUpperBody:  'A password using only lowercase is like flying without radar — you\'re exposed and an easy target. <strong>Mixing uppercase, lowercase, and numbers massively expands the search space</strong> — from 26 characters per slot to 62. At 30 characters that\'s the difference between a trainer and an F-14 Tomcat at full throttle.',
+        modalSymTitle:  'Why symbols push it to Mach 1',
+        modalSymBody:   'Symbols push your character pool to ~95 per slot. <strong>Every extra type multiplies total combinations</strong> — it doesn\'t add, it multiplies. A full-throttle password with symbols has more possible combinations than there are atoms in the observable universe. That\'s not flying fast. That\'s breaking the sound barrier.',
+        modalRandTitle: 'The randomiser — classified technology',
+        modalRandBody:  'Every password is generated using <strong>the same classified formulae</strong> that power the most secure defence systems on the planet. Each character is selected through a process so unpredictable, not even the Pentagon could calculate it in advance. The mathematics are ruthlessly fair — every character has an equal shot. No patterns. No shortcuts. Pure encrypted chaos at 1,500 mph.',
+        modalPrivTitle: 'Your password never leaves the airspace',
+        modalPrivBody:  'Everything runs in your browser. <strong>No passwords are transmitted, logged, or stored anywhere.</strong> There\'s no server involved. Close the tab and it\'s gone — this conversation never happened. You\'re already ghosted off radar.',
+        modalQuote:     '"You\'re not gonna be happy unless you\'re going Mach 2 with your hair on fire." — Viper',
+        strengthLabels: [
+          'Grounded',
+          'Cleared for Takeoff',
+          'Wheels Up',
+          'Afterburner On',
+          'Entering the Danger Zone',
+          'Going Supersonic',
+          'Mach 10 — Bogey Down'
+        ],
+        quotes: [
+          '"I feel the need... the need for speed."',
+          '"Son, your ego is writing cheques your body can\'t cash."',
+          '"You\'ve lost that loving feeling."',
+          '"That\'s classified. I could tell you, but then I\'d have to kill you."',
+          '"The plaque for the alternates is down in the ladies\' room."',
+          '"Every time we go up there, it\'s like you\'re flying with a ghost."',
+          '"You\'re everyone\'s problem. That\'s because every time you go up in the air, you\'re unsafe."',
+          '"Good morning, gentlemen, the temperature is 110 degrees."',
+          '"Maverick, you just did an incredibly brave thing. What you should have done was land your plane!"',
+          '"Talk to me, Goose."',
+          '"I\'m not leaving my wingman."',
+          '"You can be my wingman any time."',
+        ],
+      },
+
+    };
+
+    let THEME = THEMES.bttf;
+
+    function applyTheme(themeId) {
+      THEME = THEMES[themeId];
+      document.title = THEME.pageTitle;
+      document.getElementById('headerSub').textContent = THEME.headerSub;
+      document.getElementById('supportIcon').textContent = THEME.supportIcon;
+      document.getElementById('supportText').textContent = THEME.supportText;
+      document.getElementById('modalTitle').textContent = THEME.modalTitle;
+      document.getElementById('modalUpperTitle').textContent = THEME.modalUpperTitle;
+      document.getElementById('modalUpperBody').innerHTML  = THEME.modalUpperBody;
+      document.getElementById('modalSymTitle').textContent = THEME.modalSymTitle;
+      document.getElementById('modalSymBody').innerHTML    = THEME.modalSymBody;
+      document.getElementById('modalRandTitle').textContent = THEME.modalRandTitle;
+      document.getElementById('modalRandBody').innerHTML   = THEME.modalRandBody;
+      document.getElementById('modalPrivTitle').textContent = THEME.modalPrivTitle;
+      document.getElementById('modalPrivBody').innerHTML   = THEME.modalPrivBody;
+      document.getElementById('modalQuote').textContent   = THEME.modalQuote;
+      // Random quote on theme switch
+      setRandomFooterQuote();
+
+      // Apply CSS variable overrides for this theme
+      const root = document.documentElement;
+      Object.entries(THEME.cssVars || {}).forEach(([k, v]) => root.style.setProperty(k, v));
+
+      if (THEME.useDial) {
+        // Show dial, hide slider
+        document.getElementById('sliderRow').style.display = 'none';
+        const dialRow = document.getElementById('dialRow');
+        dialRow.style.display = 'flex';
+        dialNotch = THEME.defaultDialNotch || 0;
+        // Set input bounds for this theme
+        const dialInp = document.getElementById('dialLenInput');
+        if (dialInp) { dialInp.min = 1; dialInp.max = THEME.dialMaxChars || 110; }
+        dialEventsInit = false;
+        drawDial(dialNotch);
+        initDialEvents();
+        setDialNotch(dialNotch, false);
+        applySpeedTheme(dialNotch);
+        generate();
+      } else {
+        // Show slider, hide dial
+        document.getElementById('dialRow').style.display = 'none';
+        document.getElementById('sliderRow').style.display = 'flex';
+        const slider = document.getElementById('slider');
+        const lenNum = document.getElementById('lenNum');
+        slider.min = THEME.minSpeed;
+        slider.max = THEME.maxSpeed;
+        lenNum.min = THEME.minSpeed;
+        lenNum.max = THEME.maxSpeed;
+        const def = THEME.defaultLen;
+        slider.value = def;
+        // For charMap themes show actual char count in the box, else raw value
+        lenNum.value = THEME.charMap ? THEME.charMap[def] : def;
+        applySpeedTheme(def);
+        generate();
+      }
+    }
+
+    function randomQuote() {
+      const q = THEME.quotes;
+      return q[Math.floor(Math.random() * q.length)];
+    }
+
+    function setRandomFooterQuote() {
+      const el = document.getElementById('themeFooterQuote');
+      if (el) el.textContent = randomQuote();
+    }
+
+    function copyPw() {
+      const pw = document.getElementById('pwDisplay').textContent;
+      const btn = document.getElementById('copyBtn');
+
+      const succeed = () => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('btn-copied');
+        setTimeout(resetCopy, 2000);
+      };
+
+      // Try modern clipboard API first
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(pw).then(succeed).catch(() => fallbackCopy(pw, succeed));
+      } else {
+        fallbackCopy(pw, succeed);
+      }
+    }
+
+    function fallbackCopy(text, onSuccess) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        document.execCommand('copy');
+        onSuccess();
+      } catch (e) {
+        console.warn('Copy failed:', e);
+      }
+      document.body.removeChild(ta);
+    }
+
+    function resetCopy() {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = 'Copy';
+      btn.classList.remove('btn-copied');
+    }
+
+    // ── Modal ──
+    function openModal() {
+      document.getElementById('modalBackdrop').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      document.getElementById('modalBackdrop').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function handleBackdropClick(e) {
+      if (e.target === document.getElementById('modalBackdrop')) closeModal();
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // Init — BTTF is always default
+    applyTheme('bttf');
+  </script>
+</body>
+</html>
