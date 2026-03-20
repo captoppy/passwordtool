@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>88 MPH — Password Generator</title>
+  <title>Popcorn Passwords</title>
+  <link rel="icon" href="favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2732504070558804"
+     crossorigin="anonymous"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -30,6 +33,7 @@
       --red:       #f87171;
       --mono:      'Share Tech Mono', monospace;
       --display:   'Oswald', sans-serif;
+      --ui:        'Exo 2', sans-serif;
     }
 
     html, body {
@@ -80,9 +84,10 @@
       position: relative;
     }
     .header-sub {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.25em;
+      font-family: var(--ui);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
       color: var(--blue);
       text-transform: uppercase;
       margin-bottom: 2px;
@@ -170,16 +175,19 @@
       margin-bottom: 10px;
     }
     .pw-label {
-      font-family: var(--display);
+      font-family: var(--ui);
       font-size: 10px;
       font-weight: 600;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.18em;
       color: var(--orange);
       text-transform: uppercase;
       transition: color 0.4s;
     }
     .pw-chars-count {
-      font-size: 10px;
+      font-size: 11px;
+      font-family: var(--ui);
+      font-weight: 300;
+      letter-spacing: 0.06em;
       color: var(--muted2);
       letter-spacing: 0.08em;
       transition: color 0.3s;
@@ -208,10 +216,10 @@
       border-top: 1px solid var(--border);
     }
     .btn {
-      font-family: var(--display);
+      font-family: var(--ui);
       font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
+      font-weight: 500;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       padding: 7px 16px;
       border-radius: 3px;
@@ -649,6 +657,39 @@
     }
     .plutonium-icon { font-size: 13px; line-height: 1; }
 
+    /* ── PRIVACY FOOTER ── */
+    .privacy-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 1rem;
+      padding-bottom: 1.5rem;
+    }
+    .privacy-trigger {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: color 0.15s;
+    }
+    .privacy-trigger:hover { color: var(--muted2); }
+    .privacy-lock { font-size: 11px; }
+    .privacy-sep { color: var(--muted); font-size: 10px; opacity: 0.5; }
+    .privacy-copy {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
     /* ── AD PLACEHOLDER ── */
     .ad-zone {
       margin-top: 2rem;
@@ -697,7 +738,14 @@
     </div>
 
     <div class="header">
-      <div class="header-sub" id="headerSub">Secure Password Generator</div>
+      <div class="header-sub" id="headerSub">
+        <img src="logo_simplified_transparent.png"
+          alt="PopcornPasswords"
+          id="headerLogo"
+          style="height:36px; max-width:220px; object-fit:contain; display:block; margin:0 auto;"
+          onerror="this.style.display='none'; document.getElementById('headerLogoText').style.display='block';" />
+        <span id="headerLogoText" style="display:none;">PopcornPasswords</span>
+      </div>
       <div class="title-wrap">
         <canvas id="fireCanvas" width="320" height="90"></canvas>
         <div class="header-title" id="headerTitle">30&nbsp;MPH</div>
@@ -804,7 +852,7 @@
 
     <!-- [THEME:support-button] — swap href to your Ko-fi URL -->
     <div class="plutonium-wrap">
-      <a class="plutonium-btn" href="https://ko-fi.com/tobyo" target="_blank" rel="noopener">
+      <a class="plutonium-btn" href="https://ko-fi.com/socialhwy" target="_blank" rel="noopener">
         <span class="plutonium-icon" id="supportIcon">☢️</span>
         <span id="supportText">Enjoyed this? Send a coffee in the form of plutonium</span>
       </a>
@@ -814,7 +862,74 @@
     <div class="ad-zone">
       <div class="ad-zone-inner">Advertisement</div>
     </div>
+
+    <!-- Privacy footer -->
+    <div class="privacy-footer">
+      <button class="privacy-trigger" onclick="openPrivacyModal()">
+        <img src="icon_minimalist.png"
+          alt=""
+          style="height:14px; width:auto; opacity:0.5; vertical-align:middle;"
+          onerror="this.style.display='none';" />
+        <span class="privacy-lock">&#128274;</span>
+        Privacy &amp; Security
+      </button>
+      <span class="privacy-sep">·</span>
+      <span class="privacy-copy">&copy; 2026 PopcornPasswords</span>
+    </div>
+
   </div><!-- /.shell -->
+
+  <!-- Privacy modal -->
+  <div class="modal-backdrop" id="privacyBackdrop" onclick="if(event.target===this)closePrivacyModal()">
+    <div class="modal" id="privacyModal">
+      <div class="modal-header">
+        <span class="modal-title">
+          <img src="icon_only_simplified.png"
+            alt="" style="height:16px; width:auto; vertical-align:middle; margin-right:6px;"
+            onerror="this.style.display='none';" />
+          &#128274; Privacy &amp; Security
+        </span>
+        <button class="modal-close" onclick="closePrivacyModal()">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+
+        <div class="modal-section">
+          <div class="modal-section-title">Zero data collection</div>
+          <p class="modal-text">PopcornPasswords generates every password entirely within your browser. <strong>No data is transmitted to any server. No passwords are logged, stored, or cached.</strong> We operate no database, no analytics pipeline, and no account system. Close this tab and your passwords are gone — permanently and by design.</p>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-section-title">No tracking. No cookies. No accounts.</div>
+          <p class="modal-text">We do not use tracking cookies, fingerprinting, or any third-party analytics that identify you personally. We do not ask you to sign up, log in, or provide any personal information. There is nothing to delete because nothing is collected.</p>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-section-title">Why password strength matters</div>
+          <p class="modal-text">The majority of account breaches result from weak, short, or reused passwords — not sophisticated attacks. <strong>Length and randomness are the two most important factors.</strong> A 30-character random password is billions of times harder to crack than an 8-character one. A unique password per account means one breach never cascades into others.</p>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-section-title">Store your passwords securely</div>
+          <p class="modal-text">Never store passwords in a text file, notes app, or spreadsheet. Use a dedicated password manager — it encrypts your vault and handles autofill. Our recommended options:</p>
+          <p class="modal-text" style="margin-top:8px;">
+            <strong><a href="https://bitwarden.com" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">Bitwarden</a></strong> — Free, open source, independently audited. Best overall choice.<br>
+            <strong><a href="https://1password.com" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">1Password</a></strong> — Polished, family-friendly, excellent travel mode.<br>
+            <strong><a href="https://nordpass.com" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">NordPass</a></strong> — Strong encryption, dark web monitoring, generous free tier.<br>
+            <strong><a href="https://www.dashlane.com" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">Dashlane</a></strong> — Strong dark web monitoring and breach alerts.
+          </p>
+          <p class="modal-text" style="margin-top:8px;">Enable two-factor authentication on every account that supports it. A password manager paired with 2FA is the most effective defence available to individuals today.</p>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-section-title">How randomness is generated</div>
+          <p class="modal-text">PopcornPasswords uses your browser's cryptographically secure random number generator — the same standard underpinning SSL certificates, encryption keys, and secure communications globally. We apply bias-elimination techniques to ensure every character in the pool has an equal probability of selection. The result is genuinely unpredictable output, every time.</p>
+        </div>
+
+        <div class="modal-quote" style="margin-top:1.5rem;">&copy; 2026 PopcornPasswords &mdash; Strong passwords. Zero compromise.</div>
+
+      </div>
+    </div>
+  </div>
 
   <!-- Info modal -->
   <div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
@@ -1553,7 +1668,7 @@
         ctx.beginPath();
         ctx.moveTo(cx+t1*Math.cos(rad), cy+t1*Math.sin(rad));
         ctx.lineTo(cx+t2*Math.cos(rad), cy+t2*Math.sin(rad));
-        ctx.strokeStyle = active ? (isMaxLabel ? accentHex : '#bb3333') : '#555';
+        ctx.strokeStyle = isMaxLabel ? (active ? accentHex : '#aaaaaa') : active ? (isMaxLabel ? accentHex : '#bb3333') : '#555';
         ctx.lineWidth = isMaxLabel ? 3 : 2; ctx.lineCap = 'round'; ctx.stroke();
 
         // Minor ticks between labels
@@ -1572,8 +1687,8 @@
 
         // Label — bright white when active, dim when not
         const lr = outerR-22, lx = cx+lr*Math.cos(rad), ly = cy+lr*Math.sin(rad);
-        ctx.fillStyle = isMaxLabel && active ? accentHex : active ? '#ffffff' : '#666';
-        ctx.font = (isMaxLabel ? 'bold 14px' : 'bold 12px') + " 'Oswald',sans-serif";
+        ctx.fillStyle = isMaxLabel ? (active ? accentHex : '#ffffff') : active ? '#ffffff' : '#666';
+        ctx.font = (isMaxLabel ? 'bold 16px' : 'bold 12px') + " 'Oswald',sans-serif";
         ctx.fillText(v, lx, ly);
       }
       ctx.restore();
@@ -1862,8 +1977,8 @@
       bttf: {
         id:            'bttf',
         label:         'Back to the Future',
-        pageTitle:     '88 MPH — Password Generator',
-        headerSub:     'Secure Password Generator',
+        pageTitle:     'PopcornPasswords — 88 MPH',
+        headerSub:     'PopcornPasswords',
         speedUnit:     'MPH',
         minSpeed:      8,
         maxSpeed:      88,
@@ -1936,7 +2051,7 @@
       spinal_tap: {
         id:              'spinal_tap',
         label:           'This Is Spinal Tap',
-        pageTitle:       'These Go to 11 — Password Generator',
+        pageTitle:       'PopcornPasswords — These Go to 11',
         headerSub:       'Maximum Password Amplification',
         speedUnit:       'VOL',
         minSpeed:        0,
@@ -2018,8 +2133,8 @@
       top_gun: {
         id:            'top_gun',
         label:         'Top Gun',
-        pageTitle:     'Mach 1 — Password Generator',
-        headerSub:     'Classified Password Systems — Miramar',
+        pageTitle:     'PopcornPasswords — Top Gun',
+        headerSub:     'PopcornPasswords — Miramar',
         speedUnit:     'MACH',
         minSpeed:      1,
         maxSpeed:      100,
@@ -2101,8 +2216,10 @@
 
     function applyTheme(themeId) {
       THEME = THEMES[themeId];
-      document.title = THEME.pageTitle;
-      document.getElementById('headerSub').textContent = THEME.headerSub;
+      document.title = 'Popcorn Passwords';
+      // Update fallback text only — logo image stays in place
+      const logoText = document.getElementById('headerLogoText');
+      if (logoText) logoText.textContent = THEME.headerSub;
       document.getElementById('supportIcon').textContent = THEME.supportIcon;
       document.getElementById('supportText').textContent = THEME.supportText;
       document.getElementById('modalTitle').textContent = THEME.modalTitle;
@@ -2218,7 +2335,17 @@
     function handleBackdropClick(e) {
       if (e.target === document.getElementById('modalBackdrop')) closeModal();
     }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+    function openPrivacyModal() {
+      document.getElementById('privacyBackdrop').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closePrivacyModal() {
+      document.getElementById('privacyBackdrop').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeModal(); closePrivacyModal(); }
+    });
 
     // Init — BTTF is always default
     applyTheme('bttf');
