@@ -131,35 +131,53 @@
     /* Left branding panel */
     .brand-panel {
       display: none;
-      flex: 0 0 260px;
-      background: #f5f0e8;
-      border-right: 1px solid #e0d8cc;
+      flex: 0 0 280px;
       position: sticky;
       top: 0;
       height: 100vh;
       overflow: hidden;
-      flex-direction: column;
-      align-items: flex-end; /* push content to right edge toward tool */
-      justify-content: center;
-      padding: 2rem 1rem 2rem 1.5rem;
     }
     .brand-panel img {
-      width: 220px;
-      height: auto;
-      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
       display: block;
     }
-    /* Remove duplicate text — name is in the image */
     .brand-panel-name,
     .brand-panel-tagline,
     .brand-panel-divider { display: none; }
 
-    /* Dark mode: brand panel uses dark surface */
-    body:not(.light) .brand-panel { background: var(--surface); border-right-color: var(--border); }
+    /* Dark mode — minimalist icon, centred on dark surface */
+    body:not(.light) .brand-panel {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    body:not(.light) .brand-panel img {
+      width: 90%;
+      height: auto;
+      object-fit: contain;
+    }
     body:not(.light) .brand-img-dark  { display: block; }
     body:not(.light) .brand-img-light { display: none; }
-    /* Light mode: cream bg, show colour image */
-    body.light .brand-panel { background: #f5f0e8; border-right-color: #e0d8cc; }
+
+    /* Light mode — full colour image fills panel edge to edge */
+    body.light .brand-panel {
+      background: #f5f0e8;
+      border-right: 1px solid #e0d8cc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    body.light .brand-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
     body.light .brand-img-dark  { display: none; }
     body.light .brand-img-light { display: block; }
 
@@ -300,6 +318,17 @@
       height: 2px;
       background: linear-gradient(90deg, transparent, var(--orange), transparent);
       transition: background 0.4s;
+    }
+    .theme-badge {
+      font-family: var(--ui);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      text-align: center;
+      margin-top: 8px;
+      transition: color 0.4s;
     }
 
     /* ── PASSWORD CARD ── */
@@ -1067,6 +1096,7 @@
               <div class="header-title" id="headerTitle">30&nbsp;MPH</div>
             </div>
             <div class="header-divider" id="headerDivider"></div>
+            <div class="theme-badge" id="themeBadge">Back to the Future</div>
           </div>
 
           <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:6px;">
@@ -2571,6 +2601,10 @@
       // Update fallback text only — logo image stays in place
       const logoText = document.getElementById('headerLogoText');
       if (logoText) logoText.textContent = THEME.headerSub;
+      // Theme badge — show selected theme name under the title
+      const sel = document.getElementById('themeSelect');
+      const badge = document.getElementById('themeBadge');
+      if (badge && sel) badge.textContent = sel.options[sel.selectedIndex].text;
       document.getElementById('supportIcon').textContent = THEME.supportIcon;
       document.getElementById('supportText').textContent = THEME.supportText;
       document.getElementById('modalTitle').textContent = THEME.modalTitle;
