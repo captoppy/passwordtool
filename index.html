@@ -3,8 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Popcorn Passwords</title>
-  <link rel="icon" href="favicon.ico" />
+  <title>Popcorn Passwords — Free Strong Password Generator</title>
+
+  <!-- Primary SEO -->
+  <meta name="description" content="Generate strong, random, cryptographically secure passwords instantly — free, private, and never stored. Choose your length, characters, and movie theme. No sign-up required." />
+  <meta name="keywords" content="password generator, strong password, random password, secure password, free password generator, cryptographic password, online password tool, password security" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="PopcornPasswords" />
+  <link rel="canonical" href="https://popcornpasswords.netlify.app/" />
+
+  <!-- Open Graph (Facebook, LinkedIn, iMessage) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://popcornpasswords.netlify.app/" />
+  <meta property="og:title" content="Popcorn Passwords — Free Strong Password Generator" />
+  <meta property="og:description" content="Generate strong, cryptographically secure passwords instantly. Free, private, never stored. Pick your theme — Back to the Future, Spinal Tap, Top Gun." />
+  <meta property="og:image" content="https://raw.githubusercontent.com/captoppy/passwordtool/assets/master_full_colour_lockup.png" />
+  <meta property="og:site_name" content="PopcornPasswords" />
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://popcornpasswords.netlify.app/" />
+  <meta name="twitter:title" content="Popcorn Passwords — Free Strong Password Generator" />
+  <meta name="twitter:description" content="Generate strong, cryptographically secure passwords instantly. Free, private, never stored." />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/captoppy/passwordtool/assets/master_full_colour_lockup.png" />
+
+  <!-- Mobile browser chrome colour -->
+  <meta name="theme-color" content="#05070d" />
+
+  <!-- Schema.org structured data — tells Google this is a web application tool -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PopcornPasswords",
+    "url": "https://popcornpasswords.netlify.app/",
+    "description": "A free, browser-based cryptographically secure password generator. Passwords are generated locally and never transmitted or stored.",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Cryptographically secure random password generation",
+      "Adjustable password length",
+      "Uppercase, lowercase, numbers and symbols support",
+      "Ambiguous character exclusion",
+      "Multiple movie themes",
+      "Zero data collection",
+      "No sign-up required"
+    ],
+    "creator": {
+      "@type": "Organization",
+      "name": "PopcornPasswords",
+      "url": "https://popcornpasswords.netlify.app/"
+    }
+  }
+  </script>
+
+  <link rel="icon" href="https://raw.githubusercontent.com/captoppy/passwordtool/assets/favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2732504070558804"
@@ -63,11 +121,11 @@
 
     .shell {
       width: 100%;
-      max-width: 500px;
+      max-width: 540px;
       min-width: 0;
       box-sizing: border-box;
       margin: 0 auto;
-      padding: 2rem 1.5rem;
+      padding: 2.5rem 1.75rem;
       animation: fadeUp 0.45s ease both;
       overflow: hidden;
     }
@@ -152,9 +210,9 @@
     .pw-card {
       background: var(--surface);
       border: 1px solid var(--border2);
-      border-radius: 4px;
-      padding: 1.25rem;
-      margin-bottom: 1.25rem;
+      border-radius: 8px;
+      padding: 1.75rem 1.5rem 1.25rem;
+      margin-bottom: 1.5rem;
       position: relative;
       transition: border-color 0.4s;
       min-width: 0;
@@ -164,7 +222,7 @@
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 2px;
+      height: 3px;
       background: linear-gradient(90deg, transparent, var(--orange), var(--yellow), transparent);
       transition: background 0.4s;
     }
@@ -172,7 +230,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
     }
     .pw-label {
       font-family: var(--ui);
@@ -187,19 +245,18 @@
       font-size: 11px;
       font-family: var(--ui);
       font-weight: 300;
-      letter-spacing: 0.06em;
       color: var(--muted2);
       letter-spacing: 0.08em;
       transition: color 0.3s;
     }
     .pw-text {
       font-family: var(--mono);
-      font-size: 14px;
+      font-size: 17px;
       word-break: break-all;
       overflow-wrap: break-word;
-      line-height: 1.7;
-      height: calc(1.7em * 2);
-      letter-spacing: 0.04em;
+      line-height: 1.65;
+      height: calc(1.65em * 3);
+      letter-spacing: 0.06em;
       width: 100%;
       overflow: hidden;
     }
@@ -210,10 +267,11 @@
 
     .pw-actions {
       display: flex;
-      gap: 8px;
-      margin-top: 14px;
-      padding-top: 12px;
+      gap: 10px;
+      margin-top: 18px;
+      padding-top: 14px;
       border-top: 1px solid var(--border);
+      align-items: center;
     }
     .btn {
       font-family: var(--ui);
@@ -221,8 +279,8 @@
       font-weight: 500;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      padding: 7px 16px;
-      border-radius: 3px;
+      padding: 8px 18px;
+      border-radius: 4px;
       cursor: pointer;
       transition: all 0.15s;
       border: 1px solid var(--border2);
@@ -231,9 +289,28 @@
     }
     .btn:hover { color: var(--text); border-color: var(--blue); background: var(--blue-dim); }
     .btn:active { transform: scale(0.97); }
-    .btn-primary { border-color: var(--orange-lo); color: var(--orange); background: var(--orange-dim); }
-    .btn-primary:hover { border-color: var(--orange); background: #2a1205; }
-    .btn-copied { border-color: var(--blue) !important; color: var(--blue) !important; background: var(--blue-dim) !important; }
+    /* Regenerate — subtle */
+    .btn-primary { border-color: var(--border2); color: var(--muted2); background: transparent; }
+    .btn-primary:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-dim); }
+    /* Copy — the hero action */
+    .btn-copy-hero {
+      font-family: var(--ui);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 10px 28px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+      background: var(--orange);
+      color: var(--bg);
+      flex-shrink: 0;
+    }
+    .btn-copy-hero:hover { background: var(--orange-hi); transform: translateY(-1px); }
+    .btn-copy-hero:active { transform: scale(0.97); }
+    .btn-copied { background: var(--blue) !important; color: var(--bg) !important; }
     .btn-spacer { flex: 1; }
 
     /* ── STRENGTH ── */
@@ -275,7 +352,7 @@
     }
 
     /* ── SECTION ── */
-    .section { margin-bottom: 1.25rem; }
+    .section { margin-bottom: 1.5rem; }
     .section-label {
       font-family: var(--display);
       font-size: 10px;
@@ -362,14 +439,14 @@
     }
 
     /* ── CHECKBOXES ── */
-    .checkboxes-grid { display: flex; flex-direction: column; gap: 6px; }
+    .checkboxes-grid { display: flex; flex-direction: column; gap: 8px; }
 
     .always-row {
       display: flex; align-items: center; gap: 12px;
-      padding: 10px 14px;
+      padding: 12px 16px;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 4px;
+      border-radius: 6px;
       opacity: 0.5;
     }
     .always-box {
@@ -401,10 +478,10 @@
 
     .checkbox-row {
       display: flex; align-items: center; gap: 12px;
-      padding: 10px 14px;
+      padding: 12px 16px;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       transition: border-color 0.15s, background 0.15s;
       user-select: none;
@@ -469,7 +546,7 @@
     .info-btn {
       width: 20px;
       height: 20px;
-      border-radius: 50%;
+      border-radius: 3px;
       border: 1px solid var(--border2);
       background: transparent;
       color: var(--muted2);
@@ -483,7 +560,6 @@
       justify-content: center;
       flex-shrink: 0;
       transition: border-color 0.15s, color 0.15s, background 0.15s;
-      margin-left: 8px;
     }
     .info-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-dim); }
 
@@ -606,17 +682,18 @@
       margin-bottom: 1.25rem;
     }
     .theme-label {
-      font-family: var(--display);
+      font-family: var(--ui);
       font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.2em;
-      color: var(--muted);
+      color: var(--muted2);
       text-transform: uppercase;
       flex-shrink: 0;
     }
     .theme-select {
-      font-family: var(--mono);
+      font-family: var(--ui);
       font-size: 11px;
+      font-weight: 400;
       color: var(--muted2);
       background: var(--surface2);
       border: 1px solid var(--border);
@@ -739,12 +816,7 @@
 
     <div class="header">
       <div class="header-sub" id="headerSub">
-        <img src="logo_simplified_transparent.png"
-          alt="PopcornPasswords"
-          id="headerLogo"
-          style="height:36px; max-width:220px; object-fit:contain; display:block; margin:0 auto;"
-          onerror="this.style.display='none'; document.getElementById('headerLogoText').style.display='block';" />
-        <span id="headerLogoText" style="display:none;">PopcornPasswords</span>
+        <span id="headerLogoText" style="font-family:var(--ui); font-size:13px; font-weight:600; letter-spacing:0.25em; color:var(--blue); text-transform:uppercase;">PopcornPasswords</span>
       </div>
       <div class="title-wrap">
         <canvas id="fireCanvas" width="320" height="90"></canvas>
@@ -753,7 +825,8 @@
       <div class="header-divider" id="headerDivider"></div>
     </div>
 
-    <div style="display:flex; justify-content:flex-end; margin-bottom:6px;">
+    <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:6px;">
+      <button class="info-btn" onclick="openPrivacyModal()" title="Privacy &amp; Security">!</button>
       <button class="info-btn" onclick="openModal()" title="How does this work?">?</button>
     </div>
 
@@ -766,7 +839,7 @@
       <div class="pw-actions">
         <button class="btn btn-primary" onclick="generate()">&#8635; Regenerate</button>
         <div class="btn-spacer"></div>
-        <button class="btn" id="copyBtn" onclick="copyPw()">Copy</button>
+        <button class="btn-copy-hero" id="copyBtn" onclick="copyPw()">Copy</button>
       </div>
     </div>
 
@@ -865,13 +938,9 @@
 
     <!-- Privacy footer -->
     <div class="privacy-footer">
-      <button class="privacy-trigger" onclick="openPrivacyModal()">
-        <img src="icon_minimalist.png"
-          alt=""
-          style="height:14px; width:auto; opacity:0.5; vertical-align:middle;"
-          onerror="this.style.display='none';" />
+      <button class="privacy-trigger" onclick="openPrivacyPolicyModal()">
         <span class="privacy-lock">&#128274;</span>
-        Privacy &amp; Security
+        Privacy Policy
       </button>
       <span class="privacy-sep">·</span>
       <span class="privacy-copy">&copy; 2026 PopcornPasswords</span>
@@ -879,17 +948,65 @@
 
   </div><!-- /.shell -->
 
+  <!-- SEO content block — crawlable by search engines, visually hidden -->
+  <div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;" aria-hidden="true">
+    <h1>PopcornPasswords — Free Strong Password Generator</h1>
+    <p>PopcornPasswords is a free, browser-based password generator that creates cryptographically secure, random passwords instantly. No sign-up required. No data collected. Passwords are generated locally in your browser and never transmitted to any server.</p>
+    <h2>Why use PopcornPasswords?</h2>
+    <p>Strong passwords are your first line of defence against account breaches. PopcornPasswords generates long, random passwords using your browser's cryptographically secure random number generator — the same technology used in SSL certificates and encryption keys. Every character is selected with equal probability, with no patterns or bias.</p>
+    <h2>Features</h2>
+    <ul>
+      <li>Generate passwords from 8 to 110 characters long</li>
+      <li>Choose uppercase, lowercase, numbers, and symbols</li>
+      <li>Exclude visually ambiguous characters like l, 1, O, 0</li>
+      <li>Multiple movie-themed interfaces — Back to the Future, Spinal Tap, Top Gun</li>
+      <li>Completely free — no account, no email, no tracking</li>
+      <li>Works on desktop and mobile</li>
+    </ul>
+    <h2>Password security tips</h2>
+    <p>Use a unique password for every account. Store passwords in a reputable password manager such as NordPass, Bitwarden, 1Password, or Dashlane. Pair it with NordVPN for complete online privacy. Enable two-factor authentication wherever possible. A 30-character random password is billions of times harder to crack than an 8-character one.</p>
+    <p>PopcornPasswords — Strong passwords, zero compromise. Free online password generator. Secure random password tool. Cryptographic password generator.</p>
+  </div>
+
   <!-- Privacy modal -->
   <div class="modal-backdrop" id="privacyBackdrop" onclick="if(event.target===this)closePrivacyModal()">
     <div class="modal" id="privacyModal">
       <div class="modal-header">
-        <span class="modal-title">
-          <img src="icon_only_simplified.png"
-            alt="" style="height:16px; width:auto; vertical-align:middle; margin-right:6px;"
-            onerror="this.style.display='none';" />
-          &#128274; Privacy &amp; Security
-        </span>
+        <span class="modal-title">&#128737; Security</span>
         <button class="modal-close" onclick="closePrivacyModal()">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+
+        <div class="modal-section">
+          <div class="modal-section-title">Store your passwords securely</div>
+          <p class="modal-text">Never store passwords in a text file, notes app, or your browser's built-in save. Use a dedicated password manager — it encrypts your vault and handles autofill. Enable two-factor authentication on every account that supports it.</p>
+          <p class="modal-text" style="margin-top:8px;">
+            <strong><a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=143776&url_id=9356" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">NordPass</a></strong> — Strong encryption, dark web monitoring. ★ Recommended<br>
+            <strong><a href="https://bitwarden.com" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">Bitwarden</a></strong> — Free, open source, independently audited.<br>
+            <strong><a href="https://1password.com" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">1Password</a></strong> — Polished, great for families and teams.
+          </p>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-section-title">Protect your connection too</div>
+          <p class="modal-text">A strong password is one layer. A VPN adds another — encrypting your traffic so your activity stays private on any network.</p>
+          <p class="modal-text" style="margin-top:8px;">
+            <strong><a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=143776&url_id=902" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">NordVPN</a></strong> — Trusted VPN with fast speeds and strong privacy credentials. ★ Recommended
+          </p>
+        </div>
+
+        <div class="modal-quote" style="margin-top:1.5rem;">Good security is layers, not luck.</div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Policy modal -->
+  <div class="modal-backdrop" id="privacyPolicyBackdrop" onclick="if(event.target===this)closePrivacyPolicyModal()">
+    <div class="modal" id="privacyPolicyModal">
+      <div class="modal-header">
+        <span class="modal-title">&#128274; Privacy Policy</span>
+        <button class="modal-close" onclick="closePrivacyPolicyModal()">&#x2715;</button>
       </div>
       <div class="modal-body">
 
@@ -900,29 +1017,12 @@
 
         <div class="modal-section">
           <div class="modal-section-title">No tracking. No cookies. No accounts.</div>
-          <p class="modal-text">We do not use tracking cookies, fingerprinting, or any third-party analytics that identify you personally. We do not ask you to sign up, log in, or provide any personal information. There is nothing to delete because nothing is collected.</p>
+          <p class="modal-text">We do not use tracking cookies, fingerprinting, or third-party analytics that identify you personally. We do not ask you to sign up, log in, or provide any personal information. There is nothing to delete because nothing is collected.</p>
         </div>
 
         <div class="modal-section">
-          <div class="modal-section-title">Why password strength matters</div>
-          <p class="modal-text">The majority of account breaches result from weak, short, or reused passwords — not sophisticated attacks. <strong>Length and randomness are the two most important factors.</strong> A 30-character random password is billions of times harder to crack than an 8-character one. A unique password per account means one breach never cascades into others.</p>
-        </div>
-
-        <div class="modal-section">
-          <div class="modal-section-title">Store your passwords securely</div>
-          <p class="modal-text">Never store passwords in a text file, notes app, or spreadsheet. Use a dedicated password manager — it encrypts your vault and handles autofill. Our recommended options:</p>
-          <p class="modal-text" style="margin-top:8px;">
-            <strong><a href="https://bitwarden.com" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">Bitwarden</a></strong> — Free, open source, independently audited. Best overall choice.<br>
-            <strong><a href="https://1password.com" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">1Password</a></strong> — Polished, family-friendly, excellent travel mode.<br>
-            <strong><a href="https://nordpass.com" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">NordPass</a></strong> — Strong encryption, dark web monitoring, generous free tier.<br>
-            <strong><a href="https://www.dashlane.com" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">Dashlane</a></strong> — Strong dark web monitoring and breach alerts.
-          </p>
-          <p class="modal-text" style="margin-top:8px;">Enable two-factor authentication on every account that supports it. A password manager paired with 2FA is the most effective defence available to individuals today.</p>
-        </div>
-
-        <div class="modal-section">
-          <div class="modal-section-title">How randomness is generated</div>
-          <p class="modal-text">PopcornPasswords uses your browser's cryptographically secure random number generator — the same standard underpinning SSL certificates, encryption keys, and secure communications globally. We apply bias-elimination techniques to ensure every character in the pool has an equal probability of selection. The result is genuinely unpredictable output, every time.</p>
+          <div class="modal-section-title">Affiliate disclosure</div>
+          <p class="modal-text">Some links on this page are affiliate links. If you click and make a purchase, we may earn a small commission at no extra cost to you. This does not affect the price you pay. We only recommend products we genuinely stand behind.</p>
         </div>
 
         <div class="modal-quote" style="margin-top:1.5rem;">&copy; 2026 PopcornPasswords &mdash; Strong passwords. Zero compromise.</div>
@@ -940,6 +1040,12 @@
         <button class="modal-close" onclick="closeModal()">&#x2715;</button>
       </div>
       <div class="modal-body">
+
+        <!-- [THEME:modal-strength] -->
+        <div class="modal-section">
+          <div class="modal-section-title" id="modalStrengthTitle">Why strong passwords matter</div>
+          <p class="modal-text" id="modalStrengthBody">Most account breaches aren't sophisticated hacks — they're weak or reused passwords. A 30-character random password is billions of times harder to crack than an 8-character one. Use a unique password for every account.</p>
+        </div>
 
         <!-- [THEME:modal-uppercase] -->
         <div class="modal-section">
@@ -962,12 +1068,6 @@
         <div class="modal-section">
           <div class="modal-section-title">Exclude ambiguous characters</div>
           <p class="modal-text">Characters like <strong>l, 1, 0, O, i, I, |</strong> look nearly identical depending on the font. If you ever need to type a password manually, tick this to strip them out. The password stays just as strong — the pool is only slightly smaller.</p>
-        </div>
-
-        <!-- [THEME:modal-privacy] -->
-        <div class="modal-section">
-          <div class="modal-section-title" id="modalPrivTitle">Your password never leaves this page</div>
-          <p class="modal-text" id="modalPrivBody">Everything runs in your browser. <strong>No passwords are transmitted, logged, or stored anywhere.</strong> There's no server involved. Close the tab and it's gone — just like Marty's memory of the alternate timeline.</p>
         </div>
 
         <!-- [THEME:modal-quote] -->
@@ -2014,6 +2114,8 @@
         supportIcon:   '☢️',
         supportText:   'Enjoyed this? Send a coffee in the form of plutonium',
         modalTitle:    'Great Scott!',
+        modalStrengthTitle: 'Why strong passwords matter',
+        modalStrengthBody:  'Most account breaches aren\'t sophisticated hacks — they\'re weak or reused passwords. <strong>A 30-character random password is billions of times harder to crack than an 8-character one.</strong> The difference isn\'t double — it\'s the same gap as driving a DeLorean at 30 mph versus 88 mph. One password, one account. Never reuse.',
         modalUpperTitle: 'Why uppercase & numbers are always on',
         modalUpperBody:  'A password using only lowercase is exponentially easier to crack. <strong>Mixing cases and numbers massively expands the search space</strong> — going from 26 possible characters per slot to 62. At 30 characters that\'s the difference between 26³⁰ and 62³⁰ combinations. That\'s not a small gap. That\'s the difference between a DeLorean doing 30 mph and 88 mph.',
         modalSymTitle:  'Why symbols push it further',
@@ -2052,7 +2154,7 @@
         id:              'spinal_tap',
         label:           'This Is Spinal Tap',
         pageTitle:       'PopcornPasswords — These Go to 11',
-        headerSub:       'Maximum Password Amplification',
+        headerSub:       'PopcornPasswords',
         speedUnit:       'VOL',
         minSpeed:        0,
         maxSpeed:        110,
@@ -2096,6 +2198,8 @@
         supportIcon:   '🎸',
         supportText:   'Enjoyed this? Buy us an amp that goes to 11',
         modalTitle:    'But This One Goes to 11!',
+        modalStrengthTitle: 'Why strong passwords matter',
+        modalStrengthBody:  'Most account breaches aren\'t sophisticated hacks — they\'re weak or reused passwords. <strong>A 30-character random password is billions of times harder to crack than an 8-character one.</strong> Going from 8 to 30 characters doesn\'t make it twice as strong — it goes to 11. One password, one account. Never reuse.',
         modalUpperTitle: 'Why uppercase & numbers are always on',
         modalUpperBody:  'A password using only lowercase is like playing through a broken amp — weak, thin, and easy to overpower. <strong>Mixing uppercase, lowercase, and numbers massively expands the search space</strong> — from 26 possible characters per slot to 62. At volume 5 that\'s the difference between playing Wembley and playing a pub car park. You want Wembley.',
         modalSymTitle:  'Why symbols push it to 11',
@@ -2134,7 +2238,7 @@
         id:            'top_gun',
         label:         'Top Gun',
         pageTitle:     'PopcornPasswords — Top Gun',
-        headerSub:     'PopcornPasswords — Miramar',
+        headerSub:     'PopcornPasswords',
         speedUnit:     'MACH',
         minSpeed:      1,
         maxSpeed:      100,
@@ -2176,6 +2280,8 @@
         supportIcon:   '🛩️',
         supportText:   'Enjoyed this? Buy Maverick a round at the O-Club',
         modalTitle:    'You Can Be My Wingman Any Time.',
+        modalStrengthTitle: 'Why strong passwords matter',
+        modalStrengthBody:  'Most account breaches aren\'t sophisticated hacks — they\'re weak or reused passwords. <strong>A 30-character random password is billions of times harder to crack than an 8-character one.</strong> The difference isn\'t a slight edge — it\'s the gap between a trainer and an F-14 Tomcat at full afterburner. One password, one account. Never reuse.',
         modalUpperTitle: 'Why uppercase & numbers are always on',
         modalUpperBody:  'A password using only lowercase is like flying without radar — you\'re exposed and an easy target. <strong>Mixing uppercase, lowercase, and numbers massively expands the search space</strong> — from 26 characters per slot to 62. At 30 characters that\'s the difference between a trainer and an F-14 Tomcat at full throttle.',
         modalSymTitle:  'Why symbols push it to Mach 1',
@@ -2223,14 +2329,14 @@
       document.getElementById('supportIcon').textContent = THEME.supportIcon;
       document.getElementById('supportText').textContent = THEME.supportText;
       document.getElementById('modalTitle').textContent = THEME.modalTitle;
+      document.getElementById('modalStrengthTitle').textContent = THEME.modalStrengthTitle;
+      document.getElementById('modalStrengthBody').innerHTML   = THEME.modalStrengthBody;
       document.getElementById('modalUpperTitle').textContent = THEME.modalUpperTitle;
       document.getElementById('modalUpperBody').innerHTML  = THEME.modalUpperBody;
       document.getElementById('modalSymTitle').textContent = THEME.modalSymTitle;
       document.getElementById('modalSymBody').innerHTML    = THEME.modalSymBody;
       document.getElementById('modalRandTitle').textContent = THEME.modalRandTitle;
       document.getElementById('modalRandBody').innerHTML   = THEME.modalRandBody;
-      document.getElementById('modalPrivTitle').textContent = THEME.modalPrivTitle;
-      document.getElementById('modalPrivBody').innerHTML   = THEME.modalPrivBody;
       document.getElementById('modalQuote').textContent   = THEME.modalQuote;
       // Random quote on theme switch
       setRandomFooterQuote();
@@ -2343,8 +2449,16 @@
       document.getElementById('privacyBackdrop').classList.remove('open');
       document.body.style.overflow = '';
     }
+    function openPrivacyPolicyModal() {
+      document.getElementById('privacyPolicyBackdrop').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closePrivacyPolicyModal() {
+      document.getElementById('privacyPolicyBackdrop').classList.remove('open');
+      document.body.style.overflow = '';
+    }
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { closeModal(); closePrivacyModal(); }
+      if (e.key === 'Escape') { closeModal(); closePrivacyModal(); closePrivacyPolicyModal(); }
     });
 
     // Init — BTTF is always default
