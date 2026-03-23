@@ -131,55 +131,37 @@
     /* Left branding panel */
     .brand-panel {
       display: none;
-      flex: 0 0 280px;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
+      flex: 0 0 260px;
+      background: #f5f0e8;
+      border-right: 1px solid #e0d8cc;
       position: sticky;
       top: 0;
       height: 100vh;
       overflow: hidden;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-end; /* push content to right edge toward tool */
       justify-content: center;
-      gap: 1.5rem;
-      padding: 2rem;
+      padding: 2rem 1rem 2rem 1.5rem;
     }
     .brand-panel img {
-      width: 200px;
+      width: 220px;
       height: auto;
       object-fit: contain;
       display: block;
     }
-    .brand-panel-name {
-      font-family: var(--ui);
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--orange);
-      text-align: center;
-      line-height: 1.25;
-      display: block;
-    }
-    .brand-panel-tagline {
-      font-family: var(--ui);
-      font-size: 11px;
-      font-weight: 400;
-      color: var(--muted2);
-      text-align: center;
-      letter-spacing: 0.06em;
-      line-height: 1.7;
-      display: block;
-    }
-    .brand-panel-divider {
-      width: 40px;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--orange), transparent);
-      display: block;
-    }
-    /* Both modes use the same minimalist icon — it has transparent bg */
-    .brand-img-dark  { display: block; }
-    .brand-img-light { display: none;  }
+    /* Remove duplicate text — name is in the image */
+    .brand-panel-name,
+    .brand-panel-tagline,
+    .brand-panel-divider { display: none; }
+
+    /* Dark mode: brand panel uses dark surface */
+    body:not(.light) .brand-panel { background: var(--surface); border-right-color: var(--border); }
+    body:not(.light) .brand-img-dark  { display: block; }
+    body:not(.light) .brand-img-light { display: none; }
+    /* Light mode: cream bg, show colour image */
+    body.light .brand-panel { background: #f5f0e8; border-right-color: #e0d8cc; }
+    body.light .brand-img-dark  { display: none; }
+    body.light .brand-img-light { display: block; }
 
     /* Right tool panel */
     .tool-panel {
@@ -188,58 +170,59 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      background: var(--bg);
     }
 
-    /* App bar — full width of tool panel */
+    /* App bar — centred content */
     .app-bar {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      justify-content: center;
+      gap: 16px;
       padding: 0.75rem 1.5rem;
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
+    .app-bar-logo { margin-right: auto; }
 
-    /* Two columns below app bar */
+    /* Two columns below app bar — centred as a unit */
     .cols-wrap {
       display: flex;
       flex: 1;
       overflow: hidden;
+      justify-content: center;
     }
 
     .col {
       overflow-y: auto;
-      padding: 1.5rem;
+      padding: 1.25rem 1.5rem;
       box-sizing: border-box;
     }
 
-    /* Col 2 — password tool */
+    /* Col 2 — password tool, fixed comfortable width */
     .col-tool {
-      flex: 1;
+      flex: 0 0 480px;
       min-width: 0;
       border-right: 1px solid var(--border);
-      max-width: 520px;
     }
 
-    /* Col 3 — characters + footer */
+    /* Col 3 — characters + footer, fixed width */
     .col-chars {
-      flex: 0 0 280px;
+      flex: 0 0 260px;
       display: flex;
       flex-direction: column;
-      gap: 0;
     }
 
     /* On narrow screens collapse to single column */
     @media (max-width: 700px) {
-      .cols-wrap { flex-direction: column; overflow-y: auto; }
-      .col-tool { max-width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+      .cols-wrap { flex-direction: column; overflow-y: auto; justify-content: flex-start; }
+      .col-tool { flex: none; width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
       .col-chars { flex: 1; }
     }
 
     /* Show brand panel on wider screens */
     @media (min-width: 900px) {
-      .brand-panel { display: block; }
+      .brand-panel { display: flex; }
       .app-bar-logo { display: none; }
     }
 
@@ -792,11 +775,11 @@
 
     /* ── LIGHT MODE ── */
     body.light {
-      --bg:        #ffffff;
-      --surface:   #f8f9fa;
-      --surface2:  #f0f2f4;
-      --border:    #dde1e7;
-      --border2:   #c8cdd5;
+      --bg:        #f5f0e8;
+      --surface:   #fffdf8;
+      --surface2:  #f0ebe0;
+      --border:    #e0d8cc;
+      --border2:   #ccc4b4;
       --text:      #1a1a18;
       --muted:     #888880;
       --muted2:    #555550;
@@ -842,6 +825,7 @@
       border-color: var(--border);
     }
     body.light .pw-card {
+      background: #fffdf8;
       box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     }
 
