@@ -130,49 +130,32 @@
 
     /* Left branding panel */
     .brand-panel {
-      display: none; /* hidden on mobile */
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 0 0 320px;
+      display: none;
+      flex: 0 0 300px;
       background: var(--surface);
       border-right: 1px solid var(--border);
-      padding: 3rem 2rem;
       position: sticky;
       top: 0;
       height: 100vh;
-      gap: 2rem;
+      overflow: hidden;
     }
     .brand-panel img {
-      width: 180px;
-      height: auto;
-      object-fit: contain;
-      opacity: 0.95;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
     }
-    .brand-panel-name {
-      font-family: var(--ui);
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--orange);
-      text-align: center;
-      line-height: 1.2;
-    }
-    .brand-panel-tagline {
-      font-family: var(--ui);
-      font-size: 12px;
-      font-weight: 400;
-      color: var(--muted2);
-      text-align: center;
-      letter-spacing: 0.08em;
-      line-height: 1.6;
-    }
-    .brand-panel-divider {
-      width: 40px;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--orange), transparent);
-    }
+    /* hide all text — image has branding baked in */
+    .brand-panel-name,
+    .brand-panel-tagline,
+    .brand-panel-divider { display: none; }
+
+    /* Swap brand image per mode */
+    .brand-img-dark  { display: block; }
+    .brand-img-light { display: none;  }
+    body.light .brand-img-dark  { display: none;  }
+    body.light .brand-img-light { display: block; }
 
     /* Right tool panel */
     .tool-panel {
@@ -196,7 +179,8 @@
 
     /* Show brand panel on wider screens */
     @media (min-width: 900px) {
-      .brand-panel { display: flex; }
+      .brand-panel { display: block; }
+      .app-bar-logo { display: none; }
     }
 
     @keyframes fadeUp {
@@ -1009,12 +993,14 @@
 
     <!-- Left branding panel — visible on wide screens only -->
     <div class="brand-panel">
-      <img src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/icon_minimalist.png"
-        alt="PopcornPasswords"
-        onerror="this.style.opacity='0';" />
-      <div class="brand-panel-divider"></div>
-      <div class="brand-panel-name">Popcorn<br>Passwords</div>
-      <div class="brand-panel-tagline">Free. Secure. Never stored.<br>Pick your theme. Generate your key.</div>
+      <!-- Dark mode: transparent/minimalist version -->
+      <img class="brand-img-dark"
+        src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/icon_minimalist.png"
+        alt="PopcornPasswords" />
+      <!-- Light mode: full colour lockup -->
+      <img class="brand-img-light"
+        src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/icon_header.png"
+        alt="PopcornPasswords" />
     </div>
 
     <!-- Right tool panel -->
@@ -1024,11 +1010,7 @@
     <!-- App bar: logo left, theme + mode toggle right -->
     <div class="app-bar">
       <div class="app-bar-logo">
-        <img src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/icon_minimalist.png"
-          alt="PopcornPasswords"
-          style="height:32px; width:auto;"
-          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
-        <span class="app-bar-logo-fallback" style="display:none;">🍿 PopcornPasswords</span>
+        <span class="app-bar-logo-fallback">🍿 PopcornPasswords</span>
       </div>
       <div class="app-bar-controls">
         <!-- [THEME:dropdown] -->
