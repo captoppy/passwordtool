@@ -118,6 +118,7 @@
       pointer-events: none;
       z-index: 100;
     }
+    body.light::after { display: none; }
 
     .shell {
       width: 100%;
@@ -513,20 +514,23 @@
       color: var(--muted2);
       transition: color 0.15s;
     }
-    .checkbox-row.active .checkbox-label { color: var(--text); }
+    .checkbox-row.active .checkbox-label { color: #ffffff; }
+    .checkbox-row.active .checkbox-sample { opacity: 1; color: rgba(255,255,255,0.7); }
+    body.light .checkbox-row.active .checkbox-label { color: #1a1a18; }
+    body.light .checkbox-row.active .checkbox-sample { color: rgba(0,0,0,0.6); }
     .checkbox-sample {
       margin-left: auto;
       font-family: var(--mono);
-      font-size: 11px;
+      font-size: 12px;
+      font-weight: 700;
       color: var(--orange-hi);
-      opacity: 0.5;
+      opacity: 0.75;
       transition: opacity 0.15s;
     }
-    .checkbox-row.active .checkbox-sample { opacity: 1; }
 
     /* ── FOOTER ── */
     .footer { margin-top: 1.75rem; text-align: center; overflow: hidden; max-width: 100%; }
-    .footer-text { font-size: 9px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
+    .footer-text { font-size: 10px; font-weight: 500; color: var(--muted2); letter-spacing: 0.12em; text-transform: uppercase; }
     .footer-speed {
       font-family: var(--display);
       font-size: 11px;
@@ -674,7 +678,136 @@
       text-align: center;
     }
 
-    /* ── THEME SELECTOR ── */
+    /* ── LIGHT MODE ── */
+    body.light {
+      --bg:        #ffffff;
+      --surface:   #f8f9fa;
+      --surface2:  #f0f2f4;
+      --border:    #dde1e7;
+      --border2:   #c8cdd5;
+      --text:      #1a1a18;
+      --muted:     #888880;
+      --muted2:    #555550;
+      --blue:      #1a6fa8;
+      --blue-hi:   #1a6fa8;
+      --blue-dim:  #ddeeff;
+      --blue-lo:   #bbddff;
+    }
+    body.light .pw-text .c-l { color: #1a1a18; }
+    body.light .pw-text .c-n { color: #b45309; }
+    body.light .pw-text .c-s { color: #0369a1; }
+    body.light .pw-text .c-u { color: #1a6fa8; }
+    body.light .sbar { background: #d0d4da; }
+    body.light input[type=range] { background: #d0d4da; }
+    body.light .len-display {
+      background: #ffffff;
+      border-color: var(--border2);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    body.light .len-number {
+      color: var(--text) !important;
+      text-shadow: none !important;
+    }
+    body.light #dialNotchDisplay {
+      color: var(--text) !important;
+      text-shadow: none !important;
+    }
+    body.light #dialCharCount { color: var(--muted2) !important; }
+    body.light #dialLenDisplay {
+      background: #ffffff;
+      border-color: var(--border2);
+    }
+    body.light #dialLenInput {
+      color: var(--text) !important;
+      text-shadow: none !important;
+    }
+    body.light .checkbox-row {
+      background: #ffffff;
+      border-color: var(--border);
+    }
+    body.light .always-row {
+      background: #f8f9fa;
+      border-color: var(--border);
+    }
+    body.light .pw-card {
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    /* ── APP BAR ── */
+    .app-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .app-bar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .app-bar-logo img {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+    }
+    .app-bar-logo-fallback {
+      font-family: var(--ui);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--orange);
+      text-transform: uppercase;
+    }
+    .app-bar-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .app-bar-select {
+      font-family: var(--ui);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 7px 12px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .app-bar-select:hover { border-color: var(--orange); }
+    .app-bar-select option { background: var(--surface2); color: var(--text); }
+
+    /* Light/dark toggle */
+    .mode-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .mode-btn {
+      font-size: 14px;
+      padding: 7px 10px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      transition: background 0.15s, color 0.15s;
+      line-height: 1;
+    }
+    .mode-btn.active { background: var(--orange); color: var(--bg); }
+    .mode-btn:hover:not(.active) { color: var(--text); }
     .theme-row {
       display: flex;
       align-items: center;
@@ -716,13 +849,14 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.08em;
+      font-family: var(--ui);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
       text-decoration: none;
       color: var(--muted2);
       background: transparent;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border2);
       border-radius: 4px;
       padding: 8px 16px;
       cursor: pointer;
@@ -730,7 +864,7 @@
     }
     .plutonium-btn:hover {
       color: var(--orange-hi);
-      border-color: var(--orange-lo);
+      border-color: var(--orange);
     }
     .plutonium-icon { font-size: 13px; line-height: 1; }
 
@@ -804,19 +938,33 @@
   <div id="flashOverlay"></div>
 
   <div class="shell">
-    <!-- [THEME:dropdown] — add new theme IDs to the select options -->
-    <div class="theme-row">
-      <label class="theme-label" for="themeSelect">Theme</label>
-      <select class="theme-select" id="themeSelect" onchange="applyTheme(this.value)">
-        <option value="bttf">Back to the Future</option>
-        <option value="spinal_tap">This Is Spinal Tap</option>
-        <option value="top_gun">Top Gun</option>
-      </select>
+
+    <!-- App bar: logo left, theme + mode toggle right -->
+    <div class="app-bar">
+      <div class="app-bar-logo">
+        <img src="https://raw.githubusercontent.com/captoppy/passwordtool/assets/logo_simplified_transparent.png"
+          alt="PopcornPasswords"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+        <span class="app-bar-logo-fallback" style="display:none;">🍿 PopcornPasswords</span>
+      </div>
+      <div class="app-bar-controls">
+        <!-- [THEME:dropdown] -->
+        <select class="app-bar-select" id="themeSelect" onchange="applyTheme(this.value)">
+          <option value="bttf">Back to the Future</option>
+          <option value="spinal_tap">This Is Spinal Tap</option>
+          <option value="top_gun">Top Gun</option>
+        </select>
+        <!-- Light / dark toggle -->
+        <div class="mode-toggle">
+          <button class="mode-btn" id="modeLight" onclick="setMode('light')" title="Light mode">☀️</button>
+          <button class="mode-btn active" id="modeDark" onclick="setMode('dark')" title="Dark mode">🌙</button>
+        </div>
+      </div>
     </div>
 
     <div class="header">
       <div class="header-sub" id="headerSub">
-        <span id="headerLogoText" style="font-family:var(--ui); font-size:13px; font-weight:600; letter-spacing:0.25em; color:var(--blue); text-transform:uppercase;">PopcornPasswords</span>
+        <span id="headerLogoText" style="display:none; font-family:var(--ui); font-size:13px; font-weight:600; letter-spacing:0.25em; color:var(--blue); text-transform:uppercase;">PopcornPasswords</span>
       </div>
       <div class="title-wrap">
         <canvas id="fireCanvas" width="320" height="90"></canvas>
@@ -2461,8 +2609,20 @@
       if (e.key === 'Escape') { closeModal(); closePrivacyModal(); closePrivacyPolicyModal(); }
     });
 
+    // ── Light / dark mode ──
+    function setMode(mode) {
+      document.body.classList.toggle('light', mode === 'light');
+      document.getElementById('modeLight').classList.toggle('active', mode === 'light');
+      document.getElementById('modeDark').classList.toggle('active', mode === 'dark');
+      try { localStorage.setItem('pp_mode', mode); } catch(e) {}
+    }
+
     // Init — BTTF is always default
     applyTheme('bttf');
+    try {
+      const saved = localStorage.getItem('pp_mode');
+      if (saved) setMode(saved);
+    } catch(e) {}
   </script>
 </body>
 </html>
