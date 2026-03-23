@@ -95,11 +95,11 @@
     }
 
     html, body {
-      min-height: 100vh;
+      height: 100%;
       background: var(--bg);
       color: var(--text);
       font-family: var(--mono);
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
     body {
@@ -124,38 +124,62 @@
     /* ── SPLIT LAYOUT ── */
     .page-wrap {
       display: flex;
-      min-height: 100vh;
-      align-items: stretch;
+      height: 100vh;
+      overflow: hidden;
     }
 
     /* Left branding panel */
     .brand-panel {
       display: none;
-      flex: 0 0 300px;
+      flex: 0 0 280px;
       background: var(--surface);
       border-right: 1px solid var(--border);
       position: sticky;
       top: 0;
       height: 100vh;
       overflow: hidden;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 2rem;
     }
     .brand-panel img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
+      width: 200px;
+      height: auto;
+      object-fit: contain;
       display: block;
     }
-    /* hide all text — image has branding baked in */
-    .brand-panel-name,
-    .brand-panel-tagline,
-    .brand-panel-divider { display: none; }
-
-    /* Swap brand image per mode */
+    .brand-panel-name {
+      font-family: var(--ui);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      text-align: center;
+      line-height: 1.25;
+      display: block;
+    }
+    .brand-panel-tagline {
+      font-family: var(--ui);
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--muted2);
+      text-align: center;
+      letter-spacing: 0.06em;
+      line-height: 1.7;
+      display: block;
+    }
+    .brand-panel-divider {
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--orange), transparent);
+      display: block;
+    }
+    /* Both modes use the same minimalist icon — it has transparent bg */
     .brand-img-dark  { display: block; }
     .brand-img-light { display: none;  }
-    body.light .brand-img-dark  { display: none;  }
-    body.light .brand-img-light { display: block; }
 
     /* Right tool panel */
     .tool-panel {
@@ -163,18 +187,54 @@
       min-width: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      overflow: hidden;
     }
 
-    .shell {
-      width: 100%;
-      max-width: 560px;
-      min-width: 0;
-      box-sizing: border-box;
-      margin: 0 auto;
-      padding: 2.5rem 1.75rem;
-      animation: fadeUp 0.45s ease both;
+    /* App bar — full width of tool panel */
+    .app-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0.75rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    /* Two columns below app bar */
+    .cols-wrap {
+      display: flex;
+      flex: 1;
       overflow: hidden;
+    }
+
+    .col {
+      overflow-y: auto;
+      padding: 1.5rem;
+      box-sizing: border-box;
+    }
+
+    /* Col 2 — password tool */
+    .col-tool {
+      flex: 1;
+      min-width: 0;
+      border-right: 1px solid var(--border);
+      max-width: 520px;
+    }
+
+    /* Col 3 — characters + footer */
+    .col-chars {
+      flex: 0 0 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* On narrow screens collapse to single column */
+    @media (max-width: 700px) {
+      .cols-wrap { flex-direction: column; overflow-y: auto; }
+      .col-tool { max-width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+      .col-chars { flex: 1; }
     }
 
     /* Show brand panel on wider screens */
@@ -785,27 +845,13 @@
       box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     }
 
-    /* ── APP BAR ── */
-    .app-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
-    }
+    /* ── APP BAR ELEMENTS ── */
     .app-bar-logo {
       display: flex;
       align-items: center;
       gap: 10px;
       text-decoration: none;
       flex-shrink: 0;
-    }
-    .app-bar-logo img {
-      height: 38px;
-      width: auto;
-      object-fit: contain;
     }
     .app-bar-logo-fallback {
       font-family: var(--ui);
@@ -993,174 +1039,174 @@
 
     <!-- Left branding panel — visible on wide screens only -->
     <div class="brand-panel">
-      <!-- Dark mode: transparent/minimalist version -->
       <img class="brand-img-dark"
         src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/icon_minimalist.png"
         alt="PopcornPasswords" />
-      <!-- Light mode: full colour lockup -->
-      <img class="brand-img-light"
-        src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/icon_header.png"
-        alt="PopcornPasswords" />
+      <div class="brand-panel-divider"></div>
+      <div class="brand-panel-name">Popcorn<br>Passwords</div>
+      <div class="brand-panel-tagline">Free. Secure. Never stored.<br>Pick your theme.<br>Generate your key.</div>
     </div>
 
     <!-- Right tool panel -->
     <div class="tool-panel">
-    <div class="shell">
 
-    <!-- App bar: logo left, theme + mode toggle right -->
-    <div class="app-bar">
-      <div class="app-bar-logo">
-        <span class="app-bar-logo-fallback">🍿 PopcornPasswords</span>
-      </div>
-      <div class="app-bar-controls">
-        <!-- [THEME:dropdown] -->
-        <select class="app-bar-select" id="themeSelect" onchange="applyTheme(this.value)">
-          <option value="bttf">Back to the Future</option>
-          <option value="spinal_tap">This Is Spinal Tap</option>
-          <option value="top_gun">Top Gun</option>
-        </select>
-        <!-- Light / dark toggle -->
-        <div class="mode-toggle">
-          <button class="mode-btn" id="modeLight" onclick="setMode('light')" title="Light mode">☀️</button>
-          <button class="mode-btn active" id="modeDark" onclick="setMode('dark')" title="Dark mode">🌙</button>
+      <!-- App bar spans full tool area -->
+      <div class="app-bar">
+        <div class="app-bar-logo">
+          <span class="app-bar-logo-fallback">🍿 PopcornPasswords</span>
         </div>
-      </div>
-    </div>
-
-    <div class="header">
-      <div class="header-sub" id="headerSub">
-        <span id="headerLogoText" style="display:none; font-family:var(--ui); font-size:13px; font-weight:600; letter-spacing:0.25em; color:var(--blue); text-transform:uppercase;">PopcornPasswords</span>
-      </div>
-      <div class="title-wrap">
-        <canvas id="fireCanvas" width="320" height="90"></canvas>
-        <div class="header-title" id="headerTitle">30&nbsp;MPH</div>
-      </div>
-      <div class="header-divider" id="headerDivider"></div>
-    </div>
-
-    <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:6px;">
-      <button class="info-btn" onclick="openPrivacyModal()" title="Privacy &amp; Security">!</button>
-      <button class="info-btn" onclick="openModal()" title="How does this work?">?</button>
-    </div>
-
-    <div class="pw-card" id="pwCard">
-      <div class="pw-meta">
-        <span class="pw-label" id="pwLabel">Generated Password</span>
-        <span class="pw-chars-count" id="charCount">30 characters</span>
-      </div>
-      <div class="pw-text" id="pwDisplay"></div>
-      <div class="pw-actions">
-        <button class="btn btn-primary" onclick="generate()">&#8635; Regenerate</button>
-        <div class="btn-spacer"></div>
-        <button class="btn-copy-hero" id="copyBtn" onclick="copyPw()">Copy</button>
-      </div>
-    </div>
-
-    <div class="strength-row">
-      <span class="str-lbl">Strength</span>
-      <div class="str-bars">
-        <div class="sbar" id="sb1"></div>
-        <div class="sbar" id="sb2"></div>
-        <div class="sbar" id="sb3"></div>
-        <div class="sbar" id="sb4"></div>
-        <div class="sbar" id="sb5"></div>
-        <div class="sbar" id="sb6"></div>
-      </div>
-      <span class="str-name" id="strName"></span>
-    </div>
-
-    <div class="section">
-      <div class="section-label" id="lenLabel">Length</div>
-
-      <!-- Standard slider (BTTF and future themes) -->
-      <div class="length-row" id="sliderRow">
-        <div class="slider-wrap">
-          <input type="range" id="slider" min="8" max="88" value="30" step="1" oninput="syncSlider()" />
-        </div>
-        <div class="len-display" id="lenDisplay">
-          <input type="number" class="len-number" id="lenNum" value="30" min="8" max="88" onblur="clampInput()" onkeydown="if(event.key==='Enter'){clampInput();this.blur();}" />
-          <span class="len-unit">characters</span>
-        </div>
-      </div>
-
-      <!-- Amp dial (Spinal Tap theme only) -->
-      <div id="dialRow" style="display:none; flex-direction:column; align-items:center; gap:14px;">
-        <div style="position:relative; width:220px; height:220px; flex-shrink:0;" id="dialWrap">
-          <canvas id="dialCanvas" width="220" height="220" style="display:block; cursor:grab; touch-action:none;"></canvas>
-        </div>
-        <div style="display:flex; align-items:center; gap:14px; justify-content:center;">
-          <span style="display:flex; align-items:baseline; gap:8px; justify-content:center;">
-            <span id="dialPrefixLabel" style="font-family:var(--display); font-size:13px; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase;">VOLUME</span>
-            <span id="dialNotchDisplay" style="font-family:var(--display); font-size:36px; font-weight:700; line-height:1;">3</span>
-          </span>
-          <div class="len-display" id="dialLenDisplay" style="width:72px;">
-            <input type="number" class="len-number" id="dialLenInput" value="30" min="1" max="110"
-              onblur="clampDialInput()"
-              onkeydown="if(event.key==='Enter'){clampDialInput();this.blur();}" />
-            <span class="len-unit">chars</span>
+        <div class="app-bar-controls">
+          <select class="app-bar-select" id="themeSelect" onchange="applyTheme(this.value)">
+            <option value="bttf">Back to the Future</option>
+            <option value="spinal_tap">This Is Spinal Tap</option>
+            <option value="top_gun">Top Gun</option>
+          </select>
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="modeLight" onclick="setMode('light')" title="Light mode">☀️</button>
+            <button class="mode-btn" id="modeDark" onclick="setMode('dark')" title="Dark mode">🌙</button>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="section">
-      <div class="section-label">Characters</div>
-      <div class="checkboxes-grid">
-        <div class="always-row">
-          <div class="always-box"><div class="always-tick"></div></div>
-          <span class="always-label">Uppercase &amp; Lowercase</span>
-          <span class="always-note">Always on</span>
-        </div>
-        <div class="always-row">
-          <div class="always-box"><div class="always-tick"></div></div>
-          <span class="always-label">Numbers</span>
-          <span class="always-note">Always on</span>
-        </div>
-        <div class="checkbox-row active" id="symToggle" onclick="toggleSymbols()">
-          <div class="checkbox-box"><div class="checkbox-tick"></div></div>
-          <span class="checkbox-label">Symbols</span>
-          <span class="checkbox-sample">!@#$%^&amp;*</span>
-        </div>
+      <!-- Two content columns below app bar -->
+      <div class="cols-wrap">
 
-        <div class="checkbox-row" id="ambigToggle" onclick="toggleNoAmbig()">
-          <div class="checkbox-box"><div class="checkbox-tick"></div></div>
-          <span class="checkbox-label">Exclude ambiguous</span>
-          <span class="checkbox-sample">l 1 0 O i I |</span>
-        </div>
-      </div>
-    </div>
+        <!-- Col 2: title + password + strength + length -->
+        <div class="col col-tool">
 
-    <div class="footer">
-      <div class="footer-text">Generated in-browser — never transmitted, never stored</div>
-      <!-- [THEME:footer-quote] -->
-      <div class="footer-speed" id="themeFooterQuote"></div>
-    </div>
+          <div class="header">
+            <div class="header-sub" id="headerSub">
+              <span id="headerLogoText" style="display:none;"></span>
+            </div>
+            <div class="title-wrap">
+              <canvas id="fireCanvas" width="320" height="90"></canvas>
+              <div class="header-title" id="headerTitle">30&nbsp;MPH</div>
+            </div>
+            <div class="header-divider" id="headerDivider"></div>
+          </div>
 
-    <!-- [THEME:support-button] — swap href to your Ko-fi URL -->
-    <div class="plutonium-wrap">
-      <a class="plutonium-btn" href="https://ko-fi.com/socialhwy" target="_blank" rel="noopener">
-        <span class="plutonium-icon" id="supportIcon">☢️</span>
-        <span id="supportText">Enjoyed this? Send a coffee in the form of plutonium</span>
-      </a>
-    </div>
+          <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:6px;">
+            <button class="info-btn" onclick="openPrivacyModal()" title="Security">!</button>
+            <button class="info-btn" onclick="openModal()" title="How does this work?">?</button>
+          </div>
 
-    <!-- Ad zone — replace .ad-zone-inner with your Google AdSense unit when ready -->
-    <div class="ad-zone">
-      <div class="ad-zone-inner">Advertisement</div>
-    </div>
+          <div class="pw-card" id="pwCard">
+            <div class="pw-meta">
+              <span class="pw-label" id="pwLabel">Generated Password</span>
+              <span class="pw-chars-count" id="charCount">30 characters</span>
+            </div>
+            <div class="pw-text" id="pwDisplay"></div>
+            <div class="pw-actions">
+              <button class="btn btn-primary" onclick="generate()">&#8635; Regenerate</button>
+              <div class="btn-spacer"></div>
+              <button class="btn-copy-hero" id="copyBtn" onclick="copyPw()">Copy</button>
+            </div>
+          </div>
 
-    <!-- Privacy footer -->
-    <div class="privacy-footer">
-      <button class="privacy-trigger" onclick="openPrivacyPolicyModal()">
-        <span class="privacy-lock">&#128274;</span>
-        Privacy Policy
-      </button>
-      <span class="privacy-sep">·</span>
-      <span class="privacy-copy">&copy; 2026 PopcornPasswords</span>
-    </div>
+          <div class="strength-row">
+            <span class="str-lbl">Strength</span>
+            <div class="str-bars">
+              <div class="sbar" id="sb1"></div>
+              <div class="sbar" id="sb2"></div>
+              <div class="sbar" id="sb3"></div>
+              <div class="sbar" id="sb4"></div>
+              <div class="sbar" id="sb5"></div>
+              <div class="sbar" id="sb6"></div>
+            </div>
+            <span class="str-name" id="strName"></span>
+          </div>
 
-  </div><!-- /.shell -->
-  </div><!-- /.tool-panel -->
+          <div class="section">
+            <div class="section-label" id="lenLabel">Length</div>
+            <div class="length-row" id="sliderRow">
+              <div class="slider-wrap">
+                <input type="range" id="slider" min="8" max="88" value="30" step="1" oninput="syncSlider()" />
+              </div>
+              <div class="len-display" id="lenDisplay">
+                <input type="number" class="len-number" id="lenNum" value="30" min="8" max="88" onblur="clampInput()" onkeydown="if(event.key==='Enter'){clampInput();this.blur();}" />
+                <span class="len-unit">characters</span>
+              </div>
+            </div>
+            <div id="dialRow" style="display:none; flex-direction:column; align-items:center; gap:14px;">
+              <div style="position:relative; width:220px; height:220px; flex-shrink:0;" id="dialWrap">
+                <canvas id="dialCanvas" width="220" height="220" style="display:block; cursor:grab; touch-action:none;"></canvas>
+              </div>
+              <div style="display:flex; align-items:center; gap:14px; justify-content:center;">
+                <span style="display:flex; align-items:baseline; gap:8px; justify-content:center;">
+                  <span id="dialPrefixLabel" style="font-family:var(--display); font-size:13px; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase;">VOLUME</span>
+                  <span id="dialNotchDisplay" style="font-family:var(--display); font-size:36px; font-weight:700; line-height:1;">3</span>
+                </span>
+                <div class="len-display" id="dialLenDisplay" style="width:72px;">
+                  <input type="number" class="len-number" id="dialLenInput" value="30" min="1" max="110"
+                    onblur="clampDialInput()"
+                    onkeydown="if(event.key==='Enter'){clampDialInput();this.blur();}" />
+                  <span class="len-unit">chars</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.col-tool -->
+
+        <!-- Col 3: characters + footer + support + ad -->
+        <div class="col col-chars">
+
+          <div class="section">
+            <div class="section-label">Characters</div>
+            <div class="checkboxes-grid">
+              <div class="always-row">
+                <div class="always-box"><div class="always-tick"></div></div>
+                <span class="always-label">Uppercase &amp; Lowercase</span>
+                <span class="always-note">Always on</span>
+              </div>
+              <div class="always-row">
+                <div class="always-box"><div class="always-tick"></div></div>
+                <span class="always-label">Numbers</span>
+                <span class="always-note">Always on</span>
+              </div>
+              <div class="checkbox-row active" id="symToggle" onclick="toggleSymbols()">
+                <div class="checkbox-box"><div class="checkbox-tick"></div></div>
+                <span class="checkbox-label">Symbols</span>
+                <span class="checkbox-sample">!@#$%^&amp;*</span>
+              </div>
+              <div class="checkbox-row" id="ambigToggle" onclick="toggleNoAmbig()">
+                <div class="checkbox-box"><div class="checkbox-tick"></div></div>
+                <span class="checkbox-label">Exclude ambiguous</span>
+                <span class="checkbox-sample">l 1 0 O i I |</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <div class="footer-text">Generated in-browser — never transmitted, never stored</div>
+            <div class="footer-speed" id="themeFooterQuote"></div>
+          </div>
+
+          <div class="plutonium-wrap">
+            <a class="plutonium-btn" href="https://ko-fi.com/socialhwy" target="_blank" rel="noopener">
+              <span class="plutonium-icon" id="supportIcon">☢️</span>
+              <span id="supportText">Enjoyed this? Send a coffee in the form of plutonium</span>
+            </a>
+          </div>
+
+          <div class="ad-zone">
+            <div class="ad-zone-inner">Advertisement</div>
+          </div>
+
+          <div class="privacy-footer">
+            <button class="privacy-trigger" onclick="openPrivacyPolicyModal()">
+              <span class="privacy-lock">&#128274;</span>
+              Privacy Policy
+            </button>
+            <span class="privacy-sep">·</span>
+            <span class="privacy-copy">&copy; 2026 PopcornPasswords</span>
+          </div>
+
+        </div><!-- /.col-chars -->
+
+      </div><!-- /.cols-wrap -->
+
+    </div><!-- /.tool-panel -->
   </div><!-- /.page-wrap -->
 
   <!-- SEO content block — crawlable by search engines, visually hidden -->
@@ -2686,10 +2732,11 @@
 
     // Init — BTTF is always default
     applyTheme('bttf');
+    // Default to light mode unless user has saved a preference
     try {
       const saved = localStorage.getItem('pp_mode');
-      if (saved) setMode(saved);
-    } catch(e) {}
+      setMode(saved || 'light');
+    } catch(e) { setMode('light'); }
   </script>
 </body>
 </html>
