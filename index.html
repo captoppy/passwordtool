@@ -62,7 +62,7 @@
   }
   </script>
 
-  <link rel="icon" href="https://raw.githubusercontent.com/captoppy/passwordtool/assets/favicon.ico" />
+  <link rel="icon" href="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2732504070558804"
@@ -104,7 +104,8 @@
 
     body {
       display: block;
-      padding: 2rem 1rem;
+      padding: 0;
+      margin: 0;
     }
 
     body::after {
@@ -120,15 +121,82 @@
     }
     body.light::after { display: none; }
 
+    /* ── SPLIT LAYOUT ── */
+    .page-wrap {
+      display: flex;
+      min-height: 100vh;
+      align-items: stretch;
+    }
+
+    /* Left branding panel */
+    .brand-panel {
+      display: none; /* hidden on mobile */
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 320px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 3rem 2rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      gap: 2rem;
+    }
+    .brand-panel img {
+      width: 180px;
+      height: auto;
+      object-fit: contain;
+      opacity: 0.95;
+    }
+    .brand-panel-name {
+      font-family: var(--ui);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--orange);
+      text-align: center;
+      line-height: 1.2;
+    }
+    .brand-panel-tagline {
+      font-family: var(--ui);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--muted2);
+      text-align: center;
+      letter-spacing: 0.08em;
+      line-height: 1.6;
+    }
+    .brand-panel-divider {
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    }
+
+    /* Right tool panel */
+    .tool-panel {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     .shell {
       width: 100%;
-      max-width: 540px;
+      max-width: 560px;
       min-width: 0;
       box-sizing: border-box;
       margin: 0 auto;
       padding: 2.5rem 1.75rem;
       animation: fadeUp 0.45s ease both;
       overflow: hidden;
+    }
+
+    /* Show brand panel on wider screens */
+    @media (min-width: 900px) {
+      .brand-panel { display: flex; }
     }
 
     @keyframes fadeUp {
@@ -937,13 +1005,28 @@
 <body>
   <div id="flashOverlay"></div>
 
-  <div class="shell">
+  <div class="page-wrap">
+
+    <!-- Left branding panel — visible on wide screens only -->
+    <div class="brand-panel">
+      <img src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/icon_minimalist.png"
+        alt="PopcornPasswords"
+        onerror="this.style.opacity='0';" />
+      <div class="brand-panel-divider"></div>
+      <div class="brand-panel-name">Popcorn<br>Passwords</div>
+      <div class="brand-panel-tagline">Free. Secure. Never stored.<br>Pick your theme. Generate your key.</div>
+    </div>
+
+    <!-- Right tool panel -->
+    <div class="tool-panel">
+    <div class="shell">
 
     <!-- App bar: logo left, theme + mode toggle right -->
     <div class="app-bar">
       <div class="app-bar-logo">
-        <img src="https://raw.githubusercontent.com/captoppy/passwordtool/assets/logo_simplified_transparent.png"
+        <img src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/icon_minimalist.png"
           alt="PopcornPasswords"
+          style="height:32px; width:auto;"
           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
         <span class="app-bar-logo-fallback" style="display:none;">🍿 PopcornPasswords</span>
       </div>
@@ -1095,6 +1178,8 @@
     </div>
 
   </div><!-- /.shell -->
+  </div><!-- /.tool-panel -->
+  </div><!-- /.page-wrap -->
 
   <!-- SEO content block — crawlable by search engines, visually hidden -->
   <div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;" aria-hidden="true">
