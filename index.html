@@ -128,55 +128,49 @@
       overflow: hidden;
     }
 
-    /* Left branding panel */
+    /* ── BRAND PANEL (Col 1) ── */
     .brand-panel {
       display: none;
-      flex: 0 0 280px;
+      flex: 0 0 400px;
       position: sticky;
       top: 0;
       height: 100vh;
       overflow: hidden;
     }
-    .brand-panel img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center center;
-      display: block;
-    }
     .brand-panel-name,
     .brand-panel-tagline,
     .brand-panel-divider { display: none; }
 
-    /* Dark mode — minimalist icon, centred on dark surface */
+    /* Dark mode — icon fills the full panel, centred */
     body:not(.light) .brand-panel {
       background: var(--surface);
-      border-right: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
+      border-bottom: 1px solid var(--border);
     }
     body:not(.light) .brand-panel img {
-      width: 90%;
-      height: auto;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
+      padding: 0;
     }
     body:not(.light) .brand-img-dark  { display: block; }
     body:not(.light) .brand-img-light { display: none; }
 
-    /* Light mode — full colour image fills panel edge to edge */
+    /* Light mode — full colour image fills panel */
     body.light .brand-panel {
       background: #f5f0e8;
-      border-right: 1px solid #e0d8cc;
       display: flex;
       align-items: center;
       justify-content: center;
+      border-bottom: 1px solid #e0d8cc;
     }
     body.light .brand-panel img {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      object-position: center;
+      padding: 0;
     }
     body.light .brand-img-dark  { display: none; }
     body.light .brand-img-light { display: block; }
@@ -191,11 +185,11 @@
       background: var(--bg);
     }
 
-    /* App bar — centred content */
+    /* App bar — logo pinned left, controls right */
     .app-bar {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       gap: 16px;
       padding: 0.75rem 1.5rem;
       border-bottom: 1px solid var(--border);
@@ -203,7 +197,7 @@
     }
     .app-bar-logo { margin-right: auto; }
 
-    /* Two columns below app bar — centred as a unit */
+    /* Two columns below app bar */
     .cols-wrap {
       display: flex;
       flex: 1;
@@ -213,23 +207,26 @@
 
     .col {
       overflow-y: auto;
-      padding: 1.25rem 1.5rem;
+      padding: 1.25rem 1rem;
       box-sizing: border-box;
     }
 
-    /* Col 2 — password tool, fixed comfortable width */
+    /* Col 2 — password tool */
     .col-tool {
       flex: 0 0 480px;
       min-width: 0;
       border-right: 1px solid var(--border);
+      padding-right: 1.25rem;
     }
 
-    /* Col 3 — characters + footer, fixed width */
+    /* Col 3 — characters + footer, tight against col-tool */
     .col-chars {
-      flex: 0 0 260px;
+      flex: 0 0 240px;
       display: flex;
       flex-direction: column;
       overflow-y: auto;
+      padding-left: 1rem;
+      padding-right: 0.5rem;
     }
 
     /* On narrow screens collapse to single column */
@@ -887,10 +884,11 @@
       gap: 10px;
       text-decoration: none;
       flex-shrink: 0;
+      margin-right: auto;
     }
     .app-bar-logo-fallback {
       font-family: var(--ui);
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 700;
       letter-spacing: 0.12em;
       color: var(--orange);
@@ -904,13 +902,14 @@
     }
     .app-bar-select {
       font-family: var(--ui);
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
       color: var(--text);
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 7px 12px;
+      padding: 9px 16px;
       outline: none;
       cursor: pointer;
       transition: border-color 0.15s;
@@ -930,8 +929,8 @@
       flex-shrink: 0;
     }
     .mode-btn {
-      font-size: 14px;
-      padding: 7px 10px;
+      font-size: 18px;
+      padding: 9px 13px;
       background: transparent;
       border: none;
       cursor: pointer;
@@ -1162,6 +1161,10 @@
           <div class="section">
             <div class="section-label" id="lenLabel">Length</div>
             <div class="length-row" id="sliderRow">
+              <div class="len-display" id="lenDisplay">
+                <input type="number" class="len-number" id="lenNum" value="30" min="8" max="88" onblur="clampInput()" onkeydown="if(event.key==='Enter'){clampInput();this.blur();}" />
+                <span class="len-unit">characters</span>
+              </div>
               <div class="delorean-slider-wrap" id="deloreanSliderWrap" style="flex:1; position:relative; min-width:0;">
                 <div id="dlTrack" style="position:relative; height:80px; width:100%; cursor:pointer; overflow:visible;">
                   <!-- Road -->
@@ -1192,12 +1195,6 @@
               <div class="slider-wrap" id="standardSliderWrap" style="display:none; flex:1;">
                 <input type="range" id="slider" min="8" max="88" value="30" step="1" oninput="syncSlider()" />
               </div>
-              <div class="len-display" id="lenDisplay">
-                <input type="number" class="len-number" id="lenNum" value="30" min="8" max="88" onblur="clampInput()" onkeydown="if(event.key==='Enter'){clampInput();this.blur();}" />
-                <span class="len-unit">characters</span>
-              </div>
-            </div>
-            </div>
             </div>
             <div id="dialRow" style="display:none; flex-direction:column; align-items:center; gap:14px;">
               <div style="position:relative; width:220px; height:220px; flex-shrink:0;" id="dialWrap">
@@ -1216,7 +1213,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div><!-- /.section -->
 
         </div><!-- /.col-tool -->
 
