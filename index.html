@@ -2,44 +2,63 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- Force HTTPS — redirects immediately if served over plain HTTP -->
+  <script>if(location.protocol==='http:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'){location.replace(location.href.replace('http:','https:'));}</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Popcorn Passwords — Free Strong Password Generator</title>
 
-  <!-- Primary SEO -->
-  <meta name="description" content="Generate strong, random, cryptographically secure passwords instantly — free, private, and never stored. Choose your length, characters, and movie theme. No sign-up required." />
-  <meta name="keywords" content="password generator, strong password, random password, secure password, free password generator, cryptographic password, online password tool, password security" />
-  <meta name="robots" content="index, follow" />
+  <!-- Primary SEO — keyword front-loaded title, rich description -->
+  <title>Free Password Generator — Strong, Secure & Random | PopcornPasswords</title>
+  <meta name="description" content="Generate strong, cryptographically secure passwords instantly — free, private, and never stored. Adjust length up to 110 characters, choose symbols, exclude ambiguous characters. No sign-up. No tracking. 100% browser-based." />
+  <meta name="keywords" content="free password generator, strong password generator, random password generator, secure password maker, cryptographic password, online password tool, password security, create strong password, best password generator 2025, password generator no sign up" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <meta name="author" content="PopcornPasswords" />
   <link rel="canonical" href="https://popcornpasswords.netlify.app/" />
 
-  <!-- Open Graph (Facebook, LinkedIn, iMessage) -->
+  <!-- Open Graph — Facebook, LinkedIn, iMessage -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://popcornpasswords.netlify.app/" />
-  <meta property="og:title" content="Popcorn Passwords — Free Strong Password Generator" />
-  <meta property="og:description" content="Generate strong, cryptographically secure passwords instantly. Free, private, never stored. Pick your theme — Back to the Future, Spinal Tap, Top Gun." />
-  <meta property="og:image" content="https://raw.githubusercontent.com/captoppy/passwordtool/assets/master_full_colour_lockup.png" />
+  <meta property="og:title" content="Free Password Generator — Strong, Secure & Random | PopcornPasswords" />
+  <meta property="og:description" content="Generate strong, cryptographically secure passwords instantly. Free, private, never stored. Adjust length, choose symbols, pick your movie theme. No sign-up required." />
+  <meta property="og:image" content="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/light_theme.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta property="og:site_name" content="PopcornPasswords" />
+  <meta property="og:locale" content="en_US" />
 
   <!-- Twitter / X Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:url" content="https://popcornpasswords.netlify.app/" />
-  <meta name="twitter:title" content="Popcorn Passwords — Free Strong Password Generator" />
-  <meta name="twitter:description" content="Generate strong, cryptographically secure passwords instantly. Free, private, never stored." />
-  <meta name="twitter:image" content="https://raw.githubusercontent.com/captoppy/passwordtool/assets/master_full_colour_lockup.png" />
+  <meta name="twitter:title" content="Free Password Generator — Strong, Secure & Random" />
+  <meta name="twitter:description" content="Generate strong, cryptographically secure passwords instantly. Free, private, never stored. No sign-up required." />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/light_theme.png" />
 
-  <!-- Mobile browser chrome colour -->
-  <meta name="theme-color" content="#05070d" />
+  <!-- Mobile browser chrome colour — dark/light -->
+  <meta name="theme-color" content="#05070d" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f5f0e8" media="(prefers-color-scheme: light)" />
+  <!-- Strict Transport Security hint for crawlers and browsers -->
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
 
-  <!-- Schema.org structured data — tells Google this is a web application tool -->
+  <!-- Performance: DNS prefetch + preconnect -->
+  <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="//raw.githubusercontent.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Schema.org: WebApplication -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "PopcornPasswords",
+    "alternateName": "Popcorn Passwords",
     "url": "https://popcornpasswords.netlify.app/",
-    "description": "A free, browser-based cryptographically secure password generator. Passwords are generated locally and never transmitted or stored.",
+    "description": "A free, browser-based cryptographically secure password generator. Passwords are generated locally using the Web Crypto API and are never transmitted or stored.",
     "applicationCategory": "SecurityApplication",
+    "applicationSubCategory": "PasswordGenerator",
     "operatingSystem": "Any",
+    "browserRequirements": "Requires a modern browser with Web Crypto API support",
+    "inLanguage": "en",
+    "isAccessibleForFree": true,
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -47,13 +66,17 @@
     },
     "featureList": [
       "Cryptographically secure random password generation",
-      "Adjustable password length",
-      "Uppercase, lowercase, numbers and symbols support",
+      "Adjustable password length from 8 to 110 characters",
+      "Uppercase and lowercase letter support",
+      "Number inclusion",
+      "Symbol inclusion",
       "Ambiguous character exclusion",
-      "Multiple movie themes",
-      "Zero data collection",
-      "No sign-up required"
+      "Multiple movie-themed interfaces",
+      "Zero data collection — fully client-side",
+      "No sign-up or account required",
+      "Copy to clipboard with one click"
     ],
+    "screenshot": "https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/light_theme.png",
     "creator": {
       "@type": "Organization",
       "name": "PopcornPasswords",
@@ -62,8 +85,57 @@
   }
   </script>
 
+  <!-- Schema.org: FAQPage — targets featured snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What makes a password strong?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A strong password is at least 16 characters long and uses a random mix of uppercase letters, lowercase letters, numbers, and symbols. Avoid dictionary words, names, or predictable patterns. A cryptographically random 20+ character password is essentially uncrackable with current technology."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is PopcornPasswords safe to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. PopcornPasswords generates all passwords entirely inside your browser using the Web Crypto API. No password data is ever transmitted to any server, logged, or stored. Closing the tab permanently erases everything."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long should my password be?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Security experts recommend at least 16 characters for general accounts and 20+ characters for sensitive accounts like email or banking. Longer is always better — a 30-character random password has more possible combinations than there are atoms in the observable universe."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I use symbols in my password?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Adding symbols expands the character pool from 62 to roughly 95 characters per position. This multiplies the total number of possible combinations exponentially, making brute-force attacks orders of magnitude harder."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where should I store my generated password?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use a dedicated password manager such as Bitwarden (free, open-source), 1Password, or NordPass. Never store passwords in plain-text files, notes apps, or browser-saved passwords without encryption. Always enable two-factor authentication on your password manager account."
+        }
+      }
+    ]
+  }
+  </script>
+
   <link rel="icon" href="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/favicon.ico" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2732504070558804"
      crossorigin="anonymous"></script>
@@ -99,13 +171,19 @@
       background: var(--bg);
       color: var(--text);
       font-family: var(--mono);
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
     body {
       display: block;
       padding: 0;
       margin: 0;
+      overflow-y: auto;
+    }
+
+    /* page-wrap fills viewport height so tool always visible first */
+    .page-wrap {
+      min-height: 100vh;
     }
 
     body::after {
@@ -121,71 +199,23 @@
     }
     body.light::after { display: none; }
 
-    /* ── SPLIT LAYOUT ── */
+    /* ── LAYOUT ── */
     .page-wrap {
       display: flex;
+      flex-direction: column;
       height: 100vh;
       overflow: hidden;
     }
-
-    /* ── BRAND PANEL (Col 1) ── */
-    .brand-panel {
-      display: none;
-      flex: 0 0 400px;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow: hidden;
-    }
-    .brand-panel-name,
-    .brand-panel-tagline,
-    .brand-panel-divider { display: none; }
-
-    /* Dark mode — icon fills the full panel, centred */
-    body:not(.light) .brand-panel {
-      background: var(--surface);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid var(--border);
-    }
-    body:not(.light) .brand-panel img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      padding: 0;
-    }
-    body:not(.light) .brand-img-dark  { display: block; }
-    body:not(.light) .brand-img-light { display: none; }
-
-    /* Light mode — full colour image fills panel */
-    body.light .brand-panel {
-      background: #f5f0e8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid #e0d8cc;
-    }
-    body.light .brand-panel img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      padding: 0;
-    }
-    body.light .brand-img-dark  { display: none; }
-    body.light .brand-img-light { display: block; }
-
-    /* Right tool panel */
     .tool-panel {
       flex: 1;
-      min-width: 0;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       overflow: hidden;
       background: var(--bg);
     }
 
-    /* App bar — logo pinned left, controls right */
+    /* App bar — full width, logo left, controls right */
     .app-bar {
       display: flex;
       align-items: center;
@@ -194,16 +224,52 @@
       padding: 0.75rem 1.5rem;
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
+      width: 100%;
     }
     .app-bar-logo { margin-right: auto; }
 
-    /* Two columns below app bar */
+    /* Content area — centres the whole brand+cols group */
     .cols-wrap {
       display: flex;
       flex: 1;
       overflow: hidden;
+      align-items: flex-start;
       justify-content: center;
     }
+
+    /* ── BRAND IMAGE (inline, left of password col) ── */
+    .brand-panel {
+      flex: 0 0 340px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      overflow: visible;
+    }
+    .brand-panel-name,
+    .brand-panel-tagline,
+    .brand-panel-divider { display: none; }
+
+    /* Dark mode: near-black bg, screen blend removes black from image leaving white logo */
+    body:not(.light) .brand-panel { background: var(--bg); }
+    /* Light mode: dark panel so white logo is visible against it */
+    body.light .brand-panel {
+      background: transparent;
+    }
+
+    .brand-panel img {
+      width: 320px;
+      height: 320px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    /* Dark mode: screen blend makes black bg in image disappear, white logo shows */
+    body:not(.light) .brand-panel img { mix-blend-mode: screen; }
+    /* Light mode: multiply blend makes white bg in image disappear, coloured logo shows */
+    body.light .brand-panel img      { mix-blend-mode: multiply; }
+    /* Single image used for all themes */
+    .brand-img-dark  { display: block; }
+    .brand-img-light { display: none; }
 
     .col {
       overflow-y: auto;
@@ -213,13 +279,14 @@
 
     /* Col 2 — password tool */
     .col-tool {
-      flex: 0 0 480px;
+      flex: 0 0 520px;
       min-width: 0;
       border-right: 1px solid var(--border);
       padding-right: 1.25rem;
+      overflow-x: hidden;
     }
 
-    /* Col 3 — characters + footer, tight against col-tool */
+    /* Col 3 — characters */
     .col-chars {
       flex: 0 0 240px;
       display: flex;
@@ -231,15 +298,240 @@
 
     /* On narrow screens collapse to single column */
     @media (max-width: 700px) {
+      .brand-panel { display: none; }
       .cols-wrap { flex-direction: column; overflow-y: auto; justify-content: flex-start; }
       .col-tool { flex: none; width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
       .col-chars { flex: 1; }
     }
 
-    /* Show brand panel on wider screens */
+    /* App bar logo shows on narrow screens only */
     @media (min-width: 900px) {
-      .brand-panel { display: flex; }
       .app-bar-logo { display: none; }
+    }
+
+    /* ── TABLET (max-width: 900px) ── */
+    @media (max-width: 900px) {
+      .brand-panel { display: none; }
+      .col-tool { flex: 0 0 auto; width: 100%; border-right: none; }
+      .col-chars { flex: 0 0 auto; width: 100%; }
+      .cols-wrap {
+        flex-direction: column;
+        overflow-y: auto;
+        justify-content: flex-start;
+        align-items: stretch;
+      }
+      /* Let page scroll naturally on tablets and phones */
+      .page-wrap {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+      }
+      .tool-panel {
+        overflow: visible;
+      }
+      /* Scale app bar for tablet */
+      .app-bar-logo-fallback {
+        font-size: 14px;
+      }
+      .app-bar-select {
+        font-size: 14px;
+        padding: 8px 14px;
+      }
+      .kofi-btn {
+        width: 34px;
+        height: 34px;
+      }
+    }
+
+    /* ── PHONE (max-width: 540px) ── */
+    @media (max-width: 540px) {
+      /* App bar — tighter on phone */
+      .app-bar {
+        padding: 0.5rem 0.75rem;
+        gap: 8px;
+      }
+      .app-bar-logo-fallback {
+        font-size: 11px;
+        letter-spacing: 0.04em;
+      }
+      .app-bar-select {
+        font-size: 13px;
+        padding: 7px 10px;
+      }
+      .mode-btn {
+        font-size: 14px;
+        padding: 6px 9px;
+      }
+      .kofi-btn {
+        width: 30px;
+        height: 30px;
+      }
+      .kofi-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+      /* Header — scale down title */
+      .header {
+        margin-bottom: 1.25rem;
+      }
+      .header-title {
+        font-size: 32px;
+      }
+      .header-sub {
+        font-size: 9px;
+      }
+      .theme-badge {
+        font-size: 9px;
+      }
+      /* Columns — full width, comfortable padding */
+      .col {
+        padding: 1rem 0.75rem;
+      }
+      .col-tool {
+        padding-right: 0.75rem;
+      }
+      .col-chars {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+      /* Password card */
+      .pw-card {
+        padding: 1.25rem 1rem 1rem;
+        margin-bottom: 1rem;
+      }
+      .pw-text {
+        font-size: 13px;
+        min-height: calc(1.6em * 2);
+      }
+      .pw-actions {
+        gap: 8px;
+        margin-top: 14px;
+        padding-top: 10px;
+      }
+      .btn {
+        font-size: 11px;
+        padding: 7px 14px;
+      }
+      .btn-copy-hero {
+        font-size: 12px;
+        padding: 9px 20px;
+      }
+      /* Strength */
+      .strength-row {
+        margin-bottom: 1rem;
+      }
+      .str-lbl {
+        font-size: 9px;
+        width: 52px;
+      }
+      .str-name {
+        font-size: 10px;
+        width: 70px;
+      }
+      /* Sections */
+      .section {
+        margin-bottom: 1rem;
+      }
+      .section-label {
+        font-size: 9px;
+        margin-bottom: 8px;
+      }
+      /* Length controls */
+      .length-row {
+        gap: 10px;
+      }
+      .len-display {
+        width: 58px;
+      }
+      .len-number {
+        font-size: 22px;
+      }
+      /* Checkboxes */
+      .checkbox-row, .always-row {
+        padding: 10px 12px;
+      }
+      .checkbox-label, .always-label {
+        font-size: 12px;
+      }
+      .checkbox-sample {
+        font-size: 10px;
+      }
+      /* Footer & support */
+      .footer {
+        margin-top: 1rem;
+      }
+      .footer-speed {
+        font-size: 10px;
+      }
+      .plutonium-wrap {
+        margin-top: 1rem;
+      }
+      .plutonium-btn {
+        font-size: 11px;
+        padding: 8px 14px;
+      }
+      .ad-zone {
+        margin-top: 1rem;
+        min-height: 60px;
+      }
+      /* Modal — full width on phone */
+      .modal-backdrop {
+        padding: 0.75rem;
+      }
+      .modal {
+        max-width: 100%;
+      }
+      .modal-header {
+        padding: 1rem 1rem 0;
+      }
+      .modal-body {
+        padding: 0 1rem 1rem;
+      }
+      .modal-title {
+        font-size: 14px;
+      }
+      .modal-text {
+        font-size: 11px;
+      }
+      /* Dial control — slightly smaller on phone */
+      #dialWrap {
+        width: 190px !important;
+        height: 190px !important;
+      }
+      #dialCanvas {
+        width: 190px !important;
+        height: 190px !important;
+      }
+      #dialNotchDisplay {
+        font-size: 28px !important;
+      }
+      /* Fire canvas — smaller on mobile */
+      #fireCanvas {
+        width: 280px !important;
+        height: 140px !important;
+      }
+    }
+
+    /* ── VERY SMALL PHONE (max-width: 380px) ── */
+    @media (max-width: 380px) {
+      .header-title {
+        font-size: 26px;
+      }
+      .pw-text {
+        font-size: 12px;
+      }
+      .app-bar-logo-fallback {
+        font-size: 10px;
+        letter-spacing: 0.02em;
+      }
+      .app-bar-select {
+        font-size: 11px;
+        padding: 6px 8px;
+      }
+      .mode-btn {
+        font-size: 14px;
+        padding: 6px 8px;
+      }
     }
 
     @keyframes fadeUp {
@@ -304,7 +596,7 @@
     #flashOverlay {
       position: fixed;
       inset: 0;
-      background: white;
+      background: transparent;
       opacity: 0;
       pointer-events: none;
       z-index: 200;
@@ -378,10 +670,12 @@
       word-break: break-all;
       overflow-wrap: break-word;
       line-height: 1.6;
-      height: calc(1.6em * 2);
+      min-height: calc(1.6em * 3);
       letter-spacing: 0.05em;
       width: 100%;
-      overflow: hidden;
+      overflow: visible;
+      user-select: text;
+      cursor: text;
     }
     .pw-text .c-u { color: var(--blue-hi); }
     .pw-text .c-l { color: var(--text); }
@@ -496,6 +790,7 @@
       flex: 1;
       position: relative;
       min-width: 0;
+      overflow: hidden;
     }
     @keyframes smokePuff {
       0%   { transform: translate(0,0) scale(0.3); opacity: 0.7; }
@@ -591,7 +886,7 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 6px;
-      opacity: 0.5;
+      opacity: 0.7;
     }
     .always-box {
       width: 18px; height: 18px;
@@ -617,7 +912,7 @@
       margin-left: auto;
       font-family: var(--display);
       font-size: 9px; letter-spacing: 0.12em;
-      color: var(--muted); text-transform: uppercase;
+      color: var(--muted2); text-transform: uppercase;
     }
 
     .checkbox-row {
@@ -840,7 +1135,8 @@
     body.light .pw-text .c-n { color: #b45309; }
     body.light .pw-text .c-s { color: #0369a1; }
     body.light .pw-text .c-u { color: #1a6fa8; }
-    body.light .sbar { background: #d0d4da; }
+    body.light .sbar { background: #d0d4da; border: 1px solid #c0c4ca; height: 6px; }
+    body.light .footer-speed { filter: brightness(0.55); }
     body.light input[type=range] { background: #d0d4da; }
     body.light .len-display {
       background: #ffffff;
@@ -883,16 +1179,22 @@
       align-items: center;
       gap: 10px;
       text-decoration: none;
-      flex-shrink: 0;
+      flex-shrink: 1;
+      min-width: 0;
+      overflow: hidden;
       margin-right: auto;
     }
     .app-bar-logo-fallback {
       font-family: var(--ui);
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.1em;
       color: var(--orange);
       text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
     }
     .app-bar-controls {
       display: flex;
@@ -902,20 +1204,46 @@
     }
     .app-bar-select {
       font-family: var(--ui);
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
       letter-spacing: 0.08em;
       color: var(--text);
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 9px 16px;
+      padding: 10px 18px;
       outline: none;
       cursor: pointer;
       transition: border-color 0.15s;
     }
     .app-bar-select:hover { border-color: var(--orange); }
     .app-bar-select option { background: var(--surface2); color: var(--text); }
+
+    /* Theme hint arrow — desktop/tablet only */
+    .theme-hint-wrap {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .theme-hint {
+      font-family: var(--ui);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 3px;
+      white-space: nowrap;
+      animation: hintPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes hintPulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    @media (max-width: 700px) {
+      .theme-hint { display: none; }
+    }
 
     /* Light/dark toggle */
     .mode-toggle {
@@ -971,6 +1299,29 @@
     }
     .theme-select:hover { border-color: var(--border2); color: var(--text); }
     .theme-select option { background: var(--surface2); color: var(--text); }
+
+    /* ── KO-FI BUTTON ── */
+    .kofi-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border2);
+      background: rgba(255,255,255,0.04);
+      text-decoration: none;
+      flex-shrink: 0;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.15s;
+    }
+    .kofi-btn:hover {
+      border-color: var(--orange);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 0 12px rgba(249,115,22,0.25);
+      transform: translateY(-1px);
+    }
+    body.light .kofi-btn { border-color: var(--border2); background: rgba(0,0,0,0.02); }
+    body.light .kofi-btn:hover { border-color: var(--orange); background: rgba(0,0,0,0.04); box-shadow: 0 0 10px rgba(249,115,22,0.2); }
 
     /* ── PLUTONIUM BUTTON ── */
     .plutonium-wrap {
@@ -1038,7 +1389,19 @@
       0%   { transform: translate(0,0) scale(0.4); opacity: 0.8; }
       100% { transform: translate(-22px,-28px) scale(2.2); opacity: 0; }
     }
-    body.light #dlTrack { background: #f5f0e8; border-radius: 6px; }
+    @keyframes snowDrift {
+      0%   { transform: translate(0, 0) scale(1);   opacity: 0.9; }
+      100% { transform: translate(var(--sx), -40px) scale(0.4); opacity: 0; }
+    }
+    .dl-snowflake {
+      position: absolute;
+      pointer-events: none;
+      animation: snowDrift 1.1s ease-out forwards;
+      font-size: 14px;
+      line-height: 1;
+      user-select: none;
+    }
+    body.light #dlTrack { background: var(--bg); border-radius: 6px; }
 
     /* ── AD PLACEHOLDER ── */
     .ad-zone {
@@ -1078,39 +1441,69 @@
 
   <div class="page-wrap">
 
-    <!-- Left branding panel — visible on wide screens only -->
-    <div class="brand-panel">
-      <img class="brand-img-dark"
-        src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/icon_minimalist.png"
-        alt="PopcornPasswords" />
-      <div class="brand-panel-divider"></div>
-      <div class="brand-panel-name">Popcorn<br>Passwords</div>
-      <div class="brand-panel-tagline">Free. Secure. Never stored.<br>Pick your theme.<br>Generate your key.</div>
-    </div>
-
-    <!-- Right tool panel -->
+    <!-- Full-width tool panel — app bar top, content centred below -->
     <div class="tool-panel">
 
-      <!-- App bar spans full tool area -->
+      <!-- App bar spans full width -->
       <div class="app-bar">
         <div class="app-bar-logo">
-          <span class="app-bar-logo-fallback">🍿 PopcornPasswords</span>
+          <span class="app-bar-logo-fallback">🍿 POPCORNPASSWORDS — FREE STRONG PASSWORD GENERATOR</span>
         </div>
         <div class="app-bar-controls">
-          <select class="app-bar-select" id="themeSelect" onchange="applyTheme(this.value)">
+          <div class="theme-hint-wrap">
+            <span class="theme-hint">Change theme here →</span>
+            <select class="app-bar-select" id="themeSelect" onchange="applyTheme(this.value)">
             <option value="bttf">Back to the Future</option>
             <option value="spinal_tap">This Is Spinal Tap</option>
             <option value="top_gun">Top Gun</option>
+            <option value="cool_runnings">Cool Runnings</option>
           </select>
+          </div><!-- /.theme-hint-wrap -->
           <div class="mode-toggle">
             <button class="mode-btn active" id="modeLight" onclick="setMode('light')" title="Light mode">☀️</button>
-            <button class="mode-btn" id="modeDark" onclick="setMode('dark')" title="Dark mode">🌙</button>
+            <button class="mode-btn" id="modeDark" onclick="setMode('dark')" title="Dark mode"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17" style="display:block;margin:auto;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" opacity="0.85"/></svg></button>
           </div>
+          <a href="https://ko-fi.com/socialhwy" target="_blank" rel="noopener" class="kofi-btn" title="Support us on Ko-fi">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Steam wisps -->
+              <path d="M7 1.5c0 .8-.2 1.3-.5 1.8S6 4 6 5" stroke="#9ca3af" stroke-width="1.2" opacity="0.5"/>
+              <path d="M10.5 1c0 .8-.2 1.3-.5 1.8s-.5.7-.5 1.2" stroke="#9ca3af" stroke-width="1.2" opacity="0.35"/>
+              <path d="M14 1.5c0 .8-.2 1.3-.5 1.8S13 4 13 5" stroke="#9ca3af" stroke-width="1.2" opacity="0.5"/>
+              <!-- Mug body — white ceramic with gradient -->
+              <defs>
+                <linearGradient id="mugGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f8f8f8"/>
+                  <stop offset="100%" stop-color="#d4d4d4"/>
+                </linearGradient>
+                <linearGradient id="coffeeGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#8B6914"/>
+                  <stop offset="100%" stop-color="#5C3D0E"/>
+                </linearGradient>
+              </defs>
+              <path d="M3 7h14v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7z" fill="url(#mugGrad)" stroke="#b0b0b0" stroke-width="0.8"/>
+              <!-- Coffee inside -->
+              <rect x="3.5" y="7.5" width="13" height="5" rx="1" fill="url(#coffeeGrad)" opacity="0.85"/>
+              <!-- Rim highlight -->
+              <line x1="3.5" y1="7.2" x2="16.5" y2="7.2" stroke="#ffffff" stroke-width="0.8" opacity="0.7"/>
+              <!-- Handle — ceramic -->
+              <path d="M17 9h1.5a3.5 3.5 0 0 1 0 7H17" fill="none" stroke="#c0c0c0" stroke-width="1.8"/>
+              <path d="M17 9h1.5a3.5 3.5 0 0 1 0 7H17" fill="none" stroke="#e8e8e8" stroke-width="0.8"/>
+              <!-- Shadow under mug -->
+              <ellipse cx="10" cy="21.5" rx="6" ry="0.8" fill="#000" opacity="0.08"/>
+            </svg>
+          </a>
         </div>
       </div>
 
-      <!-- Two content columns below app bar -->
+      <!-- Centred content: brand image + password col + chars col -->
       <div class="cols-wrap">
+
+        <!-- Brand image — single file works across all themes via screen blend -->
+        <div class="brand-panel">
+          <img class="brand-img-dark"
+            src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/word_icon_white.png"
+            alt="PopcornPasswords" />
+        </div>
 
         <!-- Col 2: title + password + strength + length -->
         <div class="col col-tool">
@@ -1171,13 +1564,8 @@
                   <div style="position:absolute; bottom:16px; left:0; right:0; height:5px; background:rgba(120,120,120,0.2); border-radius:3px;"></div>
                   <!-- Trail -->
                   <div id="dlTrail" style="position:absolute; bottom:16px; left:0; height:5px; width:0; border-radius:3px; pointer-events:none;"></div>
-                  <!-- Speed markers -->
-                  <div style="position:absolute; bottom:23px; left:0; right:0; display:flex; justify-content:space-between; pointer-events:none; padding:0 55px;">
-                    <span style="font-family:var(--display);font-size:9px;color:var(--muted);">8</span>
-                    <span style="font-family:var(--display);font-size:9px;color:var(--muted);">30</span>
-                    <span style="font-family:var(--display);font-size:9px;color:var(--muted);">55</span>
-                    <span style="font-family:var(--display);font-size:9px;color:rgba(249,115,22,0.9);">88</span>
-                  </div>
+                  <!-- Speed markers — updated dynamically by dlUpdateMarkers() -->
+                  <div id="dlMarkers" style="position:absolute; bottom:23px; left:0; right:0; display:flex; justify-content:space-between; pointer-events:none; padding:0 55px;"></div>
                   <!-- Smoke container -->
                   <div id="dlSmokeWrap" style="position:absolute;inset:0;pointer-events:none;overflow:visible;"></div>
                   <!-- DeLorean image (flipped to face right) -->
@@ -1278,25 +1666,30 @@
     </div><!-- /.tool-panel -->
   </div><!-- /.page-wrap -->
 
-  <!-- SEO content block — crawlable by search engines, visually hidden -->
-  <div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;" aria-hidden="true">
-    <h1>PopcornPasswords — Free Strong Password Generator</h1>
-    <p>PopcornPasswords is a free, browser-based password generator that creates cryptographically secure, random passwords instantly. No sign-up required. No data collected. Passwords are generated locally in your browser and never transmitted to any server.</p>
-    <h2>Why use PopcornPasswords?</h2>
-    <p>Strong passwords are your first line of defence against account breaches. PopcornPasswords generates long, random passwords using your browser's cryptographically secure random number generator — the same technology used in SSL certificates and encryption keys. Every character is selected with equal probability, with no patterns or bias.</p>
-    <h2>Features</h2>
-    <ul>
-      <li>Generate passwords from 8 to 110 characters long</li>
-      <li>Choose uppercase, lowercase, numbers, and symbols</li>
-      <li>Exclude visually ambiguous characters like l, 1, O, 0</li>
-      <li>Multiple movie-themed interfaces — Back to the Future, Spinal Tap, Top Gun</li>
-      <li>Completely free — no account, no email, no tracking</li>
-      <li>Works on desktop and mobile</li>
+  <!-- SEO content — visible, crawlable, semantically structured -->
+  <section style="max-width:960px; margin:0 auto; padding:3rem 1.5rem 4rem; color:var(--muted2); font-family:var(--ui);">
+    <h1 style="font-family:var(--display); font-size:22px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--text); margin-bottom:1rem;">Popcorn Passwords: Free Strong Password Generator</h1>
+    <p style="font-size:13px; line-height:1.8; margin-bottom:1.5rem;">Popcorn Passwords is a free, browser-based password generator that creates cryptographically secure random passwords instantly using the <strong style="color:var(--text);">Web Crypto API</strong>. Generate a random 30 character password or anywhere from 8 to 110 characters in one click. No sign-up required. No data collected. Every password is generated locally in your browser and never transmitted to any server.</p>
+
+    <h2 style="font-family:var(--display); font-size:14px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:var(--orange); margin-bottom:0.6rem;">Why use a strong password generator?</h2>
+    <p style="font-size:13px; line-height:1.8; margin-bottom:1.5rem;">Most account breaches happen because of weak, reused, or guessed passwords. Not sophisticated hacking. A random 30 character password using uppercase, lowercase, numbers and symbols has more possible combinations than there are atoms in the observable universe. A human-chosen password almost never achieves that. Popcorn Passwords does it in one click.</p>
+
+    <h2 style="font-family:var(--display); font-size:14px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:var(--orange); margin-bottom:0.6rem;">How it works</h2>
+    <p style="font-size:13px; line-height:1.8; margin-bottom:1.5rem;">Every character is selected using <strong style="color:var(--text);">window.crypto.getRandomValues()</strong>, the same cryptographic entropy source used in SSL certificates and encryption keys. Each character has a perfectly equal probability of selection with no patterns, no bias, and no predictability. Your password is displayed, copied, and gone. Nothing is ever logged.</p>
+
+    <h2 style="font-family:var(--display); font-size:14px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:var(--orange); margin-bottom:0.6rem;">Features</h2>
+    <ul style="font-size:13px; line-height:2; list-style:none; padding:0; margin-bottom:1.5rem;">
+      <li>✓ Generate passwords from 8 to 110 characters</li>
+      <li>✓ Uppercase, lowercase, numbers, and symbols</li>
+      <li>✓ Exclude visually ambiguous characters (l, 1, O, 0, I)</li>
+      <li>✓ Completely free with no account, no email, and no tracking</li>
+      <li>✓ Works on any device including desktop, tablet, and mobile</li>
+      <li>✓ 100% client-side so passwords never leave your browser</li>
     </ul>
-    <h2>Password security tips</h2>
-    <p>Use a unique password for every account. Store passwords in a reputable password manager such as NordPass, Bitwarden, 1Password, or Dashlane. Pair it with NordVPN for complete online privacy. Enable two-factor authentication wherever possible. A 30-character random password is billions of times harder to crack than an 8-character one.</p>
-    <p>PopcornPasswords — Strong passwords, zero compromise. Free online password generator. Secure random password tool. Cryptographic password generator.</p>
-  </div>
+
+    <h2 style="font-family:var(--display); font-size:14px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:var(--orange); margin-bottom:0.6rem;">Password security tips</h2>
+    <p style="font-size:13px; line-height:1.8;">Use a unique password for every account. Store passwords in a reputable password manager such as <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=143776&url_id=9356" target="_blank" rel="noopener" style="color:var(--orange);">NordPass</a>, <a href="https://bitwarden.com" target="_blank" rel="noopener" style="color:var(--orange);">Bitwarden</a>, or <a href="https://1password.com" target="_blank" rel="noopener" style="color:var(--orange);">1Password</a>. Enable two-factor authentication wherever possible. Never reuse a password across multiple sites because if one site is breached, every reused account becomes vulnerable.</p>
+  </section>
 
   <!-- Privacy modal -->
   <div class="modal-backdrop" id="privacyBackdrop" onclick="if(event.target===this)closePrivacyModal()">
@@ -1765,9 +2158,178 @@
       at88 = false;
     }
 
-    // ── Lightning flash ──
+    // ── Snowstorm canvas effect (Cool Runnings max — like BTTF fire but ice) ──
+    let snowstormParticles = [];
+    let snowstormRAF = null;
+
+    function startSnowstorm() {
+      const canvas = document.getElementById('fireCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.style.opacity = '1';
+      snowstormParticles = [];
+
+      function spawnFlake() {
+        const cx = canvas.width / 2;
+        const type = Math.random();
+        snowstormParticles.push({
+          x: cx + (Math.random() - 0.5) * 200,
+          y: canvas.height * 0.9 + Math.random() * 20,
+          vx: (Math.random() - 0.3) * 3.5,
+          vy: -(Math.random() * 4 + 2),
+          life: 1.0,
+          decay: Math.random() * 0.022 + 0.012,
+          size: Math.random() * 10 + 4,
+          spin: (Math.random() - 0.5) * 0.15,
+          angle: Math.random() * Math.PI * 2,
+          type: type > 0.6 ? 'crystal' : type > 0.3 ? 'flake' : 'spark',
+          color: Math.random() > 0.4
+            ? `rgba(200,235,255,1)`
+            : Math.random() > 0.5
+              ? `rgba(0,155,72,1)`  // Jamaican green glints
+              : `rgba(255,209,0,1)` // Jamaican gold glints
+        });
+      }
+
+      function drawStar(ctx, cx, cy, spikes, outerR, innerR) {
+        let rot = (Math.PI / 2) * 3;
+        const step = Math.PI / spikes;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - outerR);
+        for (let i = 0; i < spikes; i++) {
+          ctx.lineTo(cx + Math.cos(rot) * outerR, cy + Math.sin(rot) * outerR);
+          rot += step;
+          ctx.lineTo(cx + Math.cos(rot) * innerR, cy + Math.sin(rot) * innerR);
+          rot += step;
+        }
+        ctx.lineTo(cx, cy - outerR);
+        ctx.closePath();
+      }
+
+      function tick() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 5; i++) spawnFlake();
+        snowstormParticles = snowstormParticles.filter(p => p.life > 0);
+
+        for (const p of snowstormParticles) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx += (Math.random() - 0.5) * 0.25;
+          p.vy *= 0.99;
+          p.life -= p.decay;
+          p.angle += p.spin;
+          p.size *= 0.993;
+          const a = Math.max(0, p.life);
+
+          ctx.save();
+          ctx.globalAlpha = a;
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle);
+
+          if (p.type === 'crystal') {
+            // 6-pointed ice crystal
+            const r = p.size;
+            ctx.strokeStyle = p.color.replace(',1)', `,${a})`);
+            ctx.lineWidth = 1.2;
+            ctx.shadowColor = 'rgba(180,230,255,0.6)';
+            ctx.shadowBlur = 6;
+            for (let arm = 0; arm < 6; arm++) {
+              const ang = (arm / 6) * Math.PI * 2;
+              ctx.beginPath();
+              ctx.moveTo(0, 0);
+              ctx.lineTo(Math.cos(ang) * r, Math.sin(ang) * r);
+              // side branches
+              const bx = Math.cos(ang) * r * 0.55, by = Math.sin(ang) * r * 0.55;
+              const perp1 = ang + Math.PI / 3, perp2 = ang - Math.PI / 3;
+              ctx.moveTo(bx, by);
+              ctx.lineTo(bx + Math.cos(perp1) * r * 0.3, by + Math.sin(perp1) * r * 0.3);
+              ctx.moveTo(bx, by);
+              ctx.lineTo(bx + Math.cos(perp2) * r * 0.3, by + Math.sin(perp2) * r * 0.3);
+              ctx.stroke();
+            }
+          } else if (p.type === 'flake') {
+            // Star-burst snowflake
+            const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size);
+            grad.addColorStop(0, `rgba(255,255,255,${a})`);
+            grad.addColorStop(0.5, `rgba(180,225,255,${a * 0.7})`);
+            grad.addColorStop(1, `rgba(100,190,255,0)`);
+            drawStar(ctx, 0, 0, 6, p.size, p.size * 0.45);
+            ctx.fillStyle = grad;
+            ctx.fill();
+          } else {
+            // Tiny ice spark dot
+            const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 0.5);
+            grad.addColorStop(0, `rgba(255,255,255,${a})`);
+            grad.addColorStop(1, `rgba(150,220,255,0)`);
+            ctx.beginPath();
+            ctx.arc(0, 0, p.size * 0.5, 0, Math.PI * 2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+
+        if (at88) snowstormRAF = requestAnimationFrame(tick);
+        else {
+          canvas.style.transition = 'opacity 0.8s';
+          canvas.style.opacity = '0';
+          setTimeout(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.style.transition = '';
+          }, 800);
+        }
+      }
+      snowstormRAF = requestAnimationFrame(tick);
+    }
+
+    function stopSnowstorm() {
+      at88 = false; // canvas loop sees this and fades out
+    }
+
+    // ── Snowflakes (Cool Runnings max effect) ──
+    let snowInterval = null;
+    function startSnowflakes() {
+      stopSnowflakes();
+      // Snowflakes on the title
+      const titleWrap = document.querySelector('.title-wrap');
+      snowInterval = setInterval(() => {
+        if (!at88) return;
+        // Spawn on slider track too
+        const wrap = document.getElementById('dlSmokeWrap');
+        const track = document.getElementById('dlTrack');
+        if (wrap && track) {
+          const flake = document.createElement('div');
+          flake.className = 'dl-snowflake';
+          const sx = (Math.random() - 0.5) * 30;
+          flake.style.setProperty('--sx', sx + 'px');
+          flake.style.left = (track.offsetWidth - 60 + Math.random() * 20) + 'px';
+          flake.style.bottom = (18 + Math.random() * 10) + 'px';
+          flake.textContent = ['❄','❅','❆'][Math.floor(Math.random()*3)];
+          flake.style.color = Math.random() > 0.5 ? '#ffffff' : '#aaddff';
+          wrap.appendChild(flake);
+          setTimeout(() => flake.remove(), 1200);
+        }
+        // Snowflakes on the title
+        if (titleWrap) {
+          const tf = document.createElement('div');
+          tf.style.cssText = `position:absolute;pointer-events:none;font-size:${10+Math.random()*10}px;
+            left:${Math.random()*100}%;top:${Math.random()*100}%;
+            animation:snowDrift 1.4s ease-out forwards;
+            --sx:${(Math.random()-0.5)*40}px;
+            color:${Math.random()>0.5?'#ffffff':'#aaddff'};
+            z-index:5;user-select:none;`;
+          tf.textContent = ['❄','❅','❆'][Math.floor(Math.random()*3)];
+          titleWrap.appendChild(tf);
+          setTimeout(() => tf.remove(), 1500);
+        }
+      }, 120);
+    }
+    function stopSnowflakes() {
+      if (snowInterval) { clearInterval(snowInterval); snowInterval = null; }
+    }
     function triggerFlash() {
       const el = document.getElementById('flashOverlay');
+      // Use theme max colour so flash works on both light and dark modes
+      el.style.background = THEME.maxColour || '#fde047';
       el.style.transition = 'none';
       el.style.opacity = '0.85';
       setTimeout(() => {
@@ -1789,15 +2351,22 @@
       const fq = document.getElementById('themeFooterQuote');
       if (fq) { fq.textContent = THEME.maxQuote; fq.style.color = THEME.maxColour; }
       THEME.startEffect();
-      // Start fire loop for BTTF slider
+      // Continuous particle loop for slider themes at max
       if (THEME === THEMES.bttf) {
         clearInterval(dlFireInterval);
         dlFireInterval = setInterval(() => {
           const track = document.getElementById('dlTrack');
           if (!track) return;
-          const left = (track.offsetWidth - 100);
-          dlFirePuff(left);
+          dlFirePuff(track.offsetWidth - 100);
         }, 60);
+      }
+      if (THEME === THEMES.cool_runnings) {
+        clearInterval(dlFireInterval);
+        dlFireInterval = setInterval(() => {
+          const track = document.getElementById('dlTrack');
+          if (!track) return;
+          dlSnowPuff(track.offsetWidth - 100);
+        }, 80);
       }
     }
 
@@ -1815,7 +2384,17 @@
       title.style.textShadow = `0 0 24px ${col}66`;
       const fq = document.getElementById('themeFooterQuote');
       if (fq) fq.style.color = '';
-      setRandomFooterQuote();
+      // Always show a new (different) random quote when exiting max
+      const q = THEME.quotes;
+      if (q.length > 1 && fq) {
+        const current = fq.textContent;
+        let next;
+        do { next = q[Math.floor(Math.random() * q.length)]; } while (next === current);
+        fq.textContent = next;
+      } else {
+        setRandomFooterQuote();
+      }
+      at88 = false;
     }
 
     // ── Core ──
@@ -1871,7 +2450,7 @@
         const v = parseInt(document.getElementById('dialLenInput').value, 10);
         return isNaN(v) ? notchToChars(dialNotch) : v;
       }
-      if (THEME === THEMES.bttf) return dlVal;
+      if (THEME === THEMES.bttf || THEME === THEMES.cool_runnings) return dlVal;
       const raw = parseInt(document.getElementById('slider').value, 10);
       if (THEME.charMap) return THEME.charMap[Math.max(0, Math.min(THEME.charMap.length - 1, raw))];
       return raw;
@@ -1920,9 +2499,9 @@
     function clampInput() {
       const raw = parseInt(document.getElementById('lenNum').value, 10);
 
-      // DeLorean slider (BTTF)
-      if (THEME === THEMES.bttf) {
-        const clamped = isNaN(raw) ? dlVal : Math.min(88, Math.max(8, raw));
+      // DeLorean slider (BTTF) and bobsled slider (Cool Runnings)
+      if (THEME === THEMES.bttf || THEME === THEMES.cool_runnings) {
+        const clamped = isNaN(raw) ? dlVal : Math.min(THEME.maxSpeed, Math.max(THEME.minSpeed, raw));
         document.getElementById('lenNum').value = clamped;
         dlSet(clamped);
         return;
@@ -2018,15 +2597,33 @@
       const t = (val - min) / range;
       const col = lerpColour(Math.min(t, 1));
 
+      // In light mode, darken the colour so yellows/whites stay visible on cream bg
+      const isLight = document.body.classList.contains('light');
+      const barCol = isLight ? darkenRgb(col, 0.65) : col;
+      const lblCol = isLight ? darkenRgb(col, 0.55) : col;
+
       document.getElementById('strName').textContent = labels[score];
-      document.getElementById('strName').style.color = col;
+      document.getElementById('strName').style.color = lblCol;
       for (let i = 1; i <= 6; i++) {
-        document.getElementById('sb' + i).style.background = i <= score ? col : 'var(--border)';
+        document.getElementById('sb' + i).style.background = i <= score ? barCol : '';
       }
     }
 
+    // Darken an rgb(r,g,b) string by a factor (0.7 = 30% darker)
+    function darkenRgb(rgbStr, factor) {
+      const m = rgbStr.match(/(\d+)/g);
+      if (!m || m.length < 3) return rgbStr;
+      const r = Math.round(parseInt(m[0]) * factor);
+      const g = Math.round(parseInt(m[1]) * factor);
+      const b = Math.round(parseInt(m[2]) * factor);
+      return `rgb(${r},${g},${b})`;
+    }
+
+    let _lastSyncLen = null;
     function syncSlider() {
       const len = getLen();
+      if (len === _lastSyncLen) return;
+      _lastSyncLen = len;
       applySpeedTheme(len);
       if (len === THEME.maxSpeed) enterMax();
       else exitMax();
@@ -2043,13 +2640,14 @@
       const getVal = (e) => {
         const track = document.getElementById('dlTrack');
         if (!track) return dlVal;
-        const r = track.getBoundingClientRect();
+        const r    = track.getBoundingClientRect();
+        const minV = THEME.minSpeed || 8;
+        const maxV = THEME.maxSpeed || 88;
         const carW = 50;
         const rawX = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
-        // Subtract half carW so the car centres on the cursor, not left-snaps to it
-        const x = rawX - carW / 2;
+        const x    = rawX - carW / 2;
         const frac = Math.max(0, Math.min(1, x / Math.max(1, r.width - carW)));
-        return Math.min(88, Math.max(8, Math.round(8 + 80 * frac)));
+        return Math.min(maxV, Math.max(minV, Math.round(minV + (maxV - minV) * frac)));
       };
       wrap.addEventListener('mousedown',  e => { dlDragging = true; dlSet(getVal(e)); });
       wrap.addEventListener('touchstart', e => { dlDragging = true; dlSet(getVal(e)); e.preventDefault(); }, { passive: false });
@@ -2063,77 +2661,172 @@
 
     function dlSet(v) {
       const prev = dlVal;
+      // Clamp to theme bounds
+      const minV = THEME.minSpeed || 8;
+      const maxV = THEME.maxSpeed || 88;
+      v = Math.min(maxV, Math.max(minV, v));
+      // If value hasn't changed (e.g. held at min or max), don't re-generate
+      if (v === dlVal && prev === v) return;
       dlVal = v;
       document.getElementById('lenNum').value = v;
       applySpeedTheme(v);
-      if (v === 88) enterMax(); else exitMax();
+      if (v === THEME.maxSpeed) enterMax(); else exitMax();
       generate();
       if (prev !== v) dlSmoke();
       dlRender();
     }
 
     function dlSmoke() {
-      const wrap = document.getElementById('dlSmokeWrap');
+      const wrap  = document.getElementById('dlSmokeWrap');
       const track = document.getElementById('dlTrack');
       if (!wrap || !track) return;
+      const isCR = THEME === THEMES.cool_runnings;
+      const minV = THEME.minSpeed || 8;
+      const maxV = THEME.maxSpeed || 88;
       const carW = 50;
-      const t = (dlVal - 8) / 80;
+      const t    = (dlVal - minV) / (maxV - minV);
       const left = t * (track.offsetWidth - carW);
+
       for (let i = 0; i < 3; i++) {
         const p = document.createElement('div');
-        const sz = 7 + Math.random() * 8;
-        p.style.cssText = `position:absolute;border-radius:50%;
-          background:rgba(180,180,200,0.55);
-          width:${sz}px;height:${sz}px;
-          left:${left + Math.random()*6}px;
-          bottom:${20 + Math.random()*8}px;
-          animation:dlSmokePuff 0.85s ease-out forwards;
-          pointer-events:none;`;
-        wrap.appendChild(p);
-        setTimeout(() => p.remove(), 900);
+        if (isCR) {
+          // Ice crystal spray
+          p.className = 'dl-snowflake';
+          const sx = (Math.random() - 0.5) * 20;
+          p.style.setProperty('--sx', sx + 'px');
+          p.style.left   = (left + Math.random() * 8) + 'px';
+          p.style.bottom = (20 + Math.random() * 6) + 'px';
+          p.style.fontSize = (8 + Math.random() * 6) + 'px';
+          p.textContent  = ['❄','❅','·','*'][Math.floor(Math.random() * 4)];
+          p.style.color  = Math.random() > 0.4 ? '#cceeff' : '#ffffff';
+          wrap.appendChild(p);
+          setTimeout(() => p.remove(), 1200);
+        } else {
+          // Original smoke
+          const sz = 7 + Math.random() * 8;
+          p.style.cssText = `position:absolute;border-radius:50%;
+            background:rgba(180,180,200,0.55);
+            width:${sz}px;height:${sz}px;
+            left:${left + Math.random()*6}px;
+            bottom:${20 + Math.random()*8}px;
+            animation:dlSmokePuff 0.85s ease-out forwards;
+            pointer-events:none;`;
+          wrap.appendChild(p);
+          setTimeout(() => p.remove(), 900);
+        }
       }
     }
 
     function dlRender() {
       const track = document.getElementById('dlTrack');
       if (!track || !track.offsetWidth) return;
-      const t = (dlVal - 8) / 80;
-      const isMax = dlVal === 88;
-      const carW = 50;
-      const left = t * (track.offsetWidth - carW);
+      const isCR   = THEME === THEMES.cool_runnings;
+      const minV   = THEME.minSpeed || 8;
+      const maxV   = THEME.maxSpeed || 88;
+      const range  = maxV - minV;
+      const t      = (dlVal - minV) / range;
+      const isMax  = dlVal === maxV;
+      const carW   = 50;
+      const left   = t * (track.offsetWidth - carW);
       const isLight = document.body.classList.contains('light');
 
-      const car = document.getElementById('dlCar');
+      const car     = document.getElementById('dlCar');
       const carWrap = document.getElementById('dlCarWrap');
       if (carWrap) carWrap.style.left = left + 'px';
       if (car) {
-        // Transparent PNG — no blend mode needed, works on any background
-        car.style.mixBlendMode = 'normal';
-        car.style.filter = isMax
-          ? 'brightness(1.05) drop-shadow(0 0 6px rgba(255,160,0,0.6))'
-          : 'none';
+        if (isCR) {
+          // Hide the image, show bobsled emoji
+          car.style.display = 'none';
+        } else {
+          car.style.display = '';
+          car.style.mixBlendMode = 'normal';
+          car.style.filter = isMax
+            ? 'brightness(1.05) drop-shadow(0 0 6px rgba(255,160,0,0.6))'
+            : 'none';
+        }
       }
 
-      // Trail — becomes fire at 88
+      // Bobsled image for Cool Runnings
+      let bobsled = document.getElementById('dlBobsled');
+      if (isCR) {
+        if (!bobsled) {
+          bobsled = document.createElement('img');
+          bobsled.id = 'dlBobsled';
+          bobsled.alt = 'Bobsled';
+          bobsled.style.cssText = 'position:absolute;bottom:4px;height:34px;width:auto;pointer-events:none;transition:filter 0.2s;';
+          if (carWrap) carWrap.appendChild(bobsled);
+          // Load the JPEG, strip white background via canvas, produce transparent PNG
+          if (!window._bobsledCleanSrc) {
+            const rawSrc = 'data:image/jpeg;base64,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';
+            const tmpImg = new Image();
+            tmpImg.onload = function() {
+              const cvs = document.createElement('canvas');
+              cvs.width = tmpImg.naturalWidth;
+              cvs.height = tmpImg.naturalHeight;
+              const cx = cvs.getContext('2d');
+              cx.drawImage(tmpImg, 0, 0);
+              const imgData = cx.getImageData(0, 0, cvs.width, cvs.height);
+              const d = imgData.data;
+              // Strip white / near-white pixels → transparent
+              for (let i = 0; i < d.length; i += 4) {
+                const r = d[i], g = d[i+1], b = d[i+2];
+                const brightness = (r + g + b) / 3;
+                if (brightness > 215) {
+                  // Fully transparent for very white pixels
+                  d[i+3] = 0;
+                } else if (brightness > 190) {
+                  // Soft fade at edges so it doesn't look jagged
+                  d[i+3] = Math.round(255 * (1 - (brightness - 190) / 25));
+                }
+              }
+              cx.putImageData(imgData, 0, 0);
+              window._bobsledCleanSrc = cvs.toDataURL('image/png');
+              // Apply to any existing bobsled element
+              const el = document.getElementById('dlBobsled');
+              if (el) el.src = window._bobsledCleanSrc;
+            };
+            tmpImg.src = rawSrc;
+          } else {
+            bobsled.src = window._bobsledCleanSrc;
+          }
+        }
+        // No blend mode needed — image now has real transparency
+        bobsled.style.mixBlendMode = 'normal';
+        bobsled.style.filter = isMax
+          ? 'brightness(1.2) drop-shadow(0 0 8px #ffd100) drop-shadow(0 0 4px #009b48)'
+          : 'none';
+      } else if (bobsled) {
+        bobsled.remove();
+      }
+
+      // Trail
       const trail = document.getElementById('dlTrail');
       if (trail) {
-        trail.style.width = Math.max(0, left + 10) + 'px';
-        trail.style.height = isMax ? '8px' : '5px';
-        trail.style.bottom = isMax ? '14px' : '16px';
-        trail.style.filter = isMax ? 'blur(1px)' : 'none';
-        trail.style.background = isMax
-          ? 'linear-gradient(90deg, rgba(255,240,0,0.95), rgba(255,120,0,0.85), rgba(255,40,0,0.6), transparent)'
-          : 'linear-gradient(90deg, rgba(249,115,22,0.7), rgba(249,115,22,0.15), transparent)';
+        trail.style.width  = Math.max(0, left + 10) + 'px';
+        if (isCR) {
+          trail.style.height = isMax ? '7px' : '4px';
+          trail.style.bottom = isMax ? '15px' : '17px';
+          trail.style.filter = isMax ? 'blur(1px)' : 'none';
+          trail.style.background = isMax
+            ? 'linear-gradient(90deg, rgba(0,155,72,0.9), rgba(255,209,0,0.8), rgba(227,6,19,0.5), transparent)'
+            : 'linear-gradient(90deg, rgba(0,155,72,0.6), rgba(255,209,0,0.3), transparent)';
+        } else {
+          trail.style.height = isMax ? '8px' : '5px';
+          trail.style.bottom = isMax ? '14px' : '16px';
+          trail.style.filter = isMax ? 'blur(1px)' : 'none';
+          trail.style.background = isMax
+            ? 'linear-gradient(90deg, rgba(255,240,0,0.95), rgba(255,120,0,0.85), rgba(255,40,0,0.6), transparent)'
+            : 'linear-gradient(90deg, rgba(249,115,22,0.7), rgba(249,115,22,0.15), transparent)';
+        }
       }
 
-      // Fire flicker particles at 88 — added to smoke wrap
-      if (isMax) dlFirePuff(left);
+      if (isMax && !isCR) dlFirePuff(left);
 
       const lbl = document.getElementById('dlLabel');
       if (lbl) {
-        lbl.textContent = dlVal + ' MPH';
+        lbl.textContent = dlVal + ' ' + (THEME.speedUnit || 'MPH');
         lbl.style.color = isMax ? '#ffd700' : (isLight ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.45)');
-        lbl.style.left = (left + carW / 2 - 18) + 'px';
+        lbl.style.left  = (left + carW / 2 - 18) + 'px';
       }
     }
 
@@ -2157,11 +2850,47 @@
       setTimeout(() => p.remove(), 520);
     }
 
+    function dlSnowPuff(left) {
+      const wrap = document.getElementById('dlSmokeWrap');
+      if (!wrap) return;
+      const glyphs = ['❄','❅','❆','*','·'];
+      const colors = ['#cceeff','#ffffff','#aaddff','#ffd100','#009b48'];
+      const p = document.createElement('div');
+      const sz = 10 + Math.random() * 10;
+      p.style.cssText = `position:absolute;pointer-events:none;font-size:${sz}px;line-height:1;
+        left:${left - 5 + Math.random()*10}px;
+        bottom:${14 + Math.random()*8}px;
+        color:${colors[Math.floor(Math.random()*colors.length)]};
+        text-shadow:0 0 6px rgba(180,230,255,0.9);
+        animation:dlSmokePuff 0.6s ease-out forwards;`;
+      p.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
+      wrap.appendChild(p);
+      setTimeout(() => p.remove(), 640);
+    }
+
+    function dlUpdateMarkers() {
+      const el = document.getElementById('dlMarkers');
+      if (!el) return;
+      const min = THEME.minSpeed || 8;
+      const max = THEME.maxSpeed || 88;
+      const mid1 = Math.round(min + (max - min) * 0.28);
+      const mid2 = Math.round(min + (max - min) * 0.60);
+      const accent = THEME.maxColour || 'rgba(249,115,22,0.9)';
+      el.innerHTML = [min, mid1, mid2, max].map((v, i) =>
+        `<span style="font-family:var(--display);font-size:9px;color:${i === 3 ? accent : 'var(--muted)'};">${v}</span>`
+      ).join('');
+    }
+
     function dlShowHide() {
       const isBTTF = THEME === THEMES.bttf;
-      document.getElementById('deloreanSliderWrap').style.display = isBTTF ? 'block' : 'none';
-      document.getElementById('standardSliderWrap').style.display = isBTTF ? 'none'  : 'block';
-      if (isBTTF) setTimeout(() => dlRender(), 80);
+      const isCR   = THEME === THEMES.cool_runnings;
+      const useCustom = isBTTF || isCR;
+      document.getElementById('deloreanSliderWrap').style.display = useCustom ? 'block' : 'none';
+      document.getElementById('standardSliderWrap').style.display = useCustom ? 'none'  : 'block';
+      if (useCustom) {
+        dlUpdateMarkers();
+        setTimeout(() => dlRender(), 80);
+      }
     }
 
     // ── AMP DIAL (Spinal Tap) ─────────────────────────────────────
@@ -2804,6 +3533,88 @@
         ],
       },
 
+      cool_runnings: {
+        id:            'cool_runnings',
+        label:         'Cool Runnings',
+        pageTitle:     'PopcornPasswords: Feel the Rhythm',
+        headerSub:     'PopcornPasswords',
+        speedUnit:     'KMH',
+        minSpeed:      8,
+        maxSpeed:      100,
+        defaultLen:    30,
+        useDial:       false,
+        useBobsled:    true,
+        maxColour:     '#ffd100',
+        maxQuote:      '🛷 COOL RUNNINGS! Feel the rhythm! Feel the rhyme! Get on up, its bobsled time! 🛷',
+        colourStops: [
+          { r: 0xe3, g: 0x06, b: 0x13 }, // Jamaican red (slow)
+          { r: 0x00, g: 0x9b, b: 0x48 }, // Jamaican green (mid)
+          { r: 0xff, g: 0xd1, b: 0x00 }, // Jamaican gold (max)
+        ],
+        cssVars: {
+          '--orange':    '#ffd100',
+          '--orange-hi': '#ffe033',
+          '--orange-lo': '#5a4600',
+          '--orange-dim':'#110d00',
+          '--blue':      '#009b48',
+          '--blue-hi':   '#00c45a',
+          '--blue-dim':  '#001a0d',
+          '--blue-lo':   '#003320',
+          '--yellow':    '#ffd100',
+          '--bg':        '#040404',
+          '--surface':   '#0a0a0a',
+          '--surface2':  '#111111',
+          '--border':    '#1c2a1a',
+          '--border2':   '#263d22',
+        },
+        startEffect:   () => startSnowstorm(),
+        stopEffect:    () => stopSnowstorm(),
+        footerQuote:   '"Feel the rhythm! Feel the rhyme! Get on up, its bobsled time! Cool Runnings!"',
+        supportIcon:   '🛷',
+        supportText:   'Enjoyed this? Buy us a coffee. Or a bobsled.',
+        modalTitle:    'Feel the Rhythm. Feel the Rhyme.',
+        modalStrengthTitle: 'Why strong passwords matter',
+        modalStrengthBody:  'Most account breaches come from weak or reused passwords. Not sophisticated attacks. <strong>A 30 character random password is billions of times harder to crack than an 8 character one.</strong> The gap is not a small edge. It is the difference between pushing a bobsled uphill and sending it screaming down an Olympic track at full speed.',
+        modalUpperTitle: 'Why uppercase and numbers are always on',
+        modalUpperBody:  'A password using only lowercase is like showing up to the Winter Olympics in flip flops. Exposed and completely unprepared. <strong>Mixing uppercase, lowercase and numbers expands the search space massively</strong>, from 26 possible characters per slot to 62. At 30 characters that is not a slight improvement. That is a completely different race.',
+        modalSymTitle:  'Why symbols push it further',
+        modalSymBody:   'Symbols push the character pool to roughly 95 per slot. <strong>Every extra character type multiplies total combinations</strong>, it does not just add to them. A full password with symbols has more possible combinations than there are atoms in the observable universe. That is not fast. That is Cool Runnings fast.',
+        modalRandTitle: 'The randomiser: pure Jamaican chaos',
+        modalPrivTitle: 'Your password never leaves the track',
+        modalRandBody:  'Every password is built using <strong>the same cryptographic engine</strong> that powers the most secure systems on the planet. Each character is chosen through a process so unpredictable, not even Irv Blitzer could call it in advance. Every character gets a perfectly equal shot. No favourites. No patterns. Just pure entropy on a very fast sled.',
+        modalPrivBody:  'Everything runs in your browser. <strong>No passwords are transmitted, logged, or stored anywhere.</strong> There is no server involved. Close the tab and it is gone forever. This race never happened.',
+        modalQuote:     '"A gold medal is a wonderful thing. But if you are not enough without it, you will never be enough with it." - Irv Blitzer',
+        strengthLabels: [
+          'Ya Dead?',
+          'Feel the Rhythm',
+          'Feel the Rhyme',
+          'Get on Up',
+          "It's Bobsled Time",
+          'Cool...',
+          'RUNNINGS!!'
+        ],
+        quotes: [
+          '"Feel the rhythm! Feel the rhyme! Get on up, its bobsled time! Cool Runnings!"',
+          '"A gold medal is a wonderful thing. But if you\'re not enough without it, you\'ll never be enough with it." — Irv Blitzer',
+          '"I see pride! I see power! I see a bad-ass mother who don\'t take no crap off of nobody!"',
+          '"Sanka... ya dead?" "Ya mon."',
+          '"Cool Runnings means Peace be the journey." — Irv Blitzer',
+          '"I had to decide between a life of excellence and a life of mediocrity." — Derice',
+          '"Dis is very important. I\'m not gonna lose." — Yul Brenner',
+          '"If we walk Jamaican, talk Jamaican and IS Jamaican, then we sure as hell bobsled Jamaican."',
+          '"Yul Brenner. No relation." — Yul Brenner',
+          '"You have to dream it before you can do it." — Derice Bannock',
+          '"The fastest I\'ve ever gone is downhill." — Derice',
+          '"I am the best. Nobody is better than me." — Yul Brenner',
+          '"Look in the mirror and tell me what you see." "I see Junior." "You see a winner."',
+          '"Our father who art in heaven, please don\'t let me die." — Junior',
+          '"If you\'re not enough without it, you\'ll never be enough with it." — Irv Blitzer',
+          '"Derice, a gold medal is a wonderful thing." — Irv Blitzer',
+          '"We\'re not doing this. We\'re not... actually doing this." — Junior',
+          '"Sanka, ya dead?" — Derice',
+        ],
+      },
+
     };
 
     let THEME = THEMES.bttf;
@@ -2864,7 +3675,7 @@
         lenNum.max = THEME.maxSpeed;
         const def = THEME.defaultLen;
         dlShowHide();
-        if (THEME === THEMES.bttf) {
+        if (THEME === THEMES.bttf || THEME === THEMES.cool_runnings) {
           dlVal = def;
           lenNum.value = def;
           applySpeedTheme(def);
@@ -2965,7 +3776,9 @@
       document.body.classList.toggle('light', mode === 'light');
       document.getElementById('modeLight').classList.toggle('active', mode === 'light');
       document.getElementById('modeDark').classList.toggle('active', mode === 'dark');
-      if (THEME === THEMES.bttf && document.getElementById('dlTrack')) dlRender();
+      if ((THEME === THEMES.bttf || THEME === THEMES.cool_runnings) && document.getElementById('dlTrack')) dlRender();
+      // Re-colour strength bars for light/dark without regenerating password
+      updateStrength('', getLen());
       try { localStorage.setItem('pp_mode', mode); } catch(e) {}
     }
 
