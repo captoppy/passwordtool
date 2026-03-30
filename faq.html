@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <script>if(location.protocol==='http:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'){location.replace(location.href.replace('http:','https:'));}</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-89C1XB7YXE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-89C1XB7YXE');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Password Security FAQ — Your Questions Answered | PopcornPasswords</title>
+  <meta name="description" content="Answers to 25 common password security questions — how long should passwords be, are password managers safe, what is two-factor authentication, and more. Plain English, no jargon." />
+  <meta name="keywords" content="password security FAQ, how long should my password be, are password generators safe, what is two-factor authentication, password manager safe, credential stuffing, passphrase vs password, password entropy, best password manager 2026" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="PopcornPasswords" />
+  <link rel="canonical" href="https://popcornpasswords.com/faq" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://popcornpasswords.com/faq" />
+  <meta property="og:title" content="Password Security FAQ — Your Questions Answered | PopcornPasswords" />
+  <meta property="og:description" content="Answers to 25 common password security questions. Plain English, no jargon, backed by NIST and CISA guidance." />
+  <meta property="og:image" content="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/light_theme.png" />
+  <meta property="og:site_name" content="PopcornPasswords" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Password Security FAQ | PopcornPasswords" />
+  <meta name="twitter:description" content="Answers to 25 common password security questions. Plain English, no jargon." />
+
+  <meta name="theme-color" content="#05070d" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f5f0e8" media="(prefers-color-scheme: light)" />
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+
+  <!-- Schema.org: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"What makes a password strong?","acceptedAnswer":{"@type":"Answer","text":"A strong password is long, unique, and random. A 20-character password made from random letters, numbers, and symbols is far harder to guess than a short password with clever substitutions. Use a different password for every account and let a generator do the hard part."}},
+      {"@type":"Question","name":"How long should my password be?","acceptedAnswer":{"@type":"Answer","text":"For most accounts, 16 characters is a good minimum, and 20 or more is better. NIST's latest guidelines (SP 800-63B Rev 4, August 2025) now recommend a minimum of 15 characters when a password is the sole authenticator. For passwords you need to type yourself, a passphrase of 4 to 6 random words is usually easier to live with."}},
+      {"@type":"Question","name":"Is 12 characters enough for a password?","acceptedAnswer":{"@type":"Answer","text":"Yes, 12 characters can be enough if truly random, but 16 or more is a better default now. A random 12-character password has about 4.76 × 10²³ possible combinations, but people rarely create truly random passwords on their own."}},
+      {"@type":"Question","name":"Should passwords have symbols in them?","acceptedAnswer":{"@type":"Answer","text":"Symbols help when part of a genuinely random password, but length matters more. NIST's Rev 4 guidelines now explicitly state organisations shall not impose composition rules because people respond with predictable patterns."}},
+      {"@type":"Question","name":"What is password entropy?","acceptedAnswer":{"@type":"Answer","text":"Password entropy measures how unpredictable a password is — how many guesses an attacker might need. A 16-character random password from a 94-character set has about 105 bits of entropy. Human-made passwords that look clever often have much less."}},
+      {"@type":"Question","name":"Are password generators safe to use?","acceptedAnswer":{"@type":"Answer","text":"Yes, a password generator is safe if it uses a security-grade random source and doesn't send your password anywhere. A browser tool using the Web Crypto API that runs locally is very different from a page that logs inputs."}},
+      {"@type":"Question","name":"How do password generators work?","acceptedAnswer":{"@type":"Answer","text":"Password generators pick characters or words at random using a secure source of randomness. A good generator samples from a character set in a way that avoids patterns, which matters because attackers are very good at spotting human habits."}},
+      {"@type":"Question","name":"Is it safe to use an online password generator?","acceptedAnswer":{"@type":"Answer","text":"Yes, if the generator runs locally in your browser and doesn't collect what it creates. A page can live on the web and still generate everything inside your browser without sending the password anywhere."}},
+      {"@type":"Question","name":"Random password or passphrase — which is better?","acceptedAnswer":{"@type":"Answer","text":"A random password is better for stored logins. A passphrase is better when you need to remember or type it. If a password manager does the remembering, use a long random string. For a master password you'll type, use a passphrase."}},
+      {"@type":"Question","name":"What is a passphrase?","acceptedAnswer":{"@type":"Answer","text":"A passphrase is a password made from several random words instead of one short string. It should be unrelated words chosen at random, not a quote or something meaningful. Four truly random words from the EFF's 7,776-word list give roughly 3.66 quadrillion combinations. Even shorter word lists produce strong passphrases when combined with numbers and mixed capitalisation."}},
+      {"@type":"Question","name":"Should I use a password manager?","acceptedAnswer":{"@type":"Answer","text":"Yes, for most people a password manager is the easiest way to get unique passwords everywhere. CISA recommends using one, and NIST's guidance is built around allowing password managers because strong unique passwords aren't realistic to memorise at scale."}},
+      {"@type":"Question","name":"Are password managers safe?","acceptedAnswer":{"@type":"Answer","text":"Yes, reputable password managers are generally much safer than reusing passwords or storing them in notes. They use strong encryption, support MFA, and are designed so the provider cannot read your vault contents."}},
+      {"@type":"Question","name":"What if my password manager gets hacked?","acceptedAnswer":{"@type":"Answer","text":"The outcome depends on what was exposed and how the product is designed. Well-designed managers encrypt your vault before it leaves your device. Your best defence is a long master passphrase, MFA on the vault, and unique passwords inside it."}},
+      {"@type":"Question","name":"What is the best password manager in 2026?","acceptedAnswer":{"@type":"Answer","text":"There isn't one best password manager — there's a best fit for how you work. Bitwarden is a strong free open-source option. 1Password offers a polished paid experience. NordPass is also a solid commercial option. Pick the one you'll actually stick with."}},
+      {"@type":"Question","name":"Is a free password manager good enough?","acceptedAnswer":{"@type":"Answer","text":"A free password manager is good enough for many people. Paid plans add extras like family sharing and breach monitoring. The real mistake is thinking free means not worth using and falling back to reused passwords."}},
+      {"@type":"Question","name":"Is reusing passwords really that dangerous?","acceptedAnswer":{"@type":"Answer","text":"Yes, password reuse is one of the fastest ways to turn one breach into ten. If one site leaks your login and you've reused it elsewhere, attackers will try it everywhere. This is called credential stuffing and it works far more often than people think."}},
+      {"@type":"Question","name":"What is credential stuffing?","acceptedAnswer":{"@type":"Answer","text":"Credential stuffing is when attackers take usernames and passwords leaked from one breach and try them on other sites. The attacker bets that some people reused the same password, and they're usually right. The fix is one password per account."}},
+      {"@type":"Question","name":"How are passwords actually cracked?","acceptedAnswer":{"@type":"Answer","text":"Passwords are usually cracked through guessing, stolen databases, phishing, or malware — not by breaking encryption in real time. That's why the basics matter: long unique passwords, a password manager, MFA, and enough scepticism to check where you're signing in."}},
+      {"@type":"Question","name":"Should I write my passwords down on paper?","acceptedAnswer":{"@type":"Answer","text":"Writing a password down can be safer than reusing weak passwords everywhere. A piece of paper in your home is not exposed to remote attackers. For backup codes or a master passphrase, an offline paper copy stored securely is reasonable."}},
+      {"@type":"Question","name":"How often should I change my password?","acceptedAnswer":{"@type":"Answer","text":"Change your password when there's a reason, not on a schedule. NIST's SP 800-63B Rev 4 (August 2025) states passwords shall not be required to change on a fixed schedule and should only change when there's evidence of compromise. Forced resets often backfire with predictable changes."}},
+      {"@type":"Question","name":"What is two-factor authentication?","acceptedAnswer":{"@type":"Answer","text":"Two-factor authentication is a second proof that it's really you, on top of your password. Usually something you have like an authenticator app or security key. CISA states that MFA makes you 99% less likely to be hacked. CISA ranks FIDO security keys as the strongest option."}},
+      {"@type":"Question","name":"Is SMS two-factor authentication safe?","acceptedAnswer":{"@type":"Answer","text":"SMS 2FA is better than no 2FA but is the weakest common option. Text messages can be exposed to SIM-swap attacks and phone number hijacking. When you have a choice, pick an authenticator app or security key instead."}},
+      {"@type":"Question","name":"What is a security key?","acceptedAnswer":{"@type":"Answer","text":"A security key is a small hardware device that proves you're signing in to the real site, not a fake one. It uses FIDO and WebAuthn standards with cryptographic key pairs. CISA specifically points to FIDO security keys as phishing-resistant MFA."}},
+      {"@type":"Question","name":"Should I use biometric login like Face ID or fingerprint?","acceptedAnswer":{"@type":"Answer","text":"Yes, biometric login is great for convenience but should be treated as a convenience layer, not your only safety net. Your fingerprint or face usually unlocks a local key, not replaces every other control. Use them but keep a strong passcode and MFA in place too."}},
+      {"@type":"Question","name":"What is a recovery code?","acceptedAnswer":{"@type":"Answer","text":"A recovery code is a backup code for when your normal second factor is unavailable. Don't keep them only inside the account they're meant to recover. Keep them offline, ideally on paper in a secure spot or in a separate secure vault."}}
+    ]
+  }
+  </script>
+
+  <!-- BreadcrumbList schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"PopcornPasswords","item":"https://popcornpasswords.com/"},
+      {"@type":"ListItem","position":2,"name":"Password Security FAQ","item":"https://popcornpasswords.com/faq"}
+    ]
+  }
+  </script>
+
+  <link rel="icon" href="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/apple-touch-icon.png" />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap" as="style" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #05070d;
+      --surface:   #0b0f1a;
+      --surface2:  #111827;
+      --border:    #1e2a3a;
+      --border2:   #2a3d54;
+      --orange:    #f97316;
+      --orange-hi: #fb923c;
+      --text:      #e8eaf0;
+      --muted:     #4a5568;
+      --muted2:    #8896a8;
+      --blue:      #38bdf8;
+      --mono:      'Share Tech Mono', monospace;
+      --display:   'Oswald', sans-serif;
+      --ui:        'Exo 2', sans-serif;
+    }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--ui); overflow-x: hidden; }
+    body { padding: 0; margin: 0; }
+
+    /* Light mode */
+    body.light {
+      --bg: #f5f0e8; --surface: #fffdf8; --surface2: #f0ebe0;
+      --border: #e0d8cc; --border2: #ccc4b4;
+      --text: #1a1a18; --muted: #888880; --muted2: #555550;
+      --blue: #1a6fa8; --orange: #c05a10;
+    }
+
+    /* Top bar */
+    .top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 1.5rem; border-bottom: 1px solid var(--border); width: 100%;
+    }
+    .top-bar-logo {
+      font-family: var(--ui); font-size: 14px; font-weight: 700;
+      letter-spacing: 0.1em; color: var(--orange); text-transform: uppercase;
+      text-decoration: none; white-space: nowrap;
+    }
+    .top-bar-logo:hover { opacity: 0.85; }
+    .top-bar-right { display: flex; align-items: center; gap: 12px; }
+    .top-bar-link {
+      font-family: var(--ui); font-size: 12px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted2); text-decoration: none; transition: color 0.15s;
+    }
+    .top-bar-link:hover { color: var(--orange); }
+    .top-bar-link.active { color: var(--orange); }
+    .mode-toggle { display: flex; align-items: center; gap: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; flex-shrink: 0; }
+    .mode-btn { font-size: 16px; padding: 7px 11px; background: transparent; border: none; cursor: pointer; color: var(--muted); transition: background 0.15s, color 0.15s; line-height: 1; }
+    .mode-btn.active { background: #3a4555; color: #ffffff; }
+    body.light .mode-btn.active { background: #d0ccc2; color: #1a1a18; }
+    .mode-btn:hover:not(.active) { color: var(--text); }
+
+    /* CTA banner */
+    .cta-banner {
+      background: var(--surface); border: 1px solid var(--border2); border-radius: 8px;
+      padding: 1.25rem 1.5rem; text-align: center; margin-bottom: 2.5rem;
+    }
+    .cta-banner p { font-size: 14px; color: var(--muted2); line-height: 1.6; margin-bottom: 0.75rem; }
+    .cta-btn {
+      display: inline-block; font-family: var(--ui); font-size: 13px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+      color: var(--bg); background: var(--orange); padding: 10px 28px; border-radius: 4px;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .cta-btn:hover { background: var(--orange-hi); transform: translateY(-1px); }
+    body.light .cta-btn { color: #ffffff; }
+
+    /* Content */
+    .content { max-width: 800px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    .page-title {
+      font-family: var(--display); font-size: 32px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .page-subtitle { font-size: 14px; color: var(--muted2); line-height: 1.7; margin-bottom: 2rem; }
+
+    /* Breadcrumb */
+    .breadcrumb { font-size: 12px; color: var(--muted); margin-bottom: 1.5rem; }
+    .breadcrumb a { color: var(--muted2); text-decoration: none; transition: color 0.15s; }
+    .breadcrumb a:hover { color: var(--orange); }
+
+    /* Sections */
+    .faq-section { margin-bottom: 2.5rem; }
+    .faq-section-title {
+      font-family: var(--display); font-size: 14px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--orange);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;
+    }
+    .faq-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* Q&A items */
+    .faq-item {
+      border: 1px solid var(--border); border-radius: 6px;
+      margin-bottom: 10px; overflow: hidden; transition: border-color 0.15s;
+    }
+    .faq-item:hover { border-color: var(--border2); }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; cursor: pointer; user-select: none; gap: 12px;
+      background: var(--surface); transition: background 0.15s;
+    }
+    .faq-q:hover { background: var(--surface2); }
+    .faq-q h3 {
+      font-family: var(--ui); font-size: 14px; font-weight: 500;
+      color: var(--text); line-height: 1.5; margin: 0;
+    }
+    .faq-chevron {
+      font-size: 12px; color: var(--muted); transition: transform 0.25s; flex-shrink: 0;
+    }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-a {
+      max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.25s ease;
+      padding: 0 18px;
+    }
+    .faq-item.open .faq-a { max-height: 600px; padding: 0 18px 16px; }
+    .faq-a p {
+      font-family: var(--mono); font-size: 13px; line-height: 1.8; color: var(--muted2);
+    }
+    .faq-a a { color: var(--orange); text-decoration: none; }
+    .faq-a a:hover { text-decoration: underline; }
+
+    /* TOC */
+    .toc { margin-bottom: 2rem; }
+    .toc-title { font-family: var(--display); font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .toc a { display: inline-block; font-size: 12px; color: var(--muted2); text-decoration: none; margin-right: 16px; margin-bottom: 6px; transition: color 0.15s; }
+    .toc a:hover { color: var(--orange); }
+
+    /* Footer */
+    .page-footer {
+      text-align: center; padding: 1.5rem 1rem 2rem; border-top: 1px solid var(--border);
+      font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.06em;
+    }
+    .page-footer a { color: var(--muted); text-decoration: none; transition: color 0.15s; }
+    .page-footer a:hover { color: var(--orange); }
+    .footer-sep { opacity: 0.4; margin: 0 8px; }
+
+    /* Mobile */
+    @media (max-width: 540px) {
+      .content { padding: 1.5rem 1rem 3rem; }
+      .page-title { font-size: 24px; }
+      .top-bar { padding: 0.5rem 0.75rem; }
+      .top-bar-logo { font-size: 12px; }
+      .faq-q h3 { font-size: 13px; }
+      .faq-a p { font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <a href="/" class="top-bar-logo">🍿 PopcornPasswords</a>
+    <div class="top-bar-right">
+      <a href="/" class="top-bar-link">Generator</a>
+      <a href="/faq" class="top-bar-link active">FAQ</a>
+      <div class="mode-toggle">
+        <button class="mode-btn" id="modeLight" onclick="setMode('light')" title="Light mode" aria-label="Switch to light mode">☀️</button>
+        <button class="mode-btn active" id="modeDark" onclick="setMode('dark')" title="Dark mode" aria-label="Switch to dark mode">🌙</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">PopcornPasswords</a> &rsaquo; Password Security FAQ
+    </nav>
+
+    <h1 class="page-title">Password Security FAQ</h1>
+    <p class="page-subtitle">Plain-English answers to 25 common questions about passwords, password managers, and online security. No jargon, no filler.</p>
+
+    <div class="toc">
+      <div class="toc-title">Jump to section</div>
+      <a href="#basics">Password Basics</a>
+      <a href="#generators">Password Generators</a>
+      <a href="#managers">Password Managers</a>
+      <a href="#threats">Common Mistakes &amp; Threats</a>
+      <a href="#2fa">Two-Factor Authentication</a>
+    </div>
+
+    <div class="cta-banner">
+      <p>Need a strong password right now?</p>
+      <a href="/" class="cta-btn">Generate a Password →</a>
+    </div>
+
+    <!-- Section 1: Password Basics -->
+    <div class="faq-section" id="basics">
+      <div class="faq-section-title">Password Basics</div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>What makes a password strong?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>A strong password is long, unique, and random. Most people fixate on complexity rules, but length does more of the heavy lifting. A 20-character password made from random letters, numbers, and symbols is far harder to guess than a short password with clever substitutions like P@ssw0rd!. Unique matters just as much, because even a strong password becomes weak the moment you reuse it on another site. My rule is simple: use a different password for every account, and let a generator do the hard part. You can <a href="/">generate one instantly at PopcornPasswords</a> — free, no sign-up required.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>How long should my password be?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>For most accounts, 16 characters is a good minimum, and 20 or more is better when the site allows it. NIST's latest guidelines (SP 800-63B Rev 4, released August 2025) now recommend a minimum of 15 characters when a password is the sole authenticator — up from 8 in earlier versions. Length has always been the primary factor in password strength, and that matches real-world experience. If you're using a password manager or generator, there's rarely a reason to stop at 12. For passwords you need to type yourself, a passphrase of 4 to 6 random words is usually easier to live with than a messy short string. You can <a href="/">generate both random passwords and passphrases at PopcornPasswords</a> — free, no sign-up required.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>Is 12 characters enough for a password?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Yes, 12 characters can be enough if the password is truly random, but 16 or more is a better default now. A random 12-character password drawn from a full set of letters, numbers, and symbols has about 4.76 × 10²³ possible combinations, which is a huge search space. The problem is people rarely create truly random passwords on their own. They make patterns, swap letters for numbers, or reuse old favourites. That's why I'd treat 12 as the floor, not the goal. If you want an easy win, <a href="/">generate a 16 to 20 character password at PopcornPasswords</a> — free, no sign-up.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>Should passwords have symbols in them?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Symbols can help, but they're not magic, and length matters more. Adding one exclamation mark to the end of a short password doesn't suddenly make it strong. NIST's latest Rev 4 guidelines now explicitly say organisations "shall not" impose composition rules like requiring symbols — because people respond with predictable patterns like Password1! or Summer2026!. Symbols are useful when they're part of a genuinely random password generated for you, not when they're bolted onto a weak one. So yes, use symbols if the site allows them, but don't obsess over ticking boxes. Focus on a long, random password first. You can <a href="/">generate that kind of password at PopcornPasswords</a> — free, no sign-up required.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>What is password entropy?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Password entropy is a rough way of measuring how unpredictable a password is. In plain English, it asks how many possible guesses an attacker might need to try if they know the rules used to build the password. More randomness and more length usually mean more entropy. A 16-character random password from a 94-character set works out to about 105 bits of entropy. A human-made password that looks clever often has much less because humans are predictable. One catch: NIST notes that entropy is easy to calculate for random data but much harder to estimate for passwords people invent themselves. That's why generated passwords beat handmade ones so often.</p></div>
+      </div>
+    </div>
+
+    <!-- Section 2: Password Generators -->
+    <div class="faq-section" id="generators">
+      <div class="faq-section-title">Password Generators</div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>Are password generators safe to use?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Yes, a password generator is safe if it uses a proper security-grade random source and doesn't send your password anywhere. The big difference is how the generator gets randomness and where the work happens. A browser tool that runs locally with the Web Crypto API is a very different thing from a shady page that logs inputs or pushes everything through a server. Good generators create passwords you would never think of yourself, which is exactly the point. They also remove the temptation to recycle old favourites. If you want a simple local option, <a href="/">PopcornPasswords generates passwords in the browser</a> — free, no sign-up required.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>How do password generators work?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Password generators work by picking characters or words at random using a secure source of randomness. A good generator does not "invent" clever-looking passwords — it samples from a character set or word list in a way that avoids patterns. That matters because attackers are very good at spotting human habits like names, dates, keyboard walks, and common swaps. With a browser-based tool, the work can happen right on your device using the Web Crypto API, so the password is made locally instead of on a remote server. That's the model <a href="/">PopcornPasswords</a> uses, and it's why generated passwords are usually much stronger than handmade ones.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>Is it safe to use an online password generator?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Yes, it can be safe, but only if the generator runs locally and has no reason to collect what it creates. "Online" is the part that confuses people. A page can live on the web and still generate everything inside your browser without sending the password anywhere. That is very different from a service that creates passwords on a server, stores logs, or mixes in analytics you can't inspect. My quick test is simple: if the tool explains how it works, uses the browser's crypto functions, and doesn't ask for sign-up, that's a good sign. <a href="/">PopcornPasswords</a> fits that model, and you can use it free with no account.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>Random password or passphrase — which is better?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>A random password is better for stored logins, and a passphrase is better when you need to remember or type it often. If a password manager is doing the remembering, go with a long random string every time. It squeezes the most unpredictability into each character and avoids the patterns humans fall into. If you need something for a master password, device login, or another password you'll actually type, a passphrase made of unrelated random words is usually easier to live with and still very strong when it's long enough. <a href="/">PopcornPasswords supports both styles</a>, so you can pick the right tool for the job instead of forcing one format everywhere.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>What is a passphrase?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>A passphrase is a password made from several random words instead of one short string of characters. Done properly, it's not a quote, a lyric, or something meaningful to you. It should be a set of unrelated words chosen at random, like "velvet crater lemon orbit" rather than "ILoveMyDog123". The strength comes from total length and unpredictability, not from being poetic. Four truly random words from the EFF's 7,776-word list give you roughly 3.66 quadrillion combinations, and six words jump far beyond that. Even shorter word lists produce strong passphrases when combined with numbers and mixed capitalisation. That makes passphrases a solid choice when you need something memorable. You can <a href="/">generate passphrases instantly at PopcornPasswords</a> — free, no sign-up required.</p></div>
+      </div>
+    </div>
+
+    <!-- Section 3: Password Managers -->
+    <div class="faq-section" id="managers">
+      <div class="faq-section-title">Password Managers</div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>Should I use a password manager?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Yes, for most people a password manager is the easiest way to get unique passwords everywhere without losing your mind. CISA says to use one, and NIST's guidance is built around allowing password managers and paste support because strong, unique passwords are not realistic to memorise at scale. A good manager stores your logins in an encrypted vault, fills them when you need them, and stops you from reusing the same password across twenty sites. The catch is that your master password now matters a lot, so make it long and turn on MFA. Options like <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=143776&url_id=9356" target="_blank" rel="noopener">NordPass</a>, <a href="https://bitwarden.com" target="_blank" rel="noopener">Bitwarden</a>, and <a href="https://1password.com" target="_blank" rel="noopener">1Password</a> all do this well. One strong habit beats trying to remember dozens of weak passwords.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>Are password managers safe?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Yes, reputable password managers are generally much safer than reusing passwords or storing them in notes, spreadsheets, or your inbox. They do create a central point of failure, so the quality of the product matters, but good ones use strong encryption, support MFA, and are designed so the provider should not be able to read your vault contents. NIST says password managers offer both greater security and convenience, which is the right way to look at them. They are not magic. You still need a strong master password, MFA, and enough caution not to hand that master password to a phishing page. Used properly, they improve your security by a lot.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>What if my password manager gets hacked?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>If your password manager gets hacked, the outcome depends on what was actually exposed and how the product is designed. A breach headline does not automatically mean attackers can read every saved password in plain text. Well-designed managers encrypt your vault before it leaves your device, and some add extra protections so the provider cannot decrypt it for you even if their systems are breached. NIST also points out that many managers support MFA and are built so cloud services cannot access the vault contents directly. Your best defence is a long master passphrase, MFA on the vault, and unique passwords inside it.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>What is the best password manager in 2026?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>There isn't one best password manager in 2026 — there's a best fit for how you work. If you want a strong free and open-source option, <a href="https://bitwarden.com" target="_blank" rel="noopener">Bitwarden</a> is the easy recommendation because its free tier includes unlimited passwords on unlimited devices. If you want a polished paid experience, <a href="https://1password.com" target="_blank" rel="noopener">1Password</a> is excellent and has a well-documented security model. <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=143776&url_id=9356" target="_blank" rel="noopener">NordPass</a> is also a solid commercial option — full disclosure, it's a recommended partner of PopcornPasswords. My honest advice is to pick the one you'll actually stick with, enable MFA, and move your important accounts into it this week instead of reading ten more comparison pages.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>Is a free password manager good enough, or should I pay for one?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>A free password manager is good enough for many people, especially if it gives you unlimited passwords, cross-device access, and solid autofill. Paid plans usually make sense when you want extras like family sharing, secure attachments, emergency access, breach monitoring, or better account recovery options. The real mistake is thinking "free" means "not worth using" and then falling back to reused passwords. In practice, a decent free manager is far better than no manager at all. Start with the free plan, move your core accounts into it, and only pay when a specific feature would actually make your life easier or your setup safer.</p></div>
+      </div>
+    </div>
+
+    <!-- Section 4: Common Mistakes & Threats -->
+    <div class="faq-section" id="threats">
+      <div class="faq-section-title">Common Mistakes &amp; Threats</div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>Is reusing passwords really that dangerous?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Yes, password reuse is one of the fastest ways to turn one breach into ten. If one site leaks your login and you've reused that same password on your email, banking, shopping, or social accounts, attackers will try it everywhere else. This is called credential stuffing, and it works far more often than people think because humans love familiar passwords. A unique password for every account breaks that chain completely. That's why security advice keeps repeating the same boring rule: different password, every site, every time. If you want to fix reuse quickly, <a href="/">generate fresh ones at PopcornPasswords</a> and save them in a password manager like <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=143776&url_id=9356" target="_blank" rel="noopener">NordPass</a>.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>What is credential stuffing?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Credential stuffing is when attackers take usernames and passwords leaked from one breach and try them on lots of other sites. It is not a clever Hollywood hack — it is mostly automation and scale. The attacker bets that some percentage of people reused the same password on other services, and they're usually right. That means the weak point is often not how strong the password looks, but whether it is unique. A totally random password reused across sites is still a problem. The fix is simple but annoying: one password per account, stored in a <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=143776&url_id=9356" target="_blank" rel="noopener">password manager</a>, plus MFA on your important services.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>How are passwords actually cracked?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Passwords are usually cracked through guessing, stolen databases, phishing, or malware — not by someone "breaking encryption" in real time. Online guessing attacks hammer login pages with common passwords and reused credentials. Offline cracking happens after a site breach, when attackers get hashed password data and try huge numbers of guesses locally. Phishing skips the cracking step and just tricks you into typing the password into a fake page. Malware does the same by stealing what you type or what your browser stores. That's why the basics still matter: long unique passwords, a <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=143776&url_id=9356" target="_blank" rel="noopener">password manager</a>, MFA, and enough scepticism to check where you're signing in.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>Should I write my passwords down on paper?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Writing a password down on paper is not ideal, but it can still be safer than reusing weak passwords everywhere. That answer surprises people, but a piece of paper in your home is not exposed to remote attackers the way reused logins are. The risk depends on where you keep it and what you write. A master password taped to your monitor is a bad idea. A recovery sheet locked away at home is far more sensible. I'd still prefer a password manager for day-to-day use, but for backup codes or one critical master passphrase, an offline paper copy stored securely is reasonable.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>How often should I change my password?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>You should change your password when there's a reason, not just because the calendar says so. NIST's SP 800-63B Rev 4 (August 2025) is explicit: passwords "shall not" be required to change on a fixed schedule and should only be changed when there is evidence of compromise. Forced 30, 60, or 90 day resets often backfire because people make tiny predictable changes like Winter2026! becoming Spring2026!. That feels productive and does very little. A better rule is this: change passwords that are weak, reused, shared, exposed in a breach, or entered on a phishing page. Leave strong unique passwords alone until something happens that makes a reset worth doing.</p></div>
+      </div>
+    </div>
+
+    <!-- Section 5: Two-Factor Authentication -->
+    <div class="faq-section" id="2fa">
+      <div class="faq-section-title">Two-Factor Authentication &amp; Extra Security</div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>What is two-factor authentication?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Two-factor authentication is a second proof that it's really you, added on top of your password. Usually that second factor is something you have, like an authenticator app, your phone, or a hardware security key. CISA describes MFA as using two or more ways to verify identity, and states directly that MFA makes you 99% less likely to be hacked. The reason it's pushed so hard is that a stolen password alone is no longer enough to break in. Not all MFA is equal though — CISA ranks FIDO security keys as the strongest option, with authenticator apps a solid second. If your email, banking, and password manager do not have MFA turned on yet, start there first.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>Is SMS two-factor authentication safe?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>SMS 2FA is better than no 2FA, but it is the weakest common option and not my first choice. Text messages can be exposed to SIM-swap attacks, phone number hijacking, and some phishing workflows. CISA's guidance pushes organisations toward phishing-resistant MFA and notes that some MFA methods are vulnerable to SS7 issues and SIM swapping. So if SMS is the only option a site offers, use it. Don't leave the account unprotected out of principle. But when you have a choice, pick an authenticator app, and better yet, use a security key for your most important accounts.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>What is a security key, and do I need one?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>A security key is a small hardware device that proves you're signing in to the real site, not a fake one. It uses modern standards like FIDO and WebAuthn, which rely on cryptographic key pairs instead of codes you can be tricked into typing anywhere. That makes security keys one of the best defences against phishing. CISA specifically points to FIDO security keys as a form of phishing-resistant MFA, and FIDO describes passkeys and security keys as using public-key cryptography for safer sign-in. Do you need one? Not for every account. For email, your password manager, and anything high value, I think they're worth it.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>Should I use biometric login like Face ID or fingerprint?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Yes, biometric login is great for unlocking your own device or password manager quickly, but it should be treated as a convenience layer, not your only safety net. NIST's guidance explains that biometrics are commonly used to unlock a secret stored on the device, often alongside a PIN. That's the right mental model. Your fingerprint or face is usually unlocking a local key, not replacing every other control. The upside is speed and habit, which means you're more likely to keep protection turned on. The downside is that biometrics are not something you can change if compromised. Use them, but keep a strong passcode, recovery options, and MFA in place too.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><h3>What is a recovery code, and where should I keep it?</h3><span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>A recovery code is a backup code you use to get into an account when your normal second factor is unavailable. Think lost phone, broken authenticator app, dead security key, or travel disaster at the worst possible time. Google's help pages describe backup codes as a fallback for when you can't get your normal verification codes, and each code becomes inactive after use. That makes them valuable enough to store properly. Don't keep recovery codes only inside the account they're meant to recover. Keep them offline, ideally on paper in a secure spot, or in a secure vault with a separate backup. Treat them like spare keys to your house.</p></div>
+      </div>
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="cta-banner" style="margin-top:1rem;">
+      <p>Ready to create a strong password?</p>
+      <a href="/" class="cta-btn">Generate a Password →</a>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <span>Built in Adelaide, Australia</span>
+    <span class="footer-sep">·</span>
+    <a href="https://x.com/socialhwy" target="_blank" rel="noopener">@socialhwy</a>
+    <span class="footer-sep">·</span>
+    <span>&copy; 2026 PopcornPasswords</span>
+  </footer>
+
+  <script>
+    function toggleFaq(el) {
+      el.parentElement.classList.toggle('open');
+    }
+    function setMode(mode) {
+      document.body.classList.toggle('light', mode === 'light');
+      document.getElementById('modeLight').classList.toggle('active', mode === 'light');
+      document.getElementById('modeDark').classList.toggle('active', mode === 'dark');
+      try { localStorage.setItem('pp_mode', mode); } catch(e) {}
+    }
+    // Restore saved mode
+    try {
+      const saved = localStorage.getItem('pp_mode');
+      setMode(saved || 'dark');
+    } catch(e) { setMode('dark'); }
+  </script>
+</body>
+</html>
