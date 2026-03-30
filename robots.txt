@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://popcornpasswords.netlify.app/sitemap.xml
