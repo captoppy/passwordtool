@@ -1016,6 +1016,28 @@
     .checkbox-row.active .checkbox-sample { opacity: 1; color: rgba(255,255,255,0.7); }
     body.light .checkbox-row.active .checkbox-label { color: #1a1a18; }
     body.light .checkbox-row.active .checkbox-sample { color: rgba(0,0,0,0.6); }
+
+    /* Locked state — always on, not clickable */
+    .checkbox-row.locked {
+      opacity: 0.7;
+      cursor: default;
+      pointer-events: none;
+      border-color: var(--border) !important;
+      background: var(--surface) !important;
+    }
+    .checkbox-row.locked .checkbox-box {
+      border-color: var(--blue-lo) !important;
+      background: var(--blue) !important;
+    }
+    .checkbox-row.locked .checkbox-label { color: var(--muted2) !important; flex: 1; min-width: 0; }
+    .checkbox-row.locked .checkbox-sample {
+      color: var(--muted) !important;
+      opacity: 0.75 !important;
+      flex-shrink: 0;
+      text-align: right;
+      width: 50px;
+      line-height: 1.4;
+    }
     .checkbox-sample {
       margin-left: auto;
       font-family: var(--mono);
@@ -1665,15 +1687,15 @@
           <div class="section">
             <div class="section-label">Characters</div>
             <div class="checkboxes-grid">
-              <div class="always-row" id="upperRow">
-                <div class="always-box"><div class="always-tick"></div></div>
-                <span class="always-label">Uppercase &amp; Lowercase</span>
-                <span class="always-note" id="upperNote">Always on</span>
+              <div class="checkbox-row active locked" id="upperRow">
+                <div class="checkbox-box"><div class="checkbox-tick"></div></div>
+                <span class="checkbox-label">Uppercase &amp; Lowercase</span>
+                <span class="checkbox-sample" id="upperNote">Always on</span>
               </div>
-              <div class="always-row" id="numbersRow">
-                <div class="always-box"><div class="always-tick"></div></div>
-                <span class="always-label">Numbers</span>
-                <span class="always-note" id="numbersNote">Always on</span>
+              <div class="checkbox-row active locked" id="numbersRow">
+                <div class="checkbox-box"><div class="checkbox-tick"></div></div>
+                <span class="checkbox-label">Numbers</span>
+                <span class="checkbox-sample" id="numbersNote">Always on</span>
               </div>
               <div class="checkbox-row active" id="symToggle" onclick="toggleSymbols()">
                 <div class="checkbox-box"><div class="checkbox-tick"></div></div>
@@ -3444,6 +3466,8 @@
       'delta','depot','depth','derby','devil','digit','ditch','dodge','donor','doubt',
     ];
 
+    let _savedAmbig = false; // saved state when entering passphrase mode
+
     function togglePassphrase() {
       usePassphrase = !usePassphrase;
       document.getElementById('passphraseToggle').classList.toggle('active', usePassphrase);
@@ -3456,41 +3480,34 @@
       const ambigRow = document.getElementById('ambigToggle');
 
       if (usePassphrase) {
-        // Make uppercase and numbers rows clickable
-        upperRow.style.opacity = '';
-        upperRow.style.cursor = 'pointer';
-        upperRow.classList.add('checkbox-row', 'active');
-        upperRow.classList.remove('always-row');
+        // Unlock uppercase and numbers — make them clickable toggles
+        upperRow.classList.remove('locked');
         upperRow.onclick = togglePPUpper;
         upperNote.textContent = 'On';
+        ppUseUpper = true;
 
-        numbersRow.style.opacity = '';
-        numbersRow.style.cursor = 'pointer';
-        numbersRow.classList.add('checkbox-row', 'active');
-        numbersRow.classList.remove('always-row');
+        numbersRow.classList.remove('locked');
         numbersRow.onclick = togglePPNumbers;
         numbersNote.textContent = 'On';
-
-        // Reset state
-        ppUseUpper = true;
         ppUseNumbers = true;
 
-        // Grey out symbols and ambiguous — not applicable to passphrases
+        // Save and disable ambiguous
+        _savedAmbig = useNoAmbig;
+        useNoAmbig = false;
+        ambigRow.classList.remove('active');
+
+        // Grey out symbols and ambiguous — not applicable
         symRow.style.opacity = '0.3';
         symRow.style.pointerEvents = 'none';
         ambigRow.style.opacity = '0.3';
         ambigRow.style.pointerEvents = 'none';
       } else {
-        // Restore always-on static rows
-        upperRow.style.cursor = '';
-        upperRow.classList.remove('checkbox-row', 'active');
-        upperRow.classList.add('always-row');
+        // Lock uppercase and numbers back to always-on
+        upperRow.classList.add('locked', 'active');
         upperRow.onclick = null;
         upperNote.textContent = 'Always on';
 
-        numbersRow.style.cursor = '';
-        numbersRow.classList.remove('checkbox-row', 'active');
-        numbersRow.classList.add('always-row');
+        numbersRow.classList.add('locked', 'active');
         numbersRow.onclick = null;
         numbersNote.textContent = 'Always on';
 
@@ -3499,6 +3516,10 @@
         symRow.style.pointerEvents = '';
         ambigRow.style.opacity = '';
         ambigRow.style.pointerEvents = '';
+
+        // Restore ambiguous to previous state
+        useNoAmbig = _savedAmbig;
+        ambigRow.classList.toggle('active', useNoAmbig);
       }
       generate();
     }
