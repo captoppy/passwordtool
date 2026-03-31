@@ -137,7 +137,7 @@
         "name": "Where should I store my generated password?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Use a dedicated password manager such as Bitwarden (free, open-source), 1Password, or NordPass. Never store passwords in plain-text files, notes apps, or browser-saved passwords without encryption. Always enable two-factor authentication on your password manager account."
+          "text": "A password manager is essential — you will not remember a truly random password with mixed uppercase, lowercase, numbers, and symbols, and you should not try to. Use a dedicated password manager such as NordPass, Bitwarden (free, open-source), or 1Password. Never store passwords in plain-text files, notes apps, or browser-saved passwords without encryption. Always enable two-factor authentication on your password manager account."
         }
       },
       {
@@ -189,7 +189,7 @@
         "@type": "HowToStep",
         "position": 3,
         "name": "Copy your password",
-        "text": "Click the Copy button to copy your new password to the clipboard. Store it in a password manager like NordPass, Bitwarden, or 1Password. Never reuse passwords across accounts."
+        "text": "Click the Copy button to copy your new password to the clipboard. You will not remember a random password — a password manager is essential. Store it in a password manager like NordPass, Bitwarden, or 1Password. Never reuse passwords across accounts."
       }
     ]
   }
@@ -1665,15 +1665,15 @@
           <div class="section">
             <div class="section-label">Characters</div>
             <div class="checkboxes-grid">
-              <div class="always-row">
+              <div class="always-row" id="upperRow">
                 <div class="always-box"><div class="always-tick"></div></div>
                 <span class="always-label">Uppercase &amp; Lowercase</span>
-                <span class="always-note">Always on</span>
+                <span class="always-note" id="upperNote">Always on</span>
               </div>
-              <div class="always-row">
+              <div class="always-row" id="numbersRow">
                 <div class="always-box"><div class="always-tick"></div></div>
                 <span class="always-label">Numbers</span>
-                <span class="always-note">Always on</span>
+                <span class="always-note" id="numbersNote">Always on</span>
               </div>
               <div class="checkbox-row active" id="symToggle" onclick="toggleSymbols()">
                 <div class="checkbox-box"><div class="checkbox-tick"></div></div>
@@ -1703,17 +1703,6 @@
               <span class="plutonium-icon" id="supportIcon">☢️</span>
               <span id="supportText">Enjoyed this? Send a coffee in the form of plutonium</span>
             </a>
-          </div>
-
-          <div class="privacy-footer">
-            <button class="privacy-trigger" onclick="openPrivacyPolicyModal()">
-              <span class="privacy-lock">&#128274;</span>
-              Privacy Policy
-            </button>
-            <span class="privacy-sep">·</span>
-            <a href="/faq" style="font-family:var(--mono);font-size:10px;color:var(--muted);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;" onmouseover="this.style.color='var(--orange)'" onmouseout="this.style.color='var(--muted)'">Security FAQ</a>
-            <span class="privacy-sep">·</span>
-            <span class="privacy-copy">&copy; 2026 PopcornPasswords</span>
           </div>
 
         </div><!-- /.col-chars -->
@@ -1747,13 +1736,19 @@
       </ul>
 
       <h2 style="font-family:var(--display); font-size:14px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:var(--orange); margin-bottom:0.6rem;">Password security tips</h2>
-      <p style="font-size:13px; line-height:1.8;">Use a unique password for every account. Store passwords in a reputable password manager such as <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=143776&url_id=9356" target="_blank" rel="noopener" style="color:var(--orange);">NordPass</a>, <a href="https://bitwarden.com" target="_blank" rel="noopener" style="color:var(--orange);">Bitwarden</a>, or <a href="https://1password.com" target="_blank" rel="noopener" style="color:var(--orange);">1Password</a>. Enable two-factor authentication wherever possible. Never reuse a password across multiple sites because if one site is breached, every reused account becomes vulnerable.</p>
+      <p style="font-size:13px; line-height:1.8;">Use a unique password for every account. A truly random password with uppercase, lowercase, numbers, and symbols is impossible to memorise — a password manager is not optional, it is essential. Store every password in a reputable manager such as <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=143776&url_id=9356" target="_blank" rel="noopener" style="color:var(--orange);">NordPass</a>, <a href="https://bitwarden.com" target="_blank" rel="noopener" style="color:var(--orange);">Bitwarden</a>, or <a href="https://1password.com" target="_blank" rel="noopener" style="color:var(--orange);">1Password</a>. Enable two-factor authentication wherever possible. Never reuse a password across multiple sites because if one site is breached, every reused account becomes vulnerable.</p>
     </div>
     <button class="seo-toggle" id="seoToggle" onclick="toggleSeoSection()" aria-label="Show more information">Read more ▾</button>
   </section>
 
-  <!-- Page footer — trust signals, contact, location -->
-  <footer style="text-align:center; padding:1.5rem 1rem 2rem; border-top:1px solid var(--border); font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:0.06em;">
+  <!-- Page footer -->
+  <footer style="text-align:center; padding:1.5rem 1rem 2rem; border-top:1px solid var(--border); font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:0.06em; line-height:2.2;">
+    <button onclick="openPrivacyPolicyModal()" style="font-family:var(--mono);font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;letter-spacing:0.06em;padding:0;transition:color 0.15s;" onmouseover="this.style.color='var(--orange)'" onmouseout="this.style.color='var(--muted)'">&#128274; Privacy Policy</button>
+    <span style="opacity:0.4; margin:0 8px;">·</span>
+    <a href="/faq" style="color:var(--muted); text-decoration:none; transition:color 0.15s;" onmouseover="this.style.color='var(--orange)'" onmouseout="this.style.color='var(--muted)'">Security FAQ</a>
+    <span style="opacity:0.4; margin:0 8px;">·</span>
+    <span>&copy; 2026 PopcornPasswords</span>
+    <span style="opacity:0.4; margin:0 8px;">·</span>
     <span>Built in Adelaide, Australia</span>
     <span style="opacity:0.4; margin:0 8px;">·</span>
     <a href="https://x.com/socialhwy" target="_blank" rel="noopener" style="color:var(--muted); text-decoration:none; transition:color 0.15s;" onmouseover="this.style.color='var(--orange)'" onmouseout="this.style.color='var(--muted)'">@socialhwy</a>
@@ -1769,8 +1764,8 @@
       <div class="modal-body">
 
         <div class="modal-section">
-          <div class="modal-section-title">Store your passwords securely</div>
-          <p class="modal-text">Never store passwords in a text file, notes app, or your browser's built-in save. Use a dedicated password manager — it encrypts your vault and handles autofill. Enable two-factor authentication on every account that supports it.</p>
+          <div class="modal-section-title">A password manager is essential</div>
+          <p class="modal-text">You will not remember a truly random password — and you should not try to. A password manager encrypts your vault, handles autofill, and means you never need to reuse or memorise a password again. Never store passwords in a text file, notes app, or your browser's built-in save. Enable two-factor authentication on every account that supports it.</p>
           <p class="modal-text" style="margin-top:8px;">
             <strong><a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=143776&url_id=9356" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">NordPass</a></strong> — Strong encryption, dark web monitoring. ★ Recommended<br>
             <strong><a href="https://bitwarden.com" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none;">Bitwarden</a></strong> — Free, open source, independently audited.<br>
@@ -2631,34 +2626,38 @@
       // ── PASSPHRASE MODE ──
       if (usePassphrase) {
         const separator = ['-', '.', '_', '~'][secureRandInt(4)];
-        const numStr = String(secureRandInt(90) + 10); // 2-digit number reserved
+        const numStr = ppUseNumbers ? String(secureRandInt(90) + 10) : null;
         const words = [];
 
         // Build passphrase, never exceeding `len` total characters
-        // Reserve space for the number + its separator (3 chars: separator + 2 digits)
-        const budget = len - numStr.length - 1; // -1 for the separator before/after number
+        // Reserve space for the number + its separator if numbers are on
+        const budget = ppUseNumbers ? len - numStr.length - 1 : len;
 
         while (true) {
           let word = WORDS[secureRandInt(WORDS.length)];
-          if (secureRandInt(100) < 30) word = word.charAt(0).toUpperCase() + word.slice(1);
+          // Capitalise ~30% of words if uppercase is on, otherwise all lowercase
+          if (ppUseUpper && secureRandInt(100) < 30) {
+            word = word.charAt(0).toUpperCase() + word.slice(1);
+          }
 
           // Calculate what total length would be if we add this word
           const trial = [...words, word];
           const trialLen = trial.join(separator).length;
 
-          if (trialLen > budget && words.length >= 2) break; // would exceed — stop
+          if (trialLen > budget && words.length >= 2) break;
           words.push(word);
-          if (trialLen >= budget) break; // exactly hit or close enough
-          if (words.length > 20) break; // safety cap
+          if (trialLen >= budget) break;
+          if (words.length > 20) break;
         }
 
-        // Insert number at a random position
-        words.splice(secureRandInt(words.length + 1), 0, numStr);
+        // Insert number at a random position if numbers are on
+        if (numStr) {
+          words.splice(secureRandInt(words.length + 1), 0, numStr);
+        }
         let pw = words.join(separator);
 
-        // Hard trim to exact length if still over (shouldn't happen often)
+        // Hard trim to exact length if still over
         if (pw.length > len) pw = pw.slice(0, len);
-        // Remove trailing separator if trim cut mid-word
         while (pw.endsWith(separator)) pw = pw.slice(0, -1);
 
         document.getElementById('pwDisplay').innerHTML =
@@ -2669,7 +2668,11 @@
             return `<span class="c-l">${c}</span>`;
           }).join('');
         const wc = words.filter(w => w !== numStr).length;
-        document.getElementById('charCount').textContent = pw.length + ' / ' + len + ' characters · ' + wc + ' words + number';
+        const extras = [];
+        if (ppUseUpper) extras.push('mixed case');
+        if (ppUseNumbers) extras.push('number');
+        const extraStr = extras.length ? ' · ' + wc + ' words + ' + extras.join(' + ') : ' · ' + wc + ' words';
+        document.getElementById('charCount').textContent = pw.length + ' / ' + len + ' characters' + extraStr;
         updateStrength(pw, len);
         resetCopy();
         return;
@@ -3415,6 +3418,8 @@
 
     // ── PASSPHRASE MODE ──
     let usePassphrase = false;
+    let ppUseUpper = true;    // passphrase: include uppercase words
+    let ppUseNumbers = true;  // passphrase: include random number
     // EFF short word list subset — common, easy-to-type words (200 words)
     const WORDS = [
       'acid','acorn','acre','acts','afar','aged','agent','agile','aging','agony',
@@ -3442,10 +3447,77 @@
     function togglePassphrase() {
       usePassphrase = !usePassphrase;
       document.getElementById('passphraseToggle').classList.toggle('active', usePassphrase);
-      // Grey out character options when passphrase mode is active
-      const charOpts = document.querySelectorAll('#symToggle, #ambigToggle, .always-row');
-      charOpts.forEach(el => el.style.opacity = usePassphrase ? '0.3' : '');
-      charOpts.forEach(el => el.style.pointerEvents = usePassphrase ? 'none' : '');
+
+      const upperRow = document.getElementById('upperRow');
+      const numbersRow = document.getElementById('numbersRow');
+      const upperNote = document.getElementById('upperNote');
+      const numbersNote = document.getElementById('numbersNote');
+      const symRow = document.getElementById('symToggle');
+      const ambigRow = document.getElementById('ambigToggle');
+
+      if (usePassphrase) {
+        // Make uppercase and numbers rows clickable
+        upperRow.style.opacity = '';
+        upperRow.style.cursor = 'pointer';
+        upperRow.classList.add('checkbox-row', 'active');
+        upperRow.classList.remove('always-row');
+        upperRow.onclick = togglePPUpper;
+        upperNote.textContent = 'On';
+
+        numbersRow.style.opacity = '';
+        numbersRow.style.cursor = 'pointer';
+        numbersRow.classList.add('checkbox-row', 'active');
+        numbersRow.classList.remove('always-row');
+        numbersRow.onclick = togglePPNumbers;
+        numbersNote.textContent = 'On';
+
+        // Reset state
+        ppUseUpper = true;
+        ppUseNumbers = true;
+
+        // Grey out symbols and ambiguous — not applicable to passphrases
+        symRow.style.opacity = '0.3';
+        symRow.style.pointerEvents = 'none';
+        ambigRow.style.opacity = '0.3';
+        ambigRow.style.pointerEvents = 'none';
+      } else {
+        // Restore always-on static rows
+        upperRow.style.cursor = '';
+        upperRow.classList.remove('checkbox-row', 'active');
+        upperRow.classList.add('always-row');
+        upperRow.onclick = null;
+        upperNote.textContent = 'Always on';
+
+        numbersRow.style.cursor = '';
+        numbersRow.classList.remove('checkbox-row', 'active');
+        numbersRow.classList.add('always-row');
+        numbersRow.onclick = null;
+        numbersNote.textContent = 'Always on';
+
+        // Restore symbols and ambiguous
+        symRow.style.opacity = '';
+        symRow.style.pointerEvents = '';
+        ambigRow.style.opacity = '';
+        ambigRow.style.pointerEvents = '';
+      }
+      generate();
+    }
+
+    function togglePPUpper() {
+      ppUseUpper = !ppUseUpper;
+      const row = document.getElementById('upperRow');
+      const note = document.getElementById('upperNote');
+      row.classList.toggle('active', ppUseUpper);
+      note.textContent = ppUseUpper ? 'On' : 'Off';
+      generate();
+    }
+
+    function togglePPNumbers() {
+      ppUseNumbers = !ppUseNumbers;
+      const row = document.getElementById('numbersRow');
+      const note = document.getElementById('numbersNote');
+      row.classList.toggle('active', ppUseNumbers);
+      note.textContent = ppUseNumbers ? 'On' : 'Off';
       generate();
     }
 
