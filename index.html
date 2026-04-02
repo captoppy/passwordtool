@@ -335,6 +335,27 @@
     .brand-img-dark  { display: block; }
     .brand-img-light { display: none; }
 
+    /* ── THEME CAST PHOTO (full-page background layer) ── */
+    .cast-photo-wrap {
+      display: none;
+      position: fixed;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .cast-photo-wrap.visible { display: flex; }
+    .cast-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      opacity: 0.12;
+      transform: none;
+      mix-blend-mode: normal;
+    }
+
     .col {
       overflow-y: auto;
       padding: 1.25rem 1rem;
@@ -888,15 +909,16 @@
       background: var(--orange);
       border: 2px solid var(--bg);
       cursor: pointer;
-      box-shadow: 0 0 8px rgba(249,115,22,0.5);
+      box-shadow: 0 0 8px color-mix(in srgb, var(--orange) 50%, transparent);
       transition: box-shadow 0.15s, background 0.3s;
     }
-    input[type=range]:hover::-webkit-slider-thumb { box-shadow: 0 0 16px rgba(249,115,22,0.9); }
+    input[type=range]:hover::-webkit-slider-thumb { box-shadow: 0 0 16px color-mix(in srgb, var(--orange) 90%, transparent); }
     input[type=range]::-moz-range-thumb {
       width: 18px; height: 18px;
       border-radius: 50%;
       background: var(--orange);
       border: 2px solid var(--bg);
+      box-shadow: 0 0 8px color-mix(in srgb, var(--orange) 50%, transparent);
     }
 
     /* ── LENGTH DISPLAY / INPUT ── */
@@ -1544,6 +1566,11 @@
   </noscript>
   <div id="flashOverlay"></div>
 
+  <!-- Cast photo — full-page background layer, shown per theme -->
+  <div class="cast-photo-wrap" id="castPhotoWrap">
+    <img class="cast-photo" id="castPhotoImg" src="" alt="" />
+  </div>
+
   <div class="page-wrap">
 
     <!-- Full-width tool panel — app bar top, content centred below -->
@@ -1637,7 +1664,7 @@
               <div class="delorean-slider-wrap" id="deloreanSliderWrap" style="flex:1; position:relative; min-width:0;">
                 <div id="dlTrack" style="position:relative; height:80px; width:100%; cursor:pointer; overflow:visible;">
                   <!-- Road -->
-                  <div style="position:absolute; bottom:16px; left:0; right:0; height:5px; background:rgba(120,120,120,0.2); border-radius:3px;"></div>
+                  <div id="dlRoad" style="position:absolute; bottom:16px; left:0; right:0; height:5px; background:rgba(120,120,120,0.2); border-radius:3px;"></div>
                   <!-- Trail -->
                   <div id="dlTrail" style="position:absolute; bottom:16px; left:0; height:5px; width:0; border-radius:3px; pointer-events:none;"></div>
                   <!-- Speed markers — updated dynamically by dlUpdateMarkers() -->
@@ -1985,10 +2012,11 @@
         const ld = document.getElementById('lenDisplay');
         ld.style.borderColor = hex;
         ld.style.boxShadow = `0 0 10px ${hex}44`;
-        // Slider track gradient
+        // Slider track gradient — use theme border for unfilled portion
+        const trackBg = THEME.cssVars && THEME.cssVars['--border'] ? THEME.cssVars['--border'] : '#1e2a3a';
         const pct = ((len - THEME.minSpeed) / range) * 100;
         document.getElementById('slider').style.background =
-          `linear-gradient(to right, ${col} 0%, ${col} ${pct}%, #1e2a3a ${pct}%, #1e2a3a 100%)`;
+          `linear-gradient(to right, ${col} 0%, ${col} ${pct}%, ${trackBg} ${pct}%, ${trackBg} 100%)`;
       }
 
       // charCount — skip when dial is active (setDialNotch handles it directly)
@@ -2388,6 +2416,121 @@
       at88 = false; // canvas loop sees this and fades out
     }
 
+    // ── Treasure sparkle (Goonies max effect) ──
+    let treasureParticles = [];
+    let treasureRAF = null;
+
+    function startTreasureSparkle() {
+      const canvas = document.getElementById('fireCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.style.opacity = '1';
+      treasureParticles = [];
+
+      const glyphs = ['✦','✧','♪','♫','◆','💎','🪙'];
+      function spawnParticle() {
+        const cx = canvas.width / 2;
+        const type = Math.random();
+        treasureParticles.push({
+          x: cx + (Math.random() - 0.5) * 180,
+          y: canvas.height * 0.8 + Math.random() * 20,
+          vx: (Math.random() - 0.5) * 2.5,
+          vy: -(Math.random() * 3.5 + 1.5),
+          life: 1.0,
+          decay: Math.random() * 0.02 + 0.012,
+          size: Math.random() * 12 + 5,
+          spin: (Math.random() - 0.5) * 0.1,
+          angle: Math.random() * Math.PI * 2,
+          type: type > 0.6 ? 'coin' : type > 0.3 ? 'sparkle' : 'note',
+          color: Math.random() > 0.5
+            ? '#FFD700'  // gold
+            : Math.random() > 0.5
+              ? '#FFA500' // amber
+              : '#FFFACD' // pale gold
+        });
+      }
+
+      function tick() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 5; i++) spawnParticle();
+        treasureParticles = treasureParticles.filter(p => p.life > 0);
+
+        for (const p of treasureParticles) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx += (Math.random() - 0.5) * 0.2;
+          p.vy *= 0.98;
+          p.life -= p.decay;
+          p.angle += p.spin;
+          p.size *= 0.992;
+          const a = Math.max(0, p.life);
+
+          ctx.save();
+          ctx.globalAlpha = a;
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle);
+
+          if (p.type === 'coin') {
+            // Gold coin — circle with shine
+            const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size);
+            grad.addColorStop(0, `rgba(255,250,200,${a})`);
+            grad.addColorStop(0.4, `rgba(255,215,0,${a})`);
+            grad.addColorStop(1, `rgba(180,120,0,0)`);
+            ctx.beginPath();
+            ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+          } else if (p.type === 'sparkle') {
+            // Diamond sparkle — 4-point star
+            const r = p.size * 0.8;
+            ctx.beginPath();
+            ctx.moveTo(0, -r);
+            ctx.lineTo(r * 0.25, -r * 0.25);
+            ctx.lineTo(r, 0);
+            ctx.lineTo(r * 0.25, r * 0.25);
+            ctx.lineTo(0, r);
+            ctx.lineTo(-r * 0.25, r * 0.25);
+            ctx.lineTo(-r, 0);
+            ctx.lineTo(-r * 0.25, -r * 0.25);
+            ctx.closePath();
+            ctx.fillStyle = `rgba(255,250,180,${a})`;
+            ctx.shadowColor = 'rgba(255,215,0,0.8)';
+            ctx.shadowBlur = 8;
+            ctx.fill();
+          } else {
+            // Music note — tiny dot with trail
+            ctx.beginPath();
+            ctx.arc(0, 0, p.size * 0.35, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,215,0,${a})`;
+            ctx.fill();
+            // Stem
+            ctx.beginPath();
+            ctx.moveTo(p.size * 0.3, 0);
+            ctx.lineTo(p.size * 0.3, -p.size * 0.8);
+            ctx.strokeStyle = `rgba(255,215,0,${a})`;
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+          }
+
+          ctx.restore();
+        }
+
+        if (at88) treasureRAF = requestAnimationFrame(tick);
+        else {
+          canvas.style.transition = 'opacity 0.8s';
+          canvas.style.opacity = '0';
+          setTimeout(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.style.transition = '';
+          }, 800);
+        }
+      }
+      treasureRAF = requestAnimationFrame(tick);
+    }
+
+    function stopTreasureSparkle() {
+      at88 = false;
+    }
+
     // ── Snowflakes (Cool Runnings max effect) ──
     let snowInterval = null;
     function startSnowflakes() {
@@ -2457,8 +2600,14 @@
       // Continuous particle loop for custom slider themes at max
       if (THEME.useCustomSlider) {
         clearInterval(dlFireInterval);
-        const puffFn = THEME.sliderStyle === 'ice' ? dlSnowPuff : dlFirePuff;
-        const puffMs = THEME.sliderStyle === 'ice' ? 80 : 60;
+        let puffFn, puffMs;
+        if (THEME.sliderStyle === 'treasure') {
+          puffFn = dlTreasurePuff; puffMs = 70;
+        } else if (THEME.sliderStyle === 'ice') {
+          puffFn = dlSnowPuff; puffMs = 80;
+        } else {
+          puffFn = dlFirePuff; puffMs = 60;
+        }
         dlFireInterval = setInterval(() => {
           const track = document.getElementById('dlTrack');
           if (!track) return;
@@ -2834,6 +2983,7 @@
       const track = document.getElementById('dlTrack');
       if (!wrap || !track) return;
       const isIce = THEME.sliderStyle === 'ice';
+      const isTreasure = THEME.sliderStyle === 'treasure';
       const minV = THEME.minSpeed || 8;
       const maxV = THEME.maxSpeed || 88;
       const carW = 50;
@@ -2842,7 +2992,19 @@
 
       for (let i = 0; i < 3; i++) {
         const p = document.createElement('div');
-        if (isIce) {
+        if (isTreasure) {
+          // Gold note sparkles
+          const glyphs = ['✦','✧','♪','♫','·'];
+          const sz = 8 + Math.random() * 8;
+          p.style.cssText = `position:absolute;pointer-events:none;font-size:${sz}px;line-height:1;z-index:2;
+            left:${left + Math.random()*10}px;
+            bottom:${18 + Math.random()*8}px;
+            color:rgba(255,215,0,${0.5 + Math.random() * 0.4});
+            animation:dlSmokePuff 0.7s ease-out forwards;`;
+          p.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+          wrap.appendChild(p);
+          setTimeout(() => p.remove(), 720);
+        } else if (isIce) {
           // Ice crystal spray
           p.className = 'dl-snowflake';
           const sx = (Math.random() - 0.5) * 20;
@@ -2873,7 +3035,8 @@
     function dlRender() {
       const track = document.getElementById('dlTrack');
       if (!track || !track.offsetWidth) return;
-      const isIce   = THEME.sliderStyle === 'ice';
+      const isIce      = THEME.sliderStyle === 'ice';
+      const isTreasure = THEME.sliderStyle === 'treasure';
       const minV   = THEME.minSpeed || 8;
       const maxV   = THEME.maxSpeed || 88;
       const range  = maxV - minV;
@@ -2883,19 +3046,93 @@
       const left   = t * (track.offsetWidth - carW);
       const isLight = document.body.classList.contains('light');
 
+      // ── Cleanup stale theme elements ──
+      // Remove organ bg if present (legacy/switched away from treasure)
+      const organBg = document.getElementById('dlOrganBg');
+      if (organBg) organBg.remove();
+
+      const road = document.getElementById('dlRoad');
+      const markers = document.getElementById('dlMarkers');
+
+      if (isTreasure) {
+        // Cave-themed road — stone/gold tinted track
+        if (road) {
+          road.style.display = '';
+          road.style.height = '6px';
+          road.style.borderRadius = '3px';
+          road.style.background = isLight
+            ? 'linear-gradient(90deg, #c4a35a, #8b7340, #a08850, #c4a35a)'
+            : 'linear-gradient(90deg, #2a1f0e, #3d2e14, #2a1f0e, #3d2e14)';
+          road.style.boxShadow = isMax
+            ? '0 0 8px rgba(255,215,0,0.3), inset 0 1px 2px rgba(0,0,0,0.4)'
+            : 'inset 0 1px 2px rgba(0,0,0,0.4)';
+        }
+        // Treasure-themed markers — adventure waypoints
+        if (markers) {
+          markers.style.display = '';
+          const items = [
+            { icon: '🗺️', tip: 'Start', pct: 0 },
+            { icon: '🕯️', tip: 'Deeper', pct: 28 },
+            { icon: '⚓', tip: 'The ship', pct: 60 },
+            { icon: '💀', tip: 'Willy!', pct: 100 }
+          ];
+          markers.innerHTML = items.map((m, i) =>
+            `<span style="position:absolute;left:${m.pct}%;transform:translateX(-50%);font-size:${i===3?'12px':'10px'};filter:${i===3?'drop-shadow(0 0 3px rgba(255,215,0,0.6))':'none'};user-select:none;white-space:nowrap;" title="${m.tip}">${m.icon}</span>`
+          ).join('');
+        }
+      } else {
+        // Reset road to default for non-treasure themes
+        if (road) {
+          road.style.display = '';
+          road.style.height = '';
+          road.style.borderRadius = '';
+          road.style.background = '';
+          road.style.boxShadow = '';
+        }
+        if (markers) {
+          markers.style.display = '';
+        }
+      }
+
+      // ── Vehicle ──
       const car     = document.getElementById('dlCar');
       const carWrap = document.getElementById('dlCarWrap');
       if (carWrap) carWrap.style.left = left + 'px';
-      if (car) {
-        if (isIce) {
-          // Hide the image, show bobsled emoji
-          car.style.display = 'none';
-        } else {
-          car.style.display = '';
-          car.style.mixBlendMode = 'normal';
-          car.style.filter = isMax
-            ? 'brightness(1.05) drop-shadow(0 0 6px rgba(255,160,0,0.6))'
-            : 'none';
+
+      // One-Eyed Willy skull for Goonies — skull with SVG eye patch
+      let skull = document.getElementById('dlSkull');
+      if (isTreasure) {
+        if (car) car.style.display = 'none';
+        if (!skull) {
+          skull = document.createElement('div');
+          skull.id = 'dlSkull';
+          skull.style.cssText = 'position:absolute;bottom:4px;line-height:1;pointer-events:none;transition:filter 0.2s,transform 0.15s;z-index:3;';
+          // Skull with SVG eye patch overlay
+          skull.innerHTML = `<span style="position:relative;display:inline-block;font-size:28px;">💀<svg viewBox="0 0 100 100" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+            <ellipse cx="33" cy="38" rx="16" ry="13" fill="#111" stroke="#444" stroke-width="2" transform="rotate(-5 33 38)"/>
+            <line x1="4" y1="20" x2="52" y2="35" stroke="#333" stroke-width="4.5" stroke-linecap="round"/>
+            <line x1="52" y1="35" x2="96" y2="22" stroke="#333" stroke-width="4.5" stroke-linecap="round"/>
+          </svg></span>`;
+          if (carWrap) carWrap.appendChild(skull);
+        }
+        const skullSpan = skull.querySelector('span');
+        if (skullSpan) skullSpan.style.fontSize = isMax ? '34px' : '28px';
+        skull.style.filter = isMax
+          ? 'drop-shadow(0 0 10px rgba(255,215,0,0.95)) drop-shadow(0 0 20px rgba(255,180,0,0.6)) brightness(1.2)'
+          : 'drop-shadow(0 0 4px rgba(255,215,0,0.5))';
+        skull.style.transform = isMax ? 'translateY(-2px) scale(1.1)' : 'none';
+      } else {
+        if (skull) skull.remove();
+        if (car) {
+          if (isIce) {
+            car.style.display = 'none';
+          } else {
+            car.style.display = '';
+            car.style.mixBlendMode = 'normal';
+            car.style.filter = isMax
+              ? 'brightness(1.05) drop-shadow(0 0 6px rgba(255,160,0,0.6))'
+              : 'none';
+          }
         }
       }
 
@@ -2956,7 +3193,15 @@
       const trail = document.getElementById('dlTrail');
       if (trail) {
         trail.style.width  = Math.max(0, left + 10) + 'px';
-        if (isIce) {
+        if (isTreasure) {
+          trail.style.height = isMax ? '7px' : '4px';
+          trail.style.bottom = isMax ? '15px' : '17px';
+          trail.style.filter = isMax ? 'blur(1.5px)' : 'none';
+          trail.style.background = isMax
+            ? 'linear-gradient(90deg, rgba(255,215,0,0.9), rgba(255,180,0,0.75), rgba(212,133,10,0.4), transparent)'
+            : 'linear-gradient(90deg, rgba(255,215,0,0.55), rgba(212,133,10,0.15), transparent)';
+          trail.style.zIndex = '2';
+        } else if (isIce) {
           trail.style.height = isMax ? '7px' : '4px';
           trail.style.bottom = isMax ? '15px' : '17px';
           trail.style.filter = isMax ? 'blur(1px)' : 'none';
@@ -2973,12 +3218,14 @@
         }
       }
 
-      if (isMax && !isIce) dlFirePuff(left);
+      if (isMax && isTreasure) dlTreasurePuff(left);
+      else if (isMax && isIce) dlSnowPuff(left);
+      else if (isMax) dlFirePuff(left);
 
       const lbl = document.getElementById('dlLabel');
       if (lbl) {
         lbl.textContent = dlVal + ' ' + (THEME.speedUnit || 'MPH');
-        lbl.style.color = isMax ? '#ffd700' : (isLight ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.45)');
+        lbl.style.color = isMax ? (THEME.maxColour || '#ffd700') : (isLight ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.45)');
         lbl.style.left  = (left + carW / 2 - 18) + 'px';
       }
     }
@@ -3001,6 +3248,26 @@
         pointer-events:none;`;
       wrap.appendChild(p);
       setTimeout(() => p.remove(), 520);
+    }
+
+    function dlTreasurePuff(left) {
+      const wrap = document.getElementById('dlSmokeWrap');
+      if (!wrap) return;
+      const glyphs = ['✦','✧','◆','♪','♫'];
+      const colours = ['rgba(255,215,0,0.9)','rgba(255,250,200,0.85)','rgba(255,180,0,0.8)'];
+      for (let i = 0; i < 2; i++) {
+        const p = document.createElement('div');
+        const sz = 8 + Math.random() * 10;
+        p.style.cssText = `position:absolute;pointer-events:none;font-size:${sz}px;line-height:1;z-index:2;
+          left:${left - 5 + Math.random()*15}px;
+          bottom:${16 + Math.random()*8}px;
+          color:${colours[Math.floor(Math.random() * colours.length)]};
+          text-shadow:0 0 4px rgba(255,215,0,0.6);
+          animation:dlSmokePuff 0.6s ease-out forwards;`;
+        p.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+        wrap.appendChild(p);
+        setTimeout(() => p.remove(), 620);
+      }
     }
 
     function dlSnowPuff(left) {
@@ -3026,12 +3293,22 @@
       if (!el) return;
       const min = THEME.minSpeed || 8;
       const max = THEME.maxSpeed || 88;
-      const mid1 = Math.round(min + (max - min) * 0.28);
-      const mid2 = Math.round(min + (max - min) * 0.60);
       const accent = THEME.maxColour || 'rgba(249,115,22,0.9)';
-      el.innerHTML = [min, mid1, mid2, max].map((v, i) =>
-        `<span style="font-family:var(--display);font-size:9px;color:${i === 3 ? accent : 'var(--muted)'};">${v}</span>`
-      ).join('');
+      // Use clean round marker values — sensible waypoints between min and max
+      // e.g. 8→88: [8, 25, 50, 88]  |  8→100: [8, 25, 50, 75, 100]
+      let vals;
+      if (max <= 88) {
+        vals = [min, 25, 50, max];
+      } else if (max <= 100) {
+        vals = [min, 25, 50, 75, max];
+      } else {
+        vals = [min, 25, 50, 75, max];
+      }
+      el.innerHTML = vals.map((v, i) => {
+        const pct = ((v - min) / (max - min)) * 100;
+        const col = i === vals.length - 1 ? accent : 'var(--muted)';
+        return `<span style="position:absolute;left:${pct}%;transform:translateX(-50%);font-family:var(--display);font-size:9px;color:${col};white-space:nowrap;">${v}</span>`;
+      }).join('');
     }
 
     function dlShowHide() {
@@ -3079,6 +3356,7 @@
 
     function drawDial(notch) {
       if (THEME.dialRenderer === 'mach') { drawMachIndicator(notch); return; }
+      if (THEME.dialRenderer === 'organ') { drawBoneOrgan(notch); return; }
       drawAmpKnob(notch);
     }
 
@@ -3342,6 +3620,196 @@
       if (isMax && at88) requestAnimationFrame(() => drawDial(dialNotch));
     }
 
+    function drawBoneOrgan(notch) {
+      const canvas = document.getElementById('dialCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const VISUAL_KEYS = 12; // 0-11 visible keys
+      const n = dialNotches();
+      const t = Math.min(notch / n, 1);
+      const acc = hexFromT(t);
+      const isMax = notch === n;
+      const activeKey = isMax ? VISUAL_KEYS - 1 : Math.floor(t * (VISUAL_KEYS - 1));
+
+      // ── Cave stone background ──
+      const bgGrad = ctx.createRadialGradient(W/2, H/2, 20, W/2, H/2, 120);
+      bgGrad.addColorStop(0, '#1a2030');
+      bgGrad.addColorStop(1, '#080c14');
+      ctx.beginPath(); ctx.rect(0, 0, W, H);
+      ctx.fillStyle = bgGrad; ctx.fill();
+
+      // Rounded rect border
+      const br = 10;
+      ctx.beginPath();
+      ctx.moveTo(br, 0); ctx.lineTo(W-br, 0); ctx.quadraticCurveTo(W, 0, W, br);
+      ctx.lineTo(W, H-br); ctx.quadraticCurveTo(W, H, W-br, H);
+      ctx.lineTo(br, H); ctx.quadraticCurveTo(0, H, 0, H-br);
+      ctx.lineTo(0, br); ctx.quadraticCurveTo(0, 0, br, 0);
+      ctx.strokeStyle = '#2a3548'; ctx.lineWidth = 2; ctx.stroke();
+
+      // ── Title ──
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(200,190,170,0.4)';
+      ctx.font = "bold 9px 'Oswald',sans-serif";
+      ctx.fillText('BONE ORGAN', W/2, 22);
+
+      // ── Draw bone keys ──
+      const keyW = 12;
+      const keyH = 75;
+      const gap = 3;
+      const totalW = VISUAL_KEYS * keyW + (VISUAL_KEYS - 1) * gap;
+      const startX = (W - totalW) / 2;
+      const keyY = 40;
+      const knobR = 5;
+
+      for (let k = 0; k < VISUAL_KEYS; k++) {
+        const kx = startX + k * (keyW + gap);
+        const kcx = kx + keyW / 2;
+        const isActive = k <= activeKey;
+        const isMaxKey = k === VISUAL_KEYS - 1;
+        const keyFrac = k / (VISUAL_KEYS - 1);
+
+        // Key colour
+        let keyCol, knobCol, glowCol;
+        if (isActive) {
+          if (isMax) {
+            keyCol = '#FFD700';
+            knobCol = '#FFF0A0';
+            glowCol = 'rgba(255,215,0,0.4)';
+          } else {
+            // Gradient from cream to amber to gold based on position
+            const r = Math.round(210 + keyFrac * 45);
+            const g = Math.round(195 + keyFrac * 20);
+            const b = Math.round(160 - keyFrac * 160);
+            keyCol = `rgb(${r},${g},${b})`;
+            knobCol = `rgb(${Math.min(255,r+20)},${Math.min(255,g+15)},${Math.min(255,b+20)})`;
+            glowCol = `rgba(${r},${g},${b},0.25)`;
+          }
+        } else {
+          // Inactive: dark bone/stone
+          keyCol = '#3a3d45';
+          knobCol = '#4a4d55';
+          glowCol = 'none';
+        }
+
+        // Glow behind active keys
+        if (isActive && glowCol !== 'none') {
+          ctx.shadowColor = glowCol;
+          ctx.shadowBlur = isMax ? 12 : 6;
+        } else {
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
+        }
+
+        // Key body (rounded rect)
+        const bodyY = keyY + knobR;
+        const bodyH = keyH - knobR * 2;
+        const bodyR = 3;
+        ctx.beginPath();
+        ctx.moveTo(kx + bodyR, bodyY);
+        ctx.lineTo(kx + keyW - bodyR, bodyY);
+        ctx.quadraticCurveTo(kx + keyW, bodyY, kx + keyW, bodyY + bodyR);
+        ctx.lineTo(kx + keyW, bodyY + bodyH - bodyR);
+        ctx.quadraticCurveTo(kx + keyW, bodyY + bodyH, kx + keyW - bodyR, bodyY + bodyH);
+        ctx.lineTo(kx + bodyR, bodyY + bodyH);
+        ctx.quadraticCurveTo(kx, bodyY + bodyH, kx, bodyY + bodyH - bodyR);
+        ctx.lineTo(kx, bodyY + bodyR);
+        ctx.quadraticCurveTo(kx, bodyY, kx + bodyR, bodyY);
+        ctx.fillStyle = keyCol;
+        ctx.fill();
+        ctx.strokeStyle = isActive ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.05)';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+
+        // Top bone knob
+        ctx.beginPath();
+        ctx.arc(kcx, keyY + knobR, knobR, 0, Math.PI * 2);
+        ctx.fillStyle = knobCol;
+        ctx.fill();
+
+        // Bottom bone knob
+        ctx.beginPath();
+        ctx.arc(kcx, keyY + keyH - knobR, knobR, 0, Math.PI * 2);
+        ctx.fillStyle = knobCol;
+        ctx.fill();
+
+        // Reset shadow
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+
+        // Key number label
+        ctx.textAlign = 'center';
+        ctx.fillStyle = isActive ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.2)';
+        ctx.font = "bold 8px 'Oswald',sans-serif";
+        ctx.fillText(k, kcx, keyY + keyH/2 + 3);
+      }
+
+      // ── Bone pointer above active key ──
+      const ptrX = startX + activeKey * (keyW + gap) + keyW / 2;
+      const ptrY = keyY - 4;
+      const boneW = 22, boneKnob = 4;
+
+      // Pointer bone (horizontal, centered above active key)
+      ctx.save();
+      ctx.translate(ptrX, ptrY);
+
+      // Bone shaft
+      const sx = -boneW/2 + boneKnob, sy = -2.5, sw = boneW - boneKnob*2, sh = 5, sr = 2;
+      ctx.beginPath();
+      ctx.moveTo(sx + sr, sy);
+      ctx.lineTo(sx + sw - sr, sy);
+      ctx.quadraticCurveTo(sx + sw, sy, sx + sw, sy + sr);
+      ctx.lineTo(sx + sw, sy + sh - sr);
+      ctx.quadraticCurveTo(sx + sw, sy + sh, sx + sw - sr, sy + sh);
+      ctx.lineTo(sx + sr, sy + sh);
+      ctx.quadraticCurveTo(sx, sy + sh, sx, sy + sh - sr);
+      ctx.lineTo(sx, sy + sr);
+      ctx.quadraticCurveTo(sx, sy, sx + sr, sy);
+      ctx.fillStyle = isMax ? '#FFD700' : acc;
+      ctx.fill();
+
+      // Left knob
+      ctx.beginPath();
+      ctx.arc(-boneW/2 + boneKnob, 0, boneKnob, 0, Math.PI * 2);
+      ctx.fillStyle = isMax ? '#FFF8D0' : acc;
+      ctx.fill();
+
+      // Right knob
+      ctx.beginPath();
+      ctx.arc(boneW/2 - boneKnob, 0, boneKnob, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Down-pointing triangle indicator
+      ctx.beginPath();
+      ctx.moveTo(-4, 5);
+      ctx.lineTo(4, 5);
+      ctx.lineTo(0, 11);
+      ctx.closePath();
+      ctx.fillStyle = isMax ? '#FFD700' : acc;
+      ctx.fill();
+
+      ctx.restore();
+
+      // ── Bottom readout ──
+      const visualNote = isMax ? '11' : String(Math.floor(t * 11));
+      ctx.textAlign = 'center';
+      ctx.font = "bold 16px 'Share Tech Mono',monospace";
+      ctx.fillStyle = isMax ? '#FFD700' : acc;
+      ctx.fillText('NOTE ' + visualNote, W/2, keyY + keyH + 28);
+
+      // ── Skull decorations at corners ──
+      ctx.font = '12px serif';
+      ctx.fillStyle = 'rgba(200,190,170,0.15)';
+      ctx.fillText('💀', 16, H - 10);
+      ctx.fillText('💀', W - 16, H - 10);
+
+      // Animate at max
+      if (isMax && at88) requestAnimationFrame(() => drawDial(dialNotch));
+    }
+
     function setDialNotch(notch, andGenerate = true) {
       dialNotch = Math.max(0, Math.min(dialNotches(), notch));
       const chars = notchToChars(dialNotch);
@@ -3446,27 +3914,114 @@
     const WORDS = [
       'acid','acorn','acre','acts','afar','aged','agent','agile','aging','agony',
       'ahead','aide','aisle','alarm','album','alert','alias','alibi','alien','align',
-      'alive','alley','allow','alloy','alone','alpha','amaze','amber','ample','angel',
-      'anger','angle','ankle','annex','anvil','apart','aphid','apple','April','apron',
-      'arena','argue','arise','armor','aroma','arrow','asset','atlas','atom','attic',
-      'audio','audit','avert','avoid','awake','award','axle','bacon','badge','badly',
-      'bagel','baker','balmy','banjo','barge','baron','basic','basin','batch','beast',
-      'begin','being','below','bench','berry','bike','bingo','birch','blade','blame',
-      'blank','blast','blaze','bleak','bleed','blend','bless','blimp','blind','bliss',
-      'block','bloke','blond','bloom','blown','bluff','blunt','board','boast','bonus',
-      'booth','bound','bowed','boxer','brain','brake','brand','brave','bread','break',
-      'breed','brick','brief','bring','brink','brisk','broad','brook','brush','buddy',
-      'budge','buggy','build','built','bulge','bunch','burst','cabin','cable','camel',
-      'canal','candy','cargo','carry','catch','cause','cedar','chain','chair','chalk',
-      'champ','charm','chase','cheap','check','chess','chief','child','chill','china',
-      'chunk','civic','civil','claim','clamp','clash','clasp','class','claw','clean',
-      'clear','clerk','click','cliff','climb','cling','clock','clone','cloth','cloud',
-      'coach','coral','craft','crane','crash','crawl','crazy','cream','crisp','cross',
-      'crowd','crush','curve','cycle','dairy','dance','dealt','debug','decay','decoy',
-      'delta','depot','depth','derby','devil','digit','ditch','dodge','donor','doubt',
+      'alive','alley','alloy','alone','alpha','amaze','amber','ample','angel','anger',
+      'angle','ankle','annex','anvil','apart','apple','arena','argue','arise','armor',
+      'aroma','arrow','asset','atlas','attic','audio','audit','avert','avoid','awake',
+      'award','axle','bacon','badge','badly','bagel','baker','balmy','banjo','barge',
+      'baron','basic','basin','batch','beast','begin','being','below','bench','berry',
+      'bike','bingo','birch','blade','blame','blank','blast','blaze','bleak','blend',
+      'bless','blimp','blind','bliss','block','blond','bloom','blown','bluff','blunt',
+      'board','boast','bonus','booth','bound','boxer','brain','brake','brand','brave',
+      'bread','break','breed','brick','brief','bring','brink','brisk','broad','brook',
+      'brush','buddy','budge','buggy','build','built','bulge','bunch','burst','cabin',
+      'cable','camel','canal','candy','cargo','carry','catch','cause','cedar','chain',
+      'chair','chalk','champ','charm','chase','cheap','check','chess','chief','child',
+      'chill','china','chunk','civic','civil','claim','clamp','clash','clasp','class',
+      'clean','clear','clerk','click','cliff','climb','cling','clock','clone','cloth',
+      'cloud','coach','coral','craft','crane','crash','crawl','crazy','cream','crisp',
+      'cross','crowd','crush','curve','cycle','dairy','dance','dealt','debug','decay',
+      'decoy','delta','depot','depth','derby','devil','digit','ditch','dodge','donor',
+      'doubt','draft','drain','drama','drank','drape','drawn','dream','dress','dried',
+      'drift','drill','drink','drive','drone','drove','drums','drunk','dryer','dwarf',
+      'dying','eager','eagle','early','earth','easel','eaten','ebony','edges','edict',
+      'eight','elbow','elder','elect','elite','ember','empty','ended','enemy','enjoy',
+      'enter','envoy','equal','equip','error','essay','ethic','evade','event','every',
+      'exact','exalt','exile','exist','expel','extra','fable','facet','facto','faint',
+      'fairy','faith','false','fancy','fatal','fault','feast','fence','ferry','fetch',
+      'fever','fiber','field','fiery','fifth','fifty','fight','filth','final','finch',
+      'first','fixed','flame','flank','flare','flash','flask','flesh','flick','fling',
+      'flint','float','flock','flood','floor','flora','flour','fluid','fluke','flush',
+      'flute','focal','foggy','folly','force','forge','forth','forum','found','foxes',
+      'foyer','frame','frank','fraud','fresh','friar','front','frost','froze','fruit',
+      'fuels','fully','fungi','fuzzy','gains','gamer','gamma','gauge','gazer','gears',
+      'geese','genus','ghost','giant','given','gizmo','glade','gland','glare','glass',
+      'gleam','glide','glint','globe','gloom','glory','gloss','glove','gnome','going',
+      'golem','gorge','grace','grade','graft','grain','grand','grant','grape','graph',
+      'grasp','grass','grave','graze','green','greet','grief','grill','grind','gripe',
+      'groin','groom','grope','gross','group','grove','growl','grown','gruel','guard',
+      'guess','guest','guide','guild','guilt','guise','gulch','gully','gumbo','gusto',
+      'gusty','habit','haste','haven','hazel','heady','heart','heave','heavy','hedge',
+      'heist','helix','hello','hence','herbs','hiker','hilly','hinge','hippo','hitch',
+      'hoard','hobby','homer','honey','honor','hooks','hoped','horse','hotel','house',
+      'hover','human','humid','humor','husky','hyena','icing','ideal','idler','image',
+      'imply','inane','inbox','index','indie','inept','infer','ingot','inner','input',
+      'irony','ivory','jazzy','jelly','jewel','jiffy','joint','joker','jolly','joust',
+      'judge','juice','juicy','jumbo','jumpy','juror','karma','kayak','kebab','kiosk',
+      'knack','knead','kneel','knife','knelt','knock','knoll','known','koala','kudos',
+      'label','labor','lance','lapse','large','laser','latch','later','latex','laugh',
+      'layer','leach','learn','lease','ledge','legal','lemon','level','lever','light',
+      'lilac','linen','liner','llama','llano','local','locus','lodge','lofty','logic',
+      'lunar','lunch','lunge','lusty','lyric','macho','macro','magic','major','maker',
+      'mango','manor','maple','march','marsh','mason','match','mayor','mealy','media',
+      'medic','melon','mercy','merge','merit','metal','meter','midst','might','mince',
+      'miner','minor','minus','mirth','miser','model','modem','mogul','moist','moldy',
+      'money','month','moose','moral','morph','mossy','motel','motor','motto','mound',
+      'mount','mourn','mouse','moved','mover','movie','muddy','mural','music','musty',
+      'naive','nasty','naval','nerve','never','newly','nexus','nifty','night','ninja',
+      'noble','noise','north','notch','noted','novel','nudge','nurse','nylon','oasis',
+      'occur','ocean','olive','onset','opera','orbit','organ','other','otter','outer',
+      'outdo','oxide','ozone','paddy','pager','paint','panel','panic','paper','parka',
+      'party','pasta','patch','pause','peach','pearl','pedal','penny','perch','peril',
+      'perky','petal','phase','phone','photo','piano','pilot','pinch','pixel','pizza',
+      'place','plaid','plain','plane','plank','plant','plate','plaza','plead','pleat',
+      'plier','pluck','plumb','plume','plump','plunge','point','poker','polar','ponds',
+      'poser','pound','power','press','price','pride','prime','print','prior','prize',
+      'probe','prone','proof','prose','proud','prove','prowl','proxy','prude','prune',
+      'psalm','pulse','punch','pupil','purge','queen','query','quest','queue','quick',
+      'quiet','quill','quirk','quota','quote','raced','radar','radio','rainy','raise',
+      'rally','ranch','range','rapid','raven','reach','react','realm','rebel','rebus',
+      'recon','refer','reign','relax','relay','remit','repay','repel','reply','retro',
+      'rider','ridge','rifle','rigid','rigor','rinse','risen','risky','rival','river',
+      'rivet','roast','robin','robot','rocky','rogue','roman','roomy','rover','royal',
+      'rugby','ruled','ruler','rumor','rusty','sadly','saint','salad','salon','salty',
+      'salve','sandy','satin','sauce','sauna','saved','savor','scale','scare','scarf',
+      'scene','scent','scope','score','scout','scram','screw','scrub','sedan','sense',
+      'serve','setup','seven','sever','shade','shaft','shake','shall','shame','shape',
+      'share','shark','sharp','shave','shelf','shell','shift','shine','shirt','shock',
+      'shore','short','shout','shove','shown','shrub','shrug','sight','sigma','silk',
+      'silly','since','siren','sixty','sized','skill','skull','skunk','slate','sleek',
+      'sleep','slice','slide','slime','slope','sloth','smart','smear','smell','smile',
+      'smith','smoke','snack','snail','snake','snare','sneak','snore','solar','solid',
+      'solve','sonic','sorry','south','space','spare','spark','spawn','speak','spear',
+      'speed','spend','spice','spike','spine','spoke','spoon','sport','spray','squad',
+      'stack','staff','stage','stain','stair','stake','stale','stalk','stall','stamp',
+      'stand','stare','stark','start','stash','state','stave','stays','steak','steal',
+      'steam','steel','steep','steer','stern','stick','stiff','still','sting','stint',
+      'stock','stoic','stoke','stone','stool','store','storm','story','stout','stove',
+      'straw','stray','strip','stuck','study','stump','stung','stunt','style','sugar',
+      'suite','sunny','super','surge','sushi','swamp','swarm','swear','sweat','sweep',
+      'sweet','swept','swift','swing','swirl','sword','swore','swung','syrup','table',
+      'tacit','tally','talon','tangy','tango','taper','tawny','teeth','tempo','tense',
+      'tepid','thick','thief','thing','think','third','thorn','those','three','throw',
+      'thumb','tidal','tiger','tight','timer','timid','tipsy','titan','title','toast',
+      'token','tonic','topic','torch','total','tough','towel','tower','toxic','trace',
+      'track','trade','trail','train','trait','trash','trays','treat','trend','trial',
+      'tribe','trick','tried','troop','trout','truce','truck','truly','trump','trunk',
+      'trust','truth','tuber','tulip','tumor','tuner','tunic','turbo','tutor','twang',
+      'tweed','twice','twine','twist','ultra','uncle','under','unify','union','unite',
+      'unity','until','upper','upset','urban','usher','using','usual','utter','vague',
+      'valid','valor','valve','vapor','vault','venue','verse','vigor','viper','viral',
+      'visit','visor','vista','vital','vivid','vocal','vodka','vogue','voice','voter',
+      'vouch','vowel','vulva','wacky','wagon','waist','waive','waltz','wares','watch',
+      'water','weary','weave','wedge','weigh','weird','whale','wheat','wheel','where',
+      'which','while','whirl','whole','widen','width','wield','windy','wired','witch',
+      'wives','woman','world','worry','worse','worst','worth','would','wound','wrath',
+      'wrist','wrote','xenon','yacht','yearn','yield','young','youth','zebra','zesty',
+      'zilch','zippy','zones',
     ];
 
-    let _savedAmbig = false; // saved state when entering passphrase mode
+    let _savedAmbig = false;  // saved state when entering passphrase mode
+    let _savedSymbols = true; // saved state when entering passphrase mode
 
     function togglePassphrase() {
       usePassphrase = !usePassphrase;
@@ -3491,14 +4046,17 @@
         numbersNote.textContent = 'On';
         ppUseNumbers = true;
 
+        // Save and force symbols ON, then disable
+        _savedSymbols = useSymbols;
+        useSymbols = true;
+        symRow.classList.add('active');
+        symRow.style.opacity = '0.3';
+        symRow.style.pointerEvents = 'none';
+
         // Save and disable ambiguous
         _savedAmbig = useNoAmbig;
         useNoAmbig = false;
         ambigRow.classList.remove('active');
-
-        // Grey out symbols and ambiguous — not applicable
-        symRow.style.opacity = '0.3';
-        symRow.style.pointerEvents = 'none';
         ambigRow.style.opacity = '0.3';
         ambigRow.style.pointerEvents = 'none';
       } else {
@@ -3511,13 +4069,15 @@
         numbersRow.onclick = null;
         numbersNote.textContent = 'Always on';
 
-        // Restore symbols and ambiguous
+        // Restore symbols to previous state
         symRow.style.opacity = '';
         symRow.style.pointerEvents = '';
-        ambigRow.style.opacity = '';
-        ambigRow.style.pointerEvents = '';
+        useSymbols = _savedSymbols;
+        symRow.classList.toggle('active', useSymbols);
 
         // Restore ambiguous to previous state
+        ambigRow.style.opacity = '';
+        ambigRow.style.pointerEvents = '';
         useNoAmbig = _savedAmbig;
         ambigRow.classList.toggle('active', useNoAmbig);
       }
@@ -3959,14 +4519,123 @@
         ],
       },
 
+      goonies: {
+        id:              'goonies',
+        label:           'The Goonies',
+        pageTitle:       'PopcornPasswords: Goonies Never Say Die',
+        headerSub:       'PopcornPasswords',
+        speedUnit:       'STEPS',
+        minSpeed:        8,
+        maxSpeed:        88,
+        defaultLen:      30,
+        useDial:         false,
+        useCustomSlider: true,
+        sliderStyle:     'treasure',
+        maxColour:       '#FFD700',
+        maxQuote:        '💀 ONE-EYED WILLY\'S TREASURE FOUND — This password is buried so deep, even the Fratellis couldn\'t crack it. 💀',
+        colourStops: [
+          { r: 0x0a, g: 0x16, b: 0x28 }, // dark cave navy (min)
+          { r: 0xd4, g: 0x85, b: 0x0a }, // amber torchlight (mid)
+          { r: 0xff, g: 0xd7, b: 0x00 }, // treasure gold (max)
+        ],
+        cssVars: {
+          '--orange':    '#d4850a',
+          '--orange-hi': '#e8a020',
+          '--orange-lo': '#5a3800',
+          '--orange-dim':'#1a1000',
+          '--blue':      '#1a3050',
+          '--blue-hi':   '#2a5080',
+          '--blue-dim':  '#0a1020',
+          '--blue-lo':   '#0c1e35',
+          '--yellow':    '#FFD700',
+          '--bg':        '#08101c',
+          '--surface':   '#0c1828',
+          '--surface2':  '#112030',
+          '--border':    '#1a2840',
+          '--border2':   '#243855',
+        },
+        castPhoto:     'https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/goonies_cast.png',
+        startEffect:   () => startTreasureSparkle(),
+        stopEffect:    () => stopTreasureSparkle(),
+        footerQuote:   '"Goonies never say die!" — Mikey',
+        supportIcon:   '💀',
+        supportText:   'Enjoyed this? Buy us a Baby Ruth',
+        modalTitle:    'Goonies Never Say Die!',
+        modalStrengthTitle: 'Why strong passwords matter',
+        modalStrengthBody:  'Most account breaches are not sophisticated heists — they are weak or reused passwords being tried at scale. <strong>A 30-character random password is billions of times harder to crack than an 8-character one.</strong> The difference is not a small edge. It is the gap between searching for treasure in your garden and finding One-Eyed Willy\'s ship at the end of the longest booby-trapped tunnel in history. One password, one account. Never reuse.',
+        modalUpperTitle: 'Why uppercase & numbers are always on',
+        modalUpperBody:  'A password using only lowercase is like searching for treasure with a blank map — you have no idea where you are going. <strong>Mixing uppercase, lowercase, and numbers expands the search space massively</strong> — from 26 possible characters per slot to 62. At 30 characters that is the difference between a pile of rocks and One-Eyed Willy\'s entire treasure haul.',
+        modalSymTitle:  'Why symbols push it further',
+        modalSymBody:   'Symbols push the character pool to roughly 95 per slot. <strong>Every extra character type multiplies total combinations</strong> — it does not just add, it multiplies. A password with symbols at full length would take every computer on Earth longer to crack than every booby trap in the cave took to build. That is not just hidden. That is buried treasure.',
+        modalRandTitle: 'The randomiser: One-Eyed Willy\'s map',
+        modalRandBody:  'Every password is built using <strong>the same cryptographic engine</strong> that powers the most secure systems on the planet. Each character is chosen through a process so unpredictable, not even the Fratellis with a head start could work it out. Every character gets a perfectly equal shot. No favourites. No patterns. Pure entropy from the deepest part of the cave.',
+        modalPrivTitle: 'Your password never leaves the cave',
+        modalPrivBody:  'Everything runs in your browser. <strong>No passwords are transmitted, logged, or stored anywhere.</strong> There is no server involved. Close the tab and it is gone forever. The treasure map has been burned.',
+        modalQuote:     '"It\'s our time down here." — Mikey',
+        strengthLabels: [
+          'Lost in the Cave',
+          'Found the Map',
+          'Passed the Organ',
+          'Dodged the Traps',
+          'Reached the Ship',
+          'Found the Gold',
+          'ONE-EYED WILLY!'
+        ],
+        quotes: [
+          '"Goonies never say die!" — Mikey',
+          '"It\'s our time down here." — Mikey',
+          '"Hey you guys!" — Sloth',
+          '"Sloth love Chunk." — Sloth',
+          '"First you gotta do the truffle shuffle." — Mouth',
+          '"Down here it\'s our time. It\'s our time down here." — Mikey',
+          '"I\'m gonna hit you so hard that when you wake up your clothes will be out of style." — Brand',
+          '"This is ridiculous. It\'s crazy. I feel like I\'m babysitting except I\'m not getting paid." — Stef',
+          '"It all starts here." — Mikey',
+          '"Goonies never say die. Goonies never say die." — Chunk',
+          '"Do you think there\'s a way out of here? I really think there\'s a way out of here." — Mikey',
+          '"One-Eyed Willy. He was the most famous pirate in his time." — Mikey',
+        ],
+      },
+
     };
 
     let THEME = THEMES.bttf;
 
     function applyTheme(themeId) {
+      // ── Cleanup previous theme artifacts ──
+      exitMax();
+      // Remove Goonies skull, organ bg
+      const oldSkull = document.getElementById('dlSkull');
+      if (oldSkull) oldSkull.remove();
+      const oldOrgan = document.getElementById('dlOrganBg');
+      if (oldOrgan) oldOrgan.remove();
+      // Remove Cool Runnings bobsled
+      const oldBobsled = document.getElementById('dlBobsled');
+      if (oldBobsled) oldBobsled.remove();
+      // Restore road/markers/car visibility
+      const oldRoad = document.getElementById('dlRoad');
+      if (oldRoad) { oldRoad.style.display = ''; oldRoad.style.background = ''; oldRoad.style.boxShadow = ''; oldRoad.style.height = ''; oldRoad.style.borderRadius = ''; }
+      const oldMarkers = document.getElementById('dlMarkers');
+      if (oldMarkers) oldMarkers.style.display = '';
+      const oldCar = document.getElementById('dlCar');
+      if (oldCar) { oldCar.style.display = ''; oldCar.style.mixBlendMode = ''; oldCar.style.filter = ''; }
+
       THEME = THEMES[themeId];
       try { localStorage.setItem('pp_theme', themeId); } catch(e) {}
       document.title = THEME.pageTitle || 'Popcorn Passwords';
+
+      // ── Cast photo (brand panel background layer) ──
+      const castWrap = document.getElementById('castPhotoWrap');
+      const castImg  = document.getElementById('castPhotoImg');
+      if (castWrap && castImg) {
+        if (THEME.castPhoto) {
+          castImg.src = THEME.castPhoto;
+          castWrap.classList.add('visible');
+        } else {
+          castWrap.classList.remove('visible');
+          castImg.src = '';
+        }
+      }
       // Update fallback text only — logo image stays in place
       const logoText = document.getElementById('headerLogoText');
       if (logoText) logoText.textContent = THEME.headerSub;
