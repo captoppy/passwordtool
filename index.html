@@ -287,7 +287,7 @@
     body.compact .header-divider { margin-top: 4px; margin-bottom: 2px; }
     body.compact .theme-badge { margin-top: 2px; font-size: 9px; }
     body.compact .pw-card { padding: 1rem 1.25rem 0.75rem; margin-bottom: 0.75rem; }
-    body.compact .pw-text { height: calc(1.6em * 2); min-height: calc(1.6em * 2); max-height: calc(1.6em * 2); }
+    body.compact .pw-text { min-height: calc(1.6em * 4); }
     body.compact .pw-actions { margin-top: 10px; padding-top: 8px; }
     body.compact .strength-row { margin-bottom: 0.5rem; min-height: auto; }
     body.compact .section { margin-bottom: 0.5rem; }
@@ -508,9 +508,7 @@
       }
       .pw-text {
         font-size: 13px;
-        height: calc(1.6em * 2);
-        min-height: calc(1.6em * 2);
-        max-height: calc(1.6em * 2);
+        min-height: calc(1.6em * 4);
       }
       .pw-actions {
         gap: 8px;
@@ -773,19 +771,17 @@
       letter-spacing: 0.08em;
       transition: color 0.3s;
     }
-    /* !! LOCKED: pw-text is exactly 2 rows. Do NOT change unless explicitly requested. !! */
+    /* !! LOCKED: pw-text is 4 rows min. Do NOT change unless explicitly requested. !! */
     .pw-text {
       font-family: var(--mono);
       font-size: 16px;
       word-break: break-all;
       overflow-wrap: break-word;
       line-height: 1.6;
-      height: calc(1.6em * 2);
-      min-height: calc(1.6em * 2);
-      max-height: calc(1.6em * 2);
+      min-height: calc(1.6em * 4);
       letter-spacing: 0.05em;
       width: 100%;
-      overflow: hidden;
+      overflow: visible;
       user-select: text;
       cursor: text;
     }
@@ -3458,50 +3454,91 @@
         mothership.style.transform = isMax ? 'scale(1.1)' : 'none';
 
         // Building on the track — progressively cracks/glows as power increases
+        // Skyscraper at end of track — single building with character
         if (!building) {
           building = document.createElement('div');
           building.id = 'dlBuilding';
-          building.style.cssText = 'position:absolute;bottom:5px;right:20px;pointer-events:none;z-index:1;transition:filter 0.3s,opacity 0.3s;';
+          building.style.cssText = 'position:absolute;bottom:4px;right:12px;pointer-events:none;z-index:1;transition:filter 0.3s;';
           if (track) track.appendChild(building);
         }
-        // SVG building that progressively shows damage
-        const dmg = Math.min(t * 1.2, 1); // damage 0→1, slightly accelerated
-        const glowIntensity = Math.round(dmg * 255);
-        const crackOpacity = Math.min(dmg * 1.5, 1);
-        const fireOpacity = Math.max(0, (dmg - 0.4) * 1.6);
-        const beamOpacity = Math.min(dmg * 0.8, 0.6);
-        const beamWidth = 2 + dmg * 6;
-        building.innerHTML = `<svg width="32" height="55" viewBox="0 0 32 55" style="display:block;">
-          <!-- Beam from above -->
-          <rect x="${16 - beamWidth/2}" y="0" width="${beamWidth}" height="55" fill="rgba(${140 + glowIntensity * 0.4},${200 + glowIntensity * 0.2},255,${beamOpacity})" rx="1"/>
-          <!-- Building body -->
-          <rect x="6" y="10" width="20" height="42" fill="${isLight ? '#7a8a9a' : '#1a2838'}" stroke="${isLight ? '#5a6a7a' : '#2a4060'}" stroke-width="0.8" rx="1"/>
-          <!-- Windows -->
-          <rect x="9" y="14" width="4" height="3" fill="rgba(${100 + glowIntensity * 0.6},${180 - glowIntensity * 0.3},${255 - glowIntensity},${0.3 + dmg * 0.4})" rx="0.5"/>
-          <rect x="15" y="14" width="4" height="3" fill="rgba(${100 + glowIntensity * 0.6},${180 - glowIntensity * 0.3},${255 - glowIntensity},${0.3 + dmg * 0.4})" rx="0.5"/>
-          <rect x="21" y="14" width="4" height="3" fill="rgba(${100 + glowIntensity * 0.6},${180 - glowIntensity * 0.3},${255 - glowIntensity},${0.3 + dmg * 0.4})" rx="0.5"/>
-          <rect x="9" y="20" width="4" height="3" fill="rgba(${100 + glowIntensity * 0.6},${180 - glowIntensity * 0.3},${255 - glowIntensity},${0.25 + dmg * 0.3})" rx="0.5"/>
-          <rect x="15" y="20" width="4" height="3" fill="rgba(${100 + glowIntensity * 0.6},${180 - glowIntensity * 0.3},${255 - glowIntensity},${0.25 + dmg * 0.3})" rx="0.5"/>
-          <rect x="21" y="20" width="4" height="3" fill="rgba(${100 + glowIntensity * 0.6},${180 - glowIntensity * 0.3},${255 - glowIntensity},${0.25 + dmg * 0.3})" rx="0.5"/>
-          <rect x="9" y="26" width="4" height="3" fill="rgba(255,${180 - glowIntensity * 0.5},${80 - glowIntensity * 0.3},${0.2 + dmg * 0.4})" rx="0.5"/>
-          <rect x="15" y="26" width="4" height="3" fill="rgba(255,${180 - glowIntensity * 0.5},${80 - glowIntensity * 0.3},${0.2 + dmg * 0.4})" rx="0.5"/>
-          <rect x="21" y="26" width="4" height="3" fill="rgba(255,${180 - glowIntensity * 0.5},${80 - glowIntensity * 0.3},${0.2 + dmg * 0.4})" rx="0.5"/>
-          <!-- Cracks -->
-          <line x1="10" y1="18" x2="22" y2="32" stroke="rgba(255,120,30,${crackOpacity * 0.6})" stroke-width="${0.5 + dmg}"/>
-          <line x1="22" y1="14" x2="14" y2="28" stroke="rgba(255,80,0,${crackOpacity * 0.5})" stroke-width="${0.3 + dmg * 0.8}"/>
-          <line x1="16" y1="30" x2="20" y2="44" stroke="rgba(255,60,0,${crackOpacity * 0.4})" stroke-width="${0.3 + dmg * 0.6}"/>
-          <!-- Fire at base (appears at higher damage) -->
-          ${fireOpacity > 0 ? `
-          <ellipse cx="16" cy="50" rx="${6 + dmg * 4}" ry="${3 + dmg * 3}" fill="rgba(255,100,0,${fireOpacity * 0.5})"/>
-          <ellipse cx="16" cy="48" rx="${4 + dmg * 3}" ry="${2 + dmg * 2}" fill="rgba(255,200,50,${fireOpacity * 0.4})"/>
-          ` : ''}
-          <!-- Antenna -->
-          <line x1="16" y1="10" x2="16" y2="4" stroke="${isLight ? '#5a6a7a' : '#3a5a80'}" stroke-width="1"/>
-          <circle cx="16" cy="3" r="1.2" fill="rgba(255,${60 + glowIntensity * 0.5},${glowIntensity * 0.2},${0.4 + dmg * 0.6})"/>
+        const dmg = Math.min(t * 1.2, 1);
+        const beamOp = Math.min(dmg * 0.65, 0.5);
+        const fireOp = Math.max(0, (dmg - 0.45) * 1.8);
+        const gR = Math.round(100 + dmg * 155);
+        const gG = Math.round(180 - dmg * 100);
+        const bodyFill = isLight ? '#788898' : '#111f30';
+        const bodyStk = isLight ? '#5a6a7a' : '#1e3550';
+        const winBase = isLight ? 40 : 20;
+        // Window colour shifts from blue-white → orange with damage
+        const wR = Math.round(80 + dmg * 175);
+        const wG = Math.round(160 - dmg * 60);
+        const wB = Math.round(255 - dmg * 200);
+        const wA = (0.25 + dmg * 0.5).toFixed(2);
+        building.innerHTML = `<svg width="28" height="60" viewBox="0 0 28 60" style="display:block;">
+          <!-- Beam from above — widens as charge grows -->
+          <polygon points="11,0 17,0 ${19 + dmg * 4},60 ${9 - dmg * 4},60"
+            fill="rgba(${gR},${gG},255,${beamOp})" opacity="${dmg > 0.05 ? 1 : 0}"/>
+          <!-- Rooftop structure -->
+          <rect x="11" y="6" width="6" height="4" fill="${bodyFill}" stroke="${bodyStk}" stroke-width="0.4" rx="0.5"/>
+          <rect x="13" y="2" width="2" height="4" fill="${bodyStk}" rx="0.3"/>
+          <circle cx="14" cy="2" r="1" fill="rgba(255,${Math.round(60 + dmg * 140)},${Math.round(dmg * 40)},${(0.3 + dmg * 0.7).toFixed(2)})"/>
+          <!-- Main tower -->
+          <rect x="4" y="10" width="20" height="48" fill="${bodyFill}" stroke="${bodyStk}" stroke-width="0.5" rx="0.5"/>
+          <!-- Setback detail -->
+          <rect x="6" y="10" width="16" height="2" fill="${isLight ? '#6a7a8a' : '#1a3050'}" rx="0.3"/>
+          <!-- Window grid — 4 columns × 7 rows -->
+          ${Array.from({length: 7}, (_, row) =>
+            Array.from({length: 4}, (_, col) => {
+              const wx = 6.5 + col * 4.5;
+              const wy = 15 + row * 5.5;
+              const flicker = Math.sin(row * 1.7 + col * 2.3) * 0.15;
+              return `<rect x="${wx}" y="${wy}" width="2.5" height="2" rx="0.3"
+                fill="rgba(${wR},${wG},${wB},${Math.max(0.1, parseFloat(wA) + flicker).toFixed(2)})"/>`;
+            }).join('')
+          ).join('')}
+          <!-- Cracks — appear with damage -->
+          <line x1="8" y1="18" x2="18" y2="38" stroke="rgba(255,100,20,${(dmg * 0.5).toFixed(2)})" stroke-width="${(0.3 + dmg * 1.2).toFixed(1)}"/>
+          <line x1="20" y1="22" x2="12" y2="42" stroke="rgba(255,70,0,${(dmg * 0.4).toFixed(2)})" stroke-width="${(0.2 + dmg * 0.9).toFixed(1)}"/>
+          <line x1="14" y1="35" x2="18" y2="52" stroke="rgba(255,50,0,${(dmg * 0.35).toFixed(2)})" stroke-width="${(0.2 + dmg * 0.7).toFixed(1)}"/>
+          <!-- Fire at base -->
+          ${fireOp > 0 ? `<ellipse cx="14" cy="56" rx="${(5 + dmg * 5).toFixed(1)}" ry="${(2 + dmg * 3).toFixed(1)}" fill="rgba(255,100,0,${(fireOp * 0.5).toFixed(2)})"/>
+          <ellipse cx="14" cy="54" rx="${(3 + dmg * 3).toFixed(1)}" ry="${(1.5 + dmg * 2).toFixed(1)}" fill="rgba(255,200,50,${(fireOp * 0.4).toFixed(2)})"/>` : ''}
+          <!-- Debris particles at high damage -->
+          ${dmg > 0.6 ? [0,1,2].map(i => {
+            const dx = 8 + i * 6 + Math.sin(i * 3.7) * 3;
+            const dy = 20 + i * 12;
+            return `<rect x="${dx}" y="${dy}" width="1.5" height="1" fill="rgba(255,140,40,${(dmg * 0.4).toFixed(2)})" transform="rotate(${i * 25} ${dx} ${dy})"/>`;
+          }).join('') : ''}
         </svg>`;
+        // At MAX — building obliterated: simple explosion with blue lights
+        if (isMax) {
+          building.innerHTML = `<svg width="36" height="56" viewBox="0 0 36 56" style="display:block;overflow:visible;">
+            <!-- Explosion starburst — jagged shape -->
+            <polygon points="18,4 21,16 30,10 24,20 35,22 24,26 30,36 21,30 18,42 15,30 6,36 12,26 1,22 12,20 6,10 15,16"
+              fill="rgba(100,170,255,0.35)"/>
+            <polygon points="18,10 20,18 26,14 22,22 30,24 22,26 26,32 20,28 18,36 16,28 10,32 14,26 6,24 14,22 10,14 16,18"
+              fill="rgba(160,210,255,0.4)"/>
+            <!-- Bright blue-white centre -->
+            <circle cx="18" cy="22" r="6" fill="rgba(120,190,255,0.5)"/>
+            <circle cx="18" cy="22" r="3.5" fill="rgba(200,230,255,0.6)"/>
+            <circle cx="18" cy="22" r="1.5" fill="rgba(240,248,255,0.8)"/>
+            <!-- Blue light sparks flying out -->
+            <circle cx="6" cy="12" r="1.2" fill="rgba(100,180,255,0.6)"/>
+            <circle cx="30" cy="14" r="1" fill="rgba(140,210,255,0.5)"/>
+            <circle cx="4" cy="30" r="0.9" fill="rgba(120,190,255,0.5)"/>
+            <circle cx="32" cy="32" r="1.1" fill="rgba(100,170,255,0.55)"/>
+            <circle cx="10" cy="38" r="0.8" fill="rgba(160,220,255,0.45)"/>
+            <circle cx="26" cy="40" r="1" fill="rgba(130,200,255,0.5)"/>
+            <circle cx="18" cy="44" r="0.9" fill="rgba(140,210,255,0.4)"/>
+            <!-- Orange fire underneath -->
+            <ellipse cx="18" cy="46" rx="10" ry="4" fill="rgba(255,100,20,0.3)"/>
+            <ellipse cx="18" cy="44" rx="6" ry="3" fill="rgba(255,160,50,0.25)"/>
+          </svg>`;
+          building.style.filter = 'drop-shadow(0 0 10px rgba(100,180,255,0.7)) drop-shadow(0 0 6px rgba(140,210,255,0.5)) brightness(1.3)';
+        }
         building.style.filter = isMax
-          ? 'drop-shadow(0 0 10px rgba(255,106,0,0.8)) brightness(1.3)'
-          : `drop-shadow(0 0 ${dmg * 6}px rgba(${glowIntensity},${Math.round(glowIntensity * 0.5)},0,${dmg * 0.4}))`;
+          ? 'drop-shadow(0 0 12px rgba(120,180,255,0.7)) drop-shadow(0 0 8px rgba(255,106,0,0.8)) brightness(1.4)'
+          : `drop-shadow(0 0 ${(dmg * 6).toFixed(1)}px rgba(${gR},${Math.round(gG * 0.5)},0,${(dmg * 0.35).toFixed(2)}))`;
       } else {
         if (mothership) mothership.remove();
         if (building) building.remove();
@@ -4876,7 +4913,7 @@
         headerSub:       'PopcornPasswords',
         speedUnit:       'STEPS',
         minSpeed:        8,
-        maxSpeed:        88,
+        maxSpeed:        100,
         defaultLen:      30,
         useDial:         false,
         useCustomSlider: true,
