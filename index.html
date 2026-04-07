@@ -279,6 +279,28 @@
       background: var(--bg);
     }
 
+    /* ── Fluid desktop scaling — applied via JS on .tool-panel zoom ── */
+    /* Compact mode — tightens vertical spacing so zoomed content fits viewport */
+    body.compact .header { margin-bottom: 0.6rem; }
+    body.compact .header-title { font-size: 40px; }
+    body.compact .header-sub { margin-bottom: 0; }
+    body.compact .header-divider { margin-top: 4px; margin-bottom: 2px; }
+    body.compact .theme-badge { margin-top: 2px; font-size: 9px; }
+    body.compact .pw-card { padding: 1rem 1.25rem 0.75rem; margin-bottom: 0.75rem; }
+    body.compact .pw-text { height: calc(1.6em * 2); min-height: calc(1.6em * 2); max-height: calc(1.6em * 2); }
+    body.compact .pw-actions { margin-top: 10px; padding-top: 8px; }
+    body.compact .strength-row { margin-bottom: 0.5rem; min-height: auto; }
+    body.compact .section { margin-bottom: 0.5rem; }
+    body.compact .section-label { margin-bottom: 4px; }
+    body.compact .col { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    body.compact .info-btn { width: 22px; height: 22px; font-size: 11px; }
+    body.compact #dialWrap { width: 190px !important; height: 190px !important; }
+    body.compact #dialCanvas { width: 190px !important; height: 190px !important; }
+    body.compact #dialNotchDisplay { font-size: 28px !important; }
+    body.compact #dialRow { gap: 12px !important; }
+    body.compact .len-display { padding: 4px 8px; }
+    body.compact .delorean-slider-wrap { margin-top: -4px; }
+
     /* App bar — full width, logo left, controls right */
     .app-bar {
       display: flex;
@@ -306,9 +328,11 @@
       flex: 0 0 340px;
       height: 100%;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
-      overflow: visible;
+      justify-content: center;
+      overflow: hidden;
+      gap: 0;
     }
     .brand-panel-name,
     .brand-panel-tagline,
@@ -321,40 +345,38 @@
       background: transparent;
     }
 
-    .brand-panel img {
-      width: 320px;
-      height: 320px;
+    .brand-panel img:not(.cast-image) {
+      width: 260px;
+      height: 260px;
       object-fit: contain;
       flex-shrink: 0;
     }
     /* Dark mode: screen blend makes black bg in image disappear, white logo shows */
-    body:not(.light) .brand-panel img { mix-blend-mode: screen; }
+    body:not(.light) .brand-panel img:not(.cast-image) { mix-blend-mode: screen; }
     /* Light mode: multiply blend makes white bg in image disappear, coloured logo shows */
-    body.light .brand-panel img      { mix-blend-mode: multiply; }
+    body.light .brand-panel img:not(.cast-image)      { mix-blend-mode: multiply; }
     /* Single image used for all themes */
     .brand-img-dark  { display: block; }
     .brand-img-light { display: none; }
 
-    /* ── THEME CAST PHOTO (full-page background layer) ── */
-    .cast-photo-wrap {
-      display: none;
-      position: fixed;
-      inset: 0;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
+    /* Cast photo — shown below logo in brand panel */
+    .cast-image {
+      width: 300px;
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      object-fit: cover;
+      opacity: 0.85;
+      transition: opacity 0.4s ease;
+      margin-top: 1rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
     }
-    .cast-photo-wrap.visible { display: flex; }
-    .cast-photo {
-      width: 100%;
-      height: 100%;
-      object-fit: fill;
-      opacity: 0.12;
-      transform: none;
-      mix-blend-mode: normal;
+    .cast-image:hover { opacity: 1; }
+    body.light .cast-image {
+      opacity: 0.9;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     }
+    body.light .cast-image:hover { opacity: 1; }
 
     .col {
       overflow-y: auto;
@@ -486,7 +508,9 @@
       }
       .pw-text {
         font-size: 13px;
+        height: calc(1.6em * 2);
         min-height: calc(1.6em * 2);
+        max-height: calc(1.6em * 2);
       }
       .pw-actions {
         gap: 8px;
@@ -575,6 +599,10 @@
         font-size: 11px;
       }
       /* Dial control — slightly smaller on phone */
+      #dialRow {
+        flex-direction: column !important;
+        gap: 10px !important;
+      }
       #dialWrap {
         width: 190px !important;
         height: 190px !important;
@@ -745,16 +773,19 @@
       letter-spacing: 0.08em;
       transition: color 0.3s;
     }
+    /* !! LOCKED: pw-text is exactly 2 rows. Do NOT change unless explicitly requested. !! */
     .pw-text {
       font-family: var(--mono);
       font-size: 16px;
       word-break: break-all;
       overflow-wrap: break-word;
       line-height: 1.6;
-      min-height: calc(1.6em * 3);
+      height: calc(1.6em * 2);
+      min-height: calc(1.6em * 2);
+      max-height: calc(1.6em * 2);
       letter-spacing: 0.05em;
       width: 100%;
-      overflow: visible;
+      overflow: hidden;
       user-select: text;
       cursor: text;
     }
@@ -871,7 +902,8 @@
       flex: 1;
       position: relative;
       min-width: 0;
-      overflow: hidden;
+      overflow: visible;
+      padding-right: 20px;
     }
     @keyframes smokePuff {
       0%   { transform: translate(0,0) scale(0.3); opacity: 0.7; }
@@ -1566,11 +1598,6 @@
   </noscript>
   <div id="flashOverlay"></div>
 
-  <!-- Cast photo — full-page background layer, shown per theme -->
-  <div class="cast-photo-wrap" id="castPhotoWrap">
-    <img class="cast-photo" id="castPhotoImg" src="" alt="" />
-  </div>
-
   <div class="page-wrap">
 
     <!-- Full-width tool panel — app bar top, content centred below -->
@@ -1606,6 +1633,7 @@
           <img class="brand-img-dark"
             src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/word_icon_white.png"
             alt="PopcornPasswords" />
+          <img id="castImage" class="cast-image" src="" alt="" style="display:none;" />
         </div>
 
         <!-- Col 2: title + password + strength + length -->
@@ -1668,7 +1696,7 @@
                   <!-- Trail -->
                   <div id="dlTrail" style="position:absolute; bottom:16px; left:0; height:5px; width:0; border-radius:3px; pointer-events:none;"></div>
                   <!-- Speed markers — updated dynamically by dlUpdateMarkers() -->
-                  <div id="dlMarkers" style="position:absolute; bottom:23px; left:0; right:0; display:flex; justify-content:space-between; pointer-events:none; padding:0 55px;"></div>
+                  <div id="dlMarkers" style="position:absolute; bottom:23px; left:0; right:0; display:flex; justify-content:space-between; pointer-events:none; padding:0 0 0 0;"></div>
                   <!-- Smoke container -->
                   <div id="dlSmokeWrap" style="position:absolute;inset:0;pointer-events:none;overflow:visible;"></div>
                   <!-- DeLorean image (flipped to face right) -->
@@ -1687,14 +1715,14 @@
                 <input type="range" id="slider" min="8" max="88" value="30" step="1" oninput="syncSlider()" aria-label="Password length" />
               </div>
             </div>
-            <div id="dialRow" style="display:none; flex-direction:column; align-items:center; gap:14px;">
+            <div id="dialRow" style="display:none; flex-direction:row; align-items:center; gap:18px; justify-content:center;">
               <div style="position:relative; width:220px; height:220px; flex-shrink:0;" id="dialWrap">
                 <canvas id="dialCanvas" width="220" height="220" style="display:block; cursor:grab; touch-action:none;" role="slider" aria-label="Password length dial" aria-valuemin="0" aria-valuemax="110"></canvas>
               </div>
-              <div style="display:flex; align-items:center; gap:14px; justify-content:center;">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px; justify-content:center; width:100px; flex-shrink:0;">
                 <span style="display:flex; align-items:baseline; gap:8px; justify-content:center;">
                   <span id="dialPrefixLabel" style="font-family:var(--display); font-size:13px; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase;">VOLUME</span>
-                  <span id="dialNotchDisplay" style="font-family:var(--display); font-size:36px; font-weight:700; line-height:1;">3</span>
+                  <span id="dialNotchDisplay" style="font-family:var(--display); font-size:36px; font-weight:700; line-height:1; min-width:1.5em; text-align:center;">3</span>
                 </span>
                 <div class="len-display" id="dialLenDisplay" style="width:72px;">
                   <input type="number" class="len-number" id="dialLenInput" value="30" min="1" max="110"
@@ -2531,6 +2559,187 @@
       at88 = false;
     }
 
+    // ── Destruction explosion (Independence Day max effect) ──
+    let destructionParticles = [];
+    let destructionRAF = null;
+
+    function startDestruction() {
+      const canvas = document.getElementById('fireCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.style.opacity = '1';
+      destructionParticles = [];
+
+      function spawn() {
+        const edge = Math.random() > 0.5;
+        const isAlien = Math.random() > 0.55;
+        destructionParticles.push({
+          x: edge ? -12 : canvas.width + 12,
+          y: Math.random() * canvas.height * 0.75 + canvas.height * 0.1,
+          vx: (edge ? 1 : -1) * (Math.random() * 2.5 + 1.8),
+          vy: (Math.random() - 0.5) * 1.5,
+          life: 1.0,
+          decay: Math.random() * 0.006 + 0.004,
+          size: isAlien ? Math.random() * 3 + 4 : Math.random() * 3 + 3,
+          type: isAlien ? 'alien' : 'fighter',
+          wobble: Math.random() * Math.PI * 2,
+          wobbleSpeed: Math.random() * 0.06 + 0.03,
+          missileTimer: Math.random() * 60 + 30
+        });
+      }
+
+      function spawnMissile(ship) {
+        const isA = ship.type === 'alien';
+        destructionParticles.push({
+          x: ship.x + ship.vx * 2, y: ship.y,
+          vx: ship.vx * (isA ? 1.8 : 2.2),
+          vy: (Math.random() - 0.5) * 1.2,
+          life: 0.7, decay: 0.015 + Math.random() * 0.008,
+          size: isA ? 2.5 : 1.8,
+          type: isA ? 'alien_missile' : 'missile'
+        });
+      }
+
+      function spawnExplosion(x, y) {
+        for (let i = 0; i < 6; i++) {
+          const ang = Math.random() * Math.PI * 2;
+          const spd = Math.random() * 2 + 0.5;
+          destructionParticles.push({
+            x, y, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd,
+            life: 0.5, decay: 0.025 + Math.random() * 0.02,
+            size: Math.random() * 4 + 2, type: 'explosion'
+          });
+        }
+      }
+
+      function drawFighter(p) {
+        const a = Math.max(0, p.life), f = p.vx > 0 ? 1 : -1;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.scale(f, 1);
+        ctx.beginPath();
+        ctx.moveTo(p.size * 2.5, 0);
+        ctx.lineTo(-p.size * 1.5, -p.size);
+        ctx.lineTo(-p.size * 0.5, 0);
+        ctx.lineTo(-p.size * 1.5, p.size);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(140,200,255,${a * 0.9})`;
+        ctx.shadowColor = `rgba(100,180,255,${a})`;
+        ctx.shadowBlur = 8; ctx.fill(); ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.arc(p.size * 0.5, 0, p.size * 0.3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(220,240,255,${a})`; ctx.fill();
+        ctx.beginPath(); ctx.arc(-p.size, 0, p.size * 0.35, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(80,160,255,${a * 0.7})`;
+        ctx.shadowColor = `rgba(60,140,255,${a})`; ctx.shadowBlur = 5;
+        ctx.fill(); ctx.shadowBlur = 0; ctx.restore();
+      }
+
+      function drawAlien(p) {
+        const a = Math.max(0, p.life), f = p.vx > 0 ? 1 : -1;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.scale(f, 1);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, p.size * 2.2, p.size * 0.7, 0, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(60,70,90,${a * 0.85})`;
+        ctx.shadowColor = `rgba(120,255,120,${a * 0.6})`;
+        ctx.shadowBlur = 6; ctx.fill(); ctx.shadowBlur = 0;
+        ctx.beginPath();
+        ctx.ellipse(0, -p.size * 0.4, p.size * 0.9, p.size * 0.6, 0, Math.PI, 0);
+        ctx.fillStyle = `rgba(80,100,120,${a * 0.7})`; ctx.fill();
+        for (let i = 0; i < 3; i++) {
+          const lx = (i - 1) * p.size * 1.2;
+          ctx.beginPath(); ctx.arc(lx, p.size * 0.1, p.size * 0.2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(100,255,100,${a * (0.5 + Math.sin(p.wobble + i) * 0.3)})`;
+          ctx.shadowColor = `rgba(80,255,80,${a * 0.6})`; ctx.shadowBlur = 4;
+          ctx.fill(); ctx.shadowBlur = 0;
+        }
+        ctx.beginPath(); ctx.arc(0, p.size * 0.5, p.size * 0.25, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(150,255,100,${a * 0.4})`; ctx.fill();
+        ctx.restore();
+      }
+
+      function drawMissile(p) {
+        const a = Math.max(0, p.life), isA = p.type === 'alien_missile';
+        ctx.save(); ctx.translate(p.x, p.y);
+        ctx.rotate(p.vx > 0 ? 0 : Math.PI);
+        const len = p.size * 3;
+        const grad = ctx.createLinearGradient(-len, 0, len * 0.5, 0);
+        if (isA) {
+          grad.addColorStop(0, 'rgba(80,255,80,0)');
+          grad.addColorStop(0.6, `rgba(120,255,100,${a * 0.5})`);
+          grad.addColorStop(1, `rgba(180,255,150,${a * 0.9})`);
+        } else {
+          grad.addColorStop(0, 'rgba(255,200,80,0)');
+          grad.addColorStop(0.6, `rgba(255,160,60,${a * 0.5})`);
+          grad.addColorStop(1, `rgba(255,240,200,${a * 0.9})`);
+        }
+        ctx.beginPath();
+        ctx.moveTo(len * 0.5, 0);
+        ctx.lineTo(-len, -p.size * 0.3);
+        ctx.lineTo(-len, p.size * 0.3);
+        ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
+        ctx.beginPath(); ctx.arc(len * 0.4, 0, p.size * 0.3, 0, Math.PI * 2);
+        ctx.fillStyle = isA ? `rgba(150,255,120,${a})` : `rgba(255,220,150,${a})`;
+        ctx.shadowColor = isA ? `rgba(100,255,80,${a})` : `rgba(255,180,60,${a})`;
+        ctx.shadowBlur = 4; ctx.fill(); ctx.shadowBlur = 0;
+        ctx.restore();
+      }
+
+      function drawExplosion(p) {
+        const a = Math.max(0, p.life);
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+        grad.addColorStop(0, `rgba(255,240,200,${a})`);
+        grad.addColorStop(0.4, `rgba(255,140,40,${a * 0.7})`);
+        grad.addColorStop(1, 'rgba(200,60,0,0)');
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = grad; ctx.fill();
+      }
+
+      function tick() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (Math.random() > 0.88) spawn();
+        destructionParticles = destructionParticles.filter(p => p.life > 0);
+
+        const ships = destructionParticles.filter(p => p.type === 'fighter' || p.type === 'alien');
+        const msls = destructionParticles.filter(p => p.type === 'missile' || p.type === 'alien_missile');
+        for (const m of msls) {
+          for (const s of ships) {
+            if (m.type === 'missile' && s.type !== 'alien') continue;
+            if (m.type === 'alien_missile' && s.type !== 'fighter') continue;
+            const dx = m.x - s.x, dy = m.y - s.y;
+            if (dx * dx + dy * dy < 120) {
+              spawnExplosion(s.x, s.y); m.life = 0; s.life = 0; break;
+            }
+          }
+        }
+
+        for (const p of destructionParticles) {
+          if (p.type === 'fighter' || p.type === 'alien') {
+            p.wobble += p.wobbleSpeed;
+            p.x += p.vx; p.y += Math.sin(p.wobble) * 0.7;
+            p.life -= p.decay;
+            p.missileTimer--;
+            if (p.missileTimer <= 0) { spawnMissile(p); p.missileTimer = Math.random() * 80 + 40; }
+            if (p.type === 'fighter') drawFighter(p); else drawAlien(p);
+          } else if (p.type === 'missile' || p.type === 'alien_missile') {
+            p.x += p.vx; p.y += p.vy * 0.95; p.life -= p.decay;
+            drawMissile(p);
+          } else if (p.type === 'explosion') {
+            p.x += p.vx; p.y += p.vy; p.vx *= 0.92; p.vy *= 0.92;
+            p.life -= p.decay; p.size *= 1.02; drawExplosion(p);
+          }
+        }
+
+        if (at88) destructionRAF = requestAnimationFrame(tick);
+        else {
+          canvas.style.transition = 'opacity 0.8s';
+          canvas.style.opacity = '0';
+          setTimeout(() => { ctx.clearRect(0, 0, canvas.width, canvas.height); canvas.style.transition = ''; }, 800);
+        }
+      }
+      destructionRAF = requestAnimationFrame(tick);
+    }
+
+    function stopDestruction() {
+      at88 = false;
+    }
+
     // ── Snowflakes (Cool Runnings max effect) ──
     let snowInterval = null;
     function startSnowflakes() {
@@ -3037,6 +3246,7 @@
       if (!track || !track.offsetWidth) return;
       const isIce      = THEME.sliderStyle === 'ice';
       const isTreasure = THEME.sliderStyle === 'treasure';
+      const isDestruction = THEME.sliderStyle === 'destruction';
       const minV   = THEME.minSpeed || 8;
       const maxV   = THEME.maxSpeed || 88;
       const range  = maxV - minV;
@@ -3076,12 +3286,42 @@
             { icon: '⚓', tip: 'The ship', pct: 60 },
             { icon: '💀', tip: 'Willy!', pct: 100 }
           ];
-          markers.innerHTML = items.map((m, i) =>
-            `<span style="position:absolute;left:${m.pct}%;transform:translateX(-50%);font-size:${i===3?'12px':'10px'};filter:${i===3?'drop-shadow(0 0 3px rgba(255,215,0,0.6))':'none'};user-select:none;white-space:nowrap;" title="${m.tip}">${m.icon}</span>`
-          ).join('');
+          markers.innerHTML = items.map((m, i) => {
+            const align = i === 0 ? 'translateX(0)' : i === items.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)';
+            return `<span style="position:absolute;left:${m.pct}%;transform:${align};font-size:${i===3?'12px':'10px'};filter:${i===3?'drop-shadow(0 0 3px rgba(255,215,0,0.6))':'none'};user-select:none;white-space:nowrap;" title="${m.tip}">${m.icon}</span>`;
+          }).join('');
+        }
+      } else if (isDestruction) {
+        // Destruction-themed road — dark city ground
+        if (road) {
+          road.style.display = '';
+          road.style.height = '5px';
+          road.style.borderRadius = '2px';
+          road.style.background = isLight
+            ? 'linear-gradient(90deg, #8a9aaa, #6a7a8a, #8a9aaa)'
+            : 'linear-gradient(90deg, #142030, #1e3048, #142030)';
+          road.style.boxShadow = isMax
+            ? '0 0 12px rgba(255,106,0,0.4), inset 0 1px 2px rgba(0,0,0,0.5)'
+            : 'inset 0 1px 2px rgba(0,0,0,0.4)';
+        }
+        // Destruction markers — charge percentage waypoints
+        if (markers) {
+          markers.style.display = '';
+          const items = [
+            { label: '0%', pct: 0 },
+            { label: '25%', pct: 25 },
+            { label: '50%', pct: 50 },
+            { label: '75%', pct: 75 },
+            { label: '100%', pct: 100 }
+          ];
+          const accent = THEME.maxColour || '#ff6a00';
+          markers.innerHTML = items.map((m, i) => {
+            const col = i === items.length - 1 ? accent : 'var(--muted)';
+            const align = i === 0 ? 'translateX(0)' : i === items.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)';
+            return `<span style="position:absolute;left:${m.pct}%;transform:${align};font-family:var(--display);font-size:9px;color:${col};white-space:nowrap;">${m.label}</span>`;
+          }).join('');
         }
       } else {
-        // Reset road to default for non-treasure themes
         if (road) {
           road.style.display = '';
           road.style.height = '';
@@ -3189,6 +3429,84 @@
         bobsled.remove();
       }
 
+      // ── Independence Day: mothership + building ──
+      let mothership = document.getElementById('dlMothership');
+      let building   = document.getElementById('dlBuilding');
+
+      if (isDestruction) {
+        if (car) car.style.display = 'none';
+        // Create mothership (the vehicle that slides)
+        if (!mothership) {
+          mothership = document.createElement('div');
+          mothership.id = 'dlMothership';
+          mothership.style.cssText = 'position:absolute;bottom:6px;line-height:1;pointer-events:none;transition:filter 0.2s,transform 0.15s;z-index:3;';
+          // SVG mothership — disc shape with lights
+          mothership.innerHTML = `<svg width="50" height="22" viewBox="0 0 50 22" style="display:block;">
+            <ellipse cx="25" cy="14" rx="24" ry="7" fill="#1a2540" stroke="#3a5a8a" stroke-width="0.8"/>
+            <ellipse cx="25" cy="14" rx="18" ry="4" fill="#0d1828" stroke="#4a7ab0" stroke-width="0.5"/>
+            <ellipse cx="25" cy="12" rx="10" ry="5" fill="#111e30"/>
+            <circle cx="25" cy="11" r="3" fill="#0a1520" stroke="#5090cc" stroke-width="0.6"/>
+            <circle cx="25" cy="11" r="1.2" fill="#8ec5ff" opacity="0.9"/>
+            <circle cx="12" cy="15" r="1" fill="#4a90d9" opacity="0.7"/><circle cx="18" cy="16" r="0.8" fill="#7ab8ff" opacity="0.6"/>
+            <circle cx="32" cy="16" r="0.8" fill="#7ab8ff" opacity="0.6"/><circle cx="38" cy="15" r="1" fill="#4a90d9" opacity="0.7"/>
+          </svg>`;
+          if (carWrap) carWrap.appendChild(mothership);
+        }
+        mothership.style.filter = isMax
+          ? 'drop-shadow(0 0 12px rgba(255,106,0,0.9)) drop-shadow(0 0 25px rgba(255,60,0,0.5)) brightness(1.3)'
+          : `drop-shadow(0 0 ${4 + t * 8}px rgba(74,144,217,${0.3 + t * 0.5}))`;
+        mothership.style.transform = isMax ? 'scale(1.1)' : 'none';
+
+        // Building on the track — progressively cracks/glows as power increases
+        if (!building) {
+          building = document.createElement('div');
+          building.id = 'dlBuilding';
+          building.style.cssText = 'position:absolute;bottom:5px;right:20px;pointer-events:none;z-index:1;transition:filter 0.3s,opacity 0.3s;';
+          if (track) track.appendChild(building);
+        }
+        // SVG building that progressively shows damage
+        const dmg = Math.min(t * 1.2, 1); // damage 0→1, slightly accelerated
+        const glowIntensity = Math.round(dmg * 255);
+        const crackOpacity = Math.min(dmg * 1.5, 1);
+        const fireOpacity = Math.max(0, (dmg - 0.4) * 1.6);
+        const beamOpacity = Math.min(dmg * 0.8, 0.6);
+        const beamWidth = 2 + dmg * 6;
+        building.innerHTML = `<svg width="32" height="55" viewBox="0 0 32 55" style="display:block;">
+          <!-- Beam from above -->
+          <rect x="${16 - beamWidth/2}" y="0" width="${beamWidth}" height="55" fill="rgba(${140 + glowIntensity * 0.4},${200 + glowIntensity * 0.2},255,${beamOpacity})" rx="1"/>
+          <!-- Building body -->
+          <rect x="6" y="10" width="20" height="42" fill="${isLight ? '#7a8a9a' : '#1a2838'}" stroke="${isLight ? '#5a6a7a' : '#2a4060'}" stroke-width="0.8" rx="1"/>
+          <!-- Windows -->
+          <rect x="9" y="14" width="4" height="3" fill="rgba(${100 + glowIntensity * 0.6},${180 - glowIntensity * 0.3},${255 - glowIntensity},${0.3 + dmg * 0.4})" rx="0.5"/>
+          <rect x="15" y="14" width="4" height="3" fill="rgba(${100 + glowIntensity * 0.6},${180 - glowIntensity * 0.3},${255 - glowIntensity},${0.3 + dmg * 0.4})" rx="0.5"/>
+          <rect x="21" y="14" width="4" height="3" fill="rgba(${100 + glowIntensity * 0.6},${180 - glowIntensity * 0.3},${255 - glowIntensity},${0.3 + dmg * 0.4})" rx="0.5"/>
+          <rect x="9" y="20" width="4" height="3" fill="rgba(${100 + glowIntensity * 0.6},${180 - glowIntensity * 0.3},${255 - glowIntensity},${0.25 + dmg * 0.3})" rx="0.5"/>
+          <rect x="15" y="20" width="4" height="3" fill="rgba(${100 + glowIntensity * 0.6},${180 - glowIntensity * 0.3},${255 - glowIntensity},${0.25 + dmg * 0.3})" rx="0.5"/>
+          <rect x="21" y="20" width="4" height="3" fill="rgba(${100 + glowIntensity * 0.6},${180 - glowIntensity * 0.3},${255 - glowIntensity},${0.25 + dmg * 0.3})" rx="0.5"/>
+          <rect x="9" y="26" width="4" height="3" fill="rgba(255,${180 - glowIntensity * 0.5},${80 - glowIntensity * 0.3},${0.2 + dmg * 0.4})" rx="0.5"/>
+          <rect x="15" y="26" width="4" height="3" fill="rgba(255,${180 - glowIntensity * 0.5},${80 - glowIntensity * 0.3},${0.2 + dmg * 0.4})" rx="0.5"/>
+          <rect x="21" y="26" width="4" height="3" fill="rgba(255,${180 - glowIntensity * 0.5},${80 - glowIntensity * 0.3},${0.2 + dmg * 0.4})" rx="0.5"/>
+          <!-- Cracks -->
+          <line x1="10" y1="18" x2="22" y2="32" stroke="rgba(255,120,30,${crackOpacity * 0.6})" stroke-width="${0.5 + dmg}"/>
+          <line x1="22" y1="14" x2="14" y2="28" stroke="rgba(255,80,0,${crackOpacity * 0.5})" stroke-width="${0.3 + dmg * 0.8}"/>
+          <line x1="16" y1="30" x2="20" y2="44" stroke="rgba(255,60,0,${crackOpacity * 0.4})" stroke-width="${0.3 + dmg * 0.6}"/>
+          <!-- Fire at base (appears at higher damage) -->
+          ${fireOpacity > 0 ? `
+          <ellipse cx="16" cy="50" rx="${6 + dmg * 4}" ry="${3 + dmg * 3}" fill="rgba(255,100,0,${fireOpacity * 0.5})"/>
+          <ellipse cx="16" cy="48" rx="${4 + dmg * 3}" ry="${2 + dmg * 2}" fill="rgba(255,200,50,${fireOpacity * 0.4})"/>
+          ` : ''}
+          <!-- Antenna -->
+          <line x1="16" y1="10" x2="16" y2="4" stroke="${isLight ? '#5a6a7a' : '#3a5a80'}" stroke-width="1"/>
+          <circle cx="16" cy="3" r="1.2" fill="rgba(255,${60 + glowIntensity * 0.5},${glowIntensity * 0.2},${0.4 + dmg * 0.6})"/>
+        </svg>`;
+        building.style.filter = isMax
+          ? 'drop-shadow(0 0 10px rgba(255,106,0,0.8)) brightness(1.3)'
+          : `drop-shadow(0 0 ${dmg * 6}px rgba(${glowIntensity},${Math.round(glowIntensity * 0.5)},0,${dmg * 0.4}))`;
+      } else {
+        if (mothership) mothership.remove();
+        if (building) building.remove();
+      }
+
       // Trail
       const trail = document.getElementById('dlTrail');
       if (trail) {
@@ -3208,8 +3526,15 @@
           trail.style.background = isMax
             ? 'linear-gradient(90deg, rgba(0,155,72,0.9), rgba(255,209,0,0.8), rgba(227,6,19,0.5), transparent)'
             : 'linear-gradient(90deg, rgba(0,155,72,0.6), rgba(255,209,0,0.3), transparent)';
+        } else if (isDestruction) {
+          trail.style.height = isMax ? '8px' : '4px';
+          trail.style.bottom = isMax ? '14px' : '17px';
+          trail.style.filter = isMax ? 'blur(1.5px)' : 'none';
+          trail.style.background = isMax
+            ? 'linear-gradient(90deg, rgba(255,106,0,0.95), rgba(255,200,80,0.8), rgba(200,230,255,0.5), transparent)'
+            : 'linear-gradient(90deg, rgba(74,144,217,0.7), rgba(142,197,255,0.3), transparent)';
+          trail.style.zIndex = '2';
         } else {
-          trail.style.height = isMax ? '8px' : '5px';
           trail.style.bottom = isMax ? '14px' : '16px';
           trail.style.filter = isMax ? 'blur(1px)' : 'none';
           trail.style.background = isMax
@@ -3220,6 +3545,7 @@
 
       if (isMax && isTreasure) dlTreasurePuff(left);
       else if (isMax && isIce) dlSnowPuff(left);
+      else if (isMax && isDestruction) dlDestructionPuff(left);
       else if (isMax) dlFirePuff(left);
 
       const lbl = document.getElementById('dlLabel');
@@ -3288,6 +3614,23 @@
       setTimeout(() => p.remove(), 640);
     }
 
+    function dlDestructionPuff(left) {
+      const wrap = document.getElementById('dlSmokeWrap');
+      if (!wrap) return;
+      const p = document.createElement('div');
+      const sz = 6 + Math.random() * 12;
+      const colors = ['rgba(255,106,0,0.9)','rgba(255,200,80,0.85)','rgba(200,230,255,0.8)','rgba(255,60,0,0.8)'];
+      const col = colors[Math.floor(Math.random() * colors.length)];
+      p.style.cssText = `position:absolute;pointer-events:none;width:${sz}px;height:${sz}px;border-radius:50%;
+        left:${left - 5 + Math.random()*15}px;
+        bottom:${14 + Math.random()*10}px;
+        background:${col};
+        box-shadow:0 0 ${sz*0.6}px ${col};
+        animation:dlSmokePuff 0.7s ease-out forwards;`;
+      wrap.appendChild(p);
+      setTimeout(() => p.remove(), 740);
+    }
+
     function dlUpdateMarkers() {
       const el = document.getElementById('dlMarkers');
       if (!el) return;
@@ -3307,7 +3650,8 @@
       el.innerHTML = vals.map((v, i) => {
         const pct = ((v - min) / (max - min)) * 100;
         const col = i === vals.length - 1 ? accent : 'var(--muted)';
-        return `<span style="position:absolute;left:${pct}%;transform:translateX(-50%);font-family:var(--display);font-size:9px;color:${col};white-space:nowrap;">${v}</span>`;
+        const align = i === 0 ? 'translateX(0)' : i === vals.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)';
+        return `<span style="position:absolute;left:${pct}%;transform:${align};font-family:var(--display);font-size:9px;color:${col};white-space:nowrap;">${v}</span>`;
       }).join('');
     }
 
@@ -3868,12 +4212,13 @@
         dialAccumDeg  += frameDelta;
 
         // Hard-clamp accumulator to the physical sweep of the dial
+        // Add half-notch buffer so extremes (max/min) are easier to reach
         const totalSweep = DIAL_MAX_DEG - DIAL_MIN_DEG; // 270°
-        const maxAccum   =  totalSweep * (dialNotches() - dialStartNotch) / dialNotches();
-        const minAccum   = -totalSweep * dialStartNotch / dialNotches();
+        const degsPerNotch = totalSweep / dialNotches();
+        const maxAccum   =  totalSweep * (dialNotches() - dialStartNotch) / dialNotches() + degsPerNotch * 0.5;
+        const minAccum   = -totalSweep * dialStartNotch / dialNotches() - degsPerNotch * 0.5;
         dialAccumDeg = Math.max(minAccum, Math.min(maxAccum, dialAccumDeg));
 
-        const degsPerNotch = totalSweep / dialNotches();
         const rawNotch = dialStartNotch + dialAccumDeg / degsPerNotch;
         const newNotch = Math.max(0, Math.min(dialNotches(), Math.round(rawNotch)));
         if (newNotch !== dialNotch) setDialNotch(newNotch);
@@ -4187,6 +4532,7 @@
 
       bttf: {
         id:            'bttf',
+        castImage:     'https://raw.githubusercontent.com/captoppy/passwordtool/main/bttf_cast_.jpg',
         label:         'Back to the Future',
         pageTitle:     'PopcornPasswords — 88 MPH',
         headerSub:     'PopcornPasswords',
@@ -4265,6 +4611,7 @@
 
       spinal_tap: {
         id:              'spinal_tap',
+        castImage:       'https://raw.githubusercontent.com/captoppy/passwordtool/main/spinal_tap_cast_.jpg',
         label:           'This Is Spinal Tap',
         pageTitle:       'PopcornPasswords — These Go to 11',
         headerSub:       'PopcornPasswords',
@@ -4352,6 +4699,7 @@
 
       top_gun: {
         id:            'top_gun',
+        castImage:     'https://raw.githubusercontent.com/captoppy/passwordtool/main/top_gun_cast_.jpg',
         label:         'Top Gun',
         pageTitle:     'PopcornPasswords — Top Gun',
         headerSub:     'PopcornPasswords',
@@ -4437,6 +4785,7 @@
 
       cool_runnings: {
         id:            'cool_runnings',
+        castImage:     'https://raw.githubusercontent.com/captoppy/passwordtool/main/cool_runnings_cast_.jpg',
         label:         'Cool Runnings',
         pageTitle:     'PopcornPasswords: Feel the Rhythm',
         headerSub:     'PopcornPasswords',
@@ -4521,6 +4870,7 @@
 
       goonies: {
         id:              'goonies',
+        castImage:       'https://raw.githubusercontent.com/captoppy/passwordtool/main/goonies_cast_.jpg',
         label:           'The Goonies',
         pageTitle:       'PopcornPasswords: Goonies Never Say Die',
         headerSub:       'PopcornPasswords',
@@ -4554,7 +4904,6 @@
           '--border':    '#1a2840',
           '--border2':   '#243855',
         },
-        castPhoto:     'https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/goonies_cast.png',
         startEffect:   () => startTreasureSparkle(),
         stopEffect:    () => stopTreasureSparkle(),
         footerQuote:   '"Goonies never say die!" — Mikey',
@@ -4597,6 +4946,86 @@
         ],
       },
 
+      // ── INDEPENDENCE DAY ──────────────────────────────────────
+      independence_day: {
+        id:              'independence_day',
+        castImage:       'https://raw.githubusercontent.com/captoppy/passwordtool/main/independence_cast_.jpg',
+        label:           'Independence Day',
+        pageTitle:       'PopcornPasswords — Independence Day',
+        headerSub:       'PopcornPasswords',
+        speedUnit:       'CHARGE',
+        formatSpeed:     v => v + '%',
+        minSpeed:        8,
+        maxSpeed:        100,
+        defaultLen:      30,
+        useDial:         false,
+        useCustomSlider: true,
+        sliderStyle:     'destruction',
+        maxColour:       '#ff6a00',
+        maxQuote:        '💥 TOTAL ANNIHILATION — The mothership has fired. This password just levelled every brute-force attack on Earth. 💥',
+        colourStops: [
+          { r: 0x1a, g: 0x3a, b: 0x5c }, // cold steel blue (min)
+          { r: 0xcc, g: 0xe0, b: 0xff }, // white-blue beam (mid)
+          { r: 0xff, g: 0x6a, b: 0x00 }, // searing orange fire (max)
+        ],
+        cssVars: {
+          '--orange':    '#4a90d9',
+          '--orange-hi': '#7ab8ff',
+          '--orange-lo': '#1a3050',
+          '--orange-dim':'#0a1520',
+          '--blue':      '#8ec5ff',
+          '--blue-hi':   '#cce0ff',
+          '--blue-dim':  '#071428',
+          '--blue-lo':   '#0d1e35',
+          '--yellow':    '#ff6a00',
+          '--bg':        '#060a12',
+          '--surface':   '#0a1018',
+          '--surface2':  '#0e1622',
+          '--border':    '#142030',
+          '--border2':   '#1e3248',
+        },
+        startEffect:   () => startDestruction(),
+        stopEffect:    () => stopDestruction(),
+        footerQuote:   '"Welcome to Earth." — Captain Steven Hiller',
+        supportIcon:   '👽',
+        supportText:   'Enjoyed this? Buy the President a cigar',
+        modalTitle:    'Today We Celebrate Our Independence Day!',
+        modalStrengthTitle: 'Why strong passwords matter',
+        modalStrengthBody:  'Most account breaches are not sophisticated alien invasions — they are weak or reused passwords being tried at scale. <strong>A 30-character random password is billions of times harder to crack than an 8-character one.</strong> The difference is not a slight edge. It is the gap between a crop duster and a city-levelling mothership weapon. One password, one account. Never reuse.',
+        modalUpperTitle: 'Why uppercase & numbers are always on',
+        modalUpperBody:  'A password using only lowercase is like fighting an alien invasion with a slingshot — the shield drops instantly. <strong>Mixing uppercase, lowercase, and numbers expands the search space massively</strong> — from 26 characters per slot to 62. At 30 characters that is the difference between a biplane and an F/A-18 with a nuclear payload.',
+        modalSymTitle:  'Why symbols push it further',
+        modalSymBody:   'Symbols push the character pool to roughly 95 per slot. <strong>Every extra character type multiplies total combinations</strong> — it does not just add, it multiplies. A full-strength password with symbols would outlast an alien mothership siege running until the sun burns out. That is not just strong. That is extinction-level defence.',
+        modalRandTitle: 'The randomiser: alien-grade encryption',
+        modalRandBody:  'Every password is built using <strong>the same cryptographic engine</strong> that powers the most secure systems on the planet — systems even the aliens could not crack. Each character is chosen through a process so unpredictable, no mothership, no matter how advanced, could calculate it. Every character gets a perfectly equal shot. No patterns. No shortcuts. Pure entropy from the void of space.',
+        modalPrivTitle: 'Your password never leaves the bunker',
+        modalPrivBody:  'Everything runs in your browser. <strong>No passwords are transmitted, logged, or stored anywhere.</strong> There is no server involved. Close the tab and it is gone forever — the signal has been wiped from every frequency.',
+        modalQuote:     '"We will not go quietly into the night!" — President Whitmore',
+        strengthLabels: [
+          'No Signal',
+          'Signal Detected',
+          'Approaching Orbit',
+          'Weapon Charging',
+          'Beam Locked',
+          'Shields Down',
+          'TOTAL ANNIHILATION'
+        ],
+        quotes: [
+          '"Welcome to Earth." — Captain Steven Hiller',
+          '"I could have been at a barbecue!" — Captain Steven Hiller',
+          '"We will not go quietly into the night!" — President Whitmore',
+          '"Today we celebrate our Independence Day!" — President Whitmore',
+          '"Must go faster. Must go faster!" — David Levinson',
+          '"Is that glass bulletproof?" — Marty Gilbert',
+          '"You really think you can fly that thing?" — President Whitmore',
+          '"Do you really want to die here?" — David Levinson',
+          '"All right, you alien assholes! In the words of my generation: UP YOURS!" — Russell Casse',
+          '"Checkmate." — David Levinson',
+          '"We are going to survive." — President Whitmore',
+          '"Eagle One, Fox Two." — Captain Steven Hiller',
+        ],
+      },
+
     };
 
     let THEME = THEMES.bttf;
@@ -4612,6 +5041,11 @@
       // Remove Cool Runnings bobsled
       const oldBobsled = document.getElementById('dlBobsled');
       if (oldBobsled) oldBobsled.remove();
+      // Remove Independence Day mothership + building
+      const oldMothership = document.getElementById('dlMothership');
+      if (oldMothership) oldMothership.remove();
+      const oldBuilding = document.getElementById('dlBuilding');
+      if (oldBuilding) oldBuilding.remove();
       // Restore road/markers/car visibility
       const oldRoad = document.getElementById('dlRoad');
       if (oldRoad) { oldRoad.style.display = ''; oldRoad.style.background = ''; oldRoad.style.boxShadow = ''; oldRoad.style.height = ''; oldRoad.style.borderRadius = ''; }
@@ -4623,19 +5057,6 @@
       THEME = THEMES[themeId];
       try { localStorage.setItem('pp_theme', themeId); } catch(e) {}
       document.title = THEME.pageTitle || 'Popcorn Passwords';
-
-      // ── Cast photo (brand panel background layer) ──
-      const castWrap = document.getElementById('castPhotoWrap');
-      const castImg  = document.getElementById('castPhotoImg');
-      if (castWrap && castImg) {
-        if (THEME.castPhoto) {
-          castImg.src = THEME.castPhoto;
-          castWrap.classList.add('visible');
-        } else {
-          castWrap.classList.remove('visible');
-          castImg.src = '';
-        }
-      }
       // Update fallback text only — logo image stays in place
       const logoText = document.getElementById('headerLogoText');
       if (logoText) logoText.textContent = THEME.headerSub;
@@ -4661,6 +5082,20 @@
       // Apply CSS variable overrides for this theme
       const root = document.documentElement;
       Object.entries(THEME.cssVars || {}).forEach(([k, v]) => root.style.setProperty(k, v));
+
+      // ── Cast image ──
+      const castImg = document.getElementById('castImage');
+      if (castImg) {
+        if (THEME.castImage) {
+          castImg.src = THEME.castImage;
+          castImg.alt = THEME.label + ' cast';
+          castImg.style.display = 'block';
+          castImg.style.border = '2px solid ' + (THEME.cssVars['--orange'] || '#f97316');
+        } else {
+          castImg.style.display = 'none';
+          castImg.src = '';
+        }
+      }
 
       if (THEME.useDial) {
         // Show dial, hide slider
@@ -4824,6 +5259,27 @@
         sel.appendChild(opt);
       });
     })();
+
+    // ── Fluid viewport zoom — scales tool panel to fill any screen ──
+    // Gentle scale: ~1.0 at 1100px, ~1.29 at 1920px, caps at 1.4.
+    // Below 901px (tablet/mobile) → no zoom, responsive layout handles it.
+    function updateFluidZoom() {
+      const panel = document.querySelector('.tool-panel');
+      if (!panel) return;
+      const vw = window.innerWidth;
+      if (vw <= 900) {
+        panel.style.zoom = '';
+        document.body.classList.remove('compact');
+        return;
+      }
+      const raw = 0.55 + vw / 2600;
+      const z = Math.min(1.4, Math.max(1.0, raw));
+      panel.style.zoom = z;
+      // Enable compact spacing when zoom is active to prevent overflow
+      document.body.classList.toggle('compact', z > 1.02);
+    }
+    updateFluidZoom();
+    window.addEventListener('resize', updateFluidZoom);
 
     // Init — restore saved theme or default to BTTF
     try {
