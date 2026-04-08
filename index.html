@@ -1557,6 +1557,47 @@
       transition: border-color 0.15s, color 0.15s;
     }
     .seo-toggle:hover { border-color: var(--orange); }
+
+    /* ── Legal / Brand Story ── */
+    .legal-notice {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 2.5rem;
+      border-top: 1px solid var(--border);
+      font-family: var(--ui);
+      text-align: center;
+    }
+    .legal-notice h3 {
+      font-family: var(--display);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 0.6rem;
+    }
+    .legal-notice p {
+      font-size: 11px;
+      line-height: 1.8;
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .legal-notice .legal-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--border);
+      margin: 1.5rem auto;
+    }
+    @media (max-width: 900px) {
+      .legal-notice { padding: 1.5rem 1.25rem 2rem; }
+    }
+    @media (max-width: 540px) {
+      .legal-notice { padding: 1.25rem 1rem 1.5rem; }
+      .legal-notice p { font-size: 10px; }
+    }
     @media (max-width: 700px) {
       .seo-collapsible:not(.expanded) {
         max-height: 0;
@@ -1813,6 +1854,16 @@
     </div>
     <button class="seo-toggle" id="seoToggle" onclick="toggleSeoSection()" aria-label="Show more information">Read more ▾</button>
   </section>
+
+  <!-- Legal disclaimer & brand story -->
+  <div class="legal-notice">
+    <div class="legal-divider"></div>
+    <h3>Inspired By</h3>
+    <p>This tool was born out of a love for 80s and 90s cult cinema. Every theme is a tribute to the aesthetics of the silver screen — from the neon glow of time-travelling DeLoreans to the gritty dials of fighter jets.</p>
+    <div class="legal-divider"></div>
+    <h3>Disclaimer</h3>
+    <p>PopcornPasswords is a free, unofficial fan project. It is not affiliated with, authorised, maintained, sponsored, or endorsed by any movie studios, production companies, or any of their affiliates or subsidiaries. All movie titles, characters, and related indicia are trademarks of their respective owners. Use of these references is purely for thematic tribute and does not imply any official connection or endorsement.</p>
+  </div>
 
   <!-- Page footer -->
   <footer style="text-align:center; padding:1.5rem 1rem 2rem; border-top:1px solid var(--border); font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:0.06em; line-height:2.2;">
@@ -3189,6 +3240,7 @@
       if (!wrap || !track) return;
       const isIce = THEME.sliderStyle === 'ice';
       const isTreasure = THEME.sliderStyle === 'treasure';
+      const isDestruction = THEME.sliderStyle === 'destruction';
       const minV = THEME.minSpeed || 8;
       const maxV = THEME.maxSpeed || 88;
       const carW = 50;
@@ -3582,8 +3634,7 @@
 
       if (isMax && isTreasure) dlTreasurePuff(left);
       else if (isMax && isIce) dlSnowPuff(left);
-      else if (isMax && isDestruction) dlDestructionPuff(left);
-      else if (isMax) dlFirePuff(left);
+      else if (isMax && !isDestruction) dlFirePuff(left);
 
       const lbl = document.getElementById('dlLabel');
       if (lbl) {
