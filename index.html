@@ -1305,6 +1305,143 @@
       box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     }
 
+    /* ── OFFICE MODE ── */
+    /* Structural overrides — apply regardless of light/dark */
+    body.office::after { display: none; }
+    body.office .brand-panel { display: none !important; }
+    body.office .cast-image { display: none !important; }
+    body.office .plutonium-wrap { display: none !important; }
+    body.office .theme-hint { display: none !important; }
+    body.office .theme-hint-wrap .app-bar-select { display: none !important; }
+    body.office .theme-badge { display: none !important; }
+    body.office .header-divider { background: linear-gradient(90deg, transparent, var(--border2), transparent) !important; }
+    body.office #fireCanvas { display: none !important; }
+    body.office #flashOverlay { display: none !important; }
+    body.office .header-title.shaking { animation: none !important; }
+    body.office .pw-card::before { height: 1px !important; }
+    body.office .modal-title { background: none; -webkit-text-fill-color: var(--text); color: var(--text); }
+    body.office .modal-section-title { color: var(--orange); }
+    body.office .modal-quote { color: var(--muted2); font-style: normal; }
+    body.office .footer-speed { color: var(--muted2) !important; font-style: normal; filter: none !important; }
+    body.office #deloreanSliderWrap { display: none !important; }
+    body.office #dialRow { display: none !important; }
+    body.office #standardSliderWrap { display: flex !important; }
+    body.office #sliderRow { display: flex !important; }
+    body.office .cols-wrap { justify-content: center; }
+    body.office .col-tool { flex: 0 0 520px; border-right: 1px solid var(--border); }
+    body.office .len-number { text-shadow: none !important; }
+    body.office #dialNotchDisplay { text-shadow: none !important; }
+    body.office #dialLenInput { text-shadow: none !important; }
+
+    /* ── OFFICE + LIGHT (light background office) ── */
+    body.office.light {
+      --orange:    #3b6fca;
+      --orange-hi: #4a80dd;
+      --orange-lo: #1e3a6e;
+      --orange-dim:#e8eef8;
+      --blue:      #3b6fca;
+      --blue-hi:   #4a80dd;
+      --blue-dim:  #e8eef8;
+      --blue-lo:   #b8cce8;
+      --yellow:    #3b6fca;
+      --mono:      'SF Mono', 'Cascadia Code', 'Consolas', 'Menlo', monospace;
+      --display:   -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      --ui:        -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    }
+    body.office.light .pw-card { background: #ffffff; border-color: var(--border2); box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    body.office.light .pw-card::before { background: var(--border2) !important; }
+    body.office.light .pw-text .c-u { color: #1a1d23; }
+    body.office.light .pw-text .c-l { color: #1a1d23; }
+    body.office.light .pw-text .c-n { color: #3b6fca; }
+    body.office.light .pw-text .c-s { color: #7a8290; }
+    body.office.light .sbar { background: #e4e7ec; border: 1px solid #dce0e6; height: 6px; }
+    body.office.light .modal::before { background: var(--border2); height: 1px; }
+    body.office.light .btn-copy-hero { background: #3b6fca; color: #ffffff; }
+    body.office.light .btn-copy-hero:hover { background: #4a80dd; }
+    body.office.light .btn-copied { background: #2a9d5c !important; color: #ffffff !important; }
+    body.office.light .btn-primary:hover { border-color: #3b6fca; color: #3b6fca; background: #e8eef8; }
+    body.office.light .checkbox-row.active { border-color: #3b6fca; background: #e8eef8; }
+    body.office.light .checkbox-row.active .checkbox-box { border-color: #3b6fca; background: #3b6fca; }
+    body.office.light .checkbox-row.active .checkbox-label { color: #1a1d23; }
+    body.office.light .checkbox-row.active .checkbox-sample { color: #5a6170; }
+    body.office.light .checkbox-row { background: #ffffff; border-color: var(--border); }
+    body.office.light .always-row { background: #f8f9fb; border-color: var(--border); }
+    body.office.light input[type=range] { background: #dce0e6; }
+    body.office.light input[type=range]::-webkit-slider-thumb { background: #3b6fca; border-color: #ffffff; box-shadow: 0 0 0 2px rgba(59,111,202,0.2); }
+    body.office.light input[type=range]::-moz-range-thumb { background: #3b6fca; border-color: #ffffff; box-shadow: 0 0 0 2px rgba(59,111,202,0.2); }
+    body.office.light .len-display { background: #ffffff; border-color: var(--border2); box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    body.office.light .len-number { color: #1a1d23 !important; }
+    body.office.light #dialNotchDisplay { color: #1a1d23 !important; }
+    body.office.light #dialLenDisplay { background: #ffffff; border-color: var(--border2); }
+    body.office.light #dialLenInput { color: #1a1d23 !important; }
+    body.office.light .info-btn:hover { border-color: #3b6fca; color: #3b6fca; background: #e8eef8; }
+    body.office.light .app-bar-select { background: #ffffff; border-color: var(--border); color: var(--text); }
+    body.office.light .app-bar-logo-fallback { color: #1a1d23; }
+    body.office.light .privacy-trigger:hover { color: #3b6fca; }
+    body.office.light .section-label::after { background: var(--border); }
+    body.office.light.maxspeed .pw-card { border-color: #3b6fca; box-shadow: 0 0 8px rgba(59,111,202,0.12); }
+    body.office.light.maxspeed .pw-card::before { background: #3b6fca !important; }
+
+    /* ── OFFICE + DARK (dark background office) ── */
+    body.office:not(.light) {
+      --bg:        #111318;
+      --surface:   #181b22;
+      --surface2:  #1e222b;
+      --border:    #2a2f3a;
+      --border2:   #3a4050;
+      --text:      #d8dbe3;
+      --muted:     #6a7080;
+      --muted2:    #8a90a0;
+      --orange:    #5b8fea;
+      --orange-hi: #6fa0f5;
+      --orange-lo: #2a4a80;
+      --orange-dim:#141c2e;
+      --blue:      #5b8fea;
+      --blue-hi:   #6fa0f5;
+      --blue-dim:  #141c2e;
+      --blue-lo:   #2a4070;
+      --yellow:    #5b8fea;
+      --red:       #e05050;
+      --mono:      'SF Mono', 'Cascadia Code', 'Consolas', 'Menlo', monospace;
+      --display:   -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      --ui:        -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    }
+    body.office:not(.light) .pw-card { background: #181b22; border-color: #3a4050; box-shadow: 0 1px 6px rgba(0,0,0,0.25); }
+    body.office:not(.light) .pw-card::before { background: #3a4050 !important; }
+    body.office:not(.light) .pw-text .c-u { color: #d8dbe3; }
+    body.office:not(.light) .pw-text .c-l { color: #d8dbe3; }
+    body.office:not(.light) .pw-text .c-n { color: #5b8fea; }
+    body.office:not(.light) .pw-text .c-s { color: #6a7080; }
+    body.office:not(.light) .sbar { background: #2a2f3a; border: 1px solid #3a4050; height: 6px; }
+    body.office:not(.light) .modal::before { background: #3a4050; height: 1px; }
+    body.office:not(.light) .btn-copy-hero { background: #5b8fea; color: #111318; }
+    body.office:not(.light) .btn-copy-hero:hover { background: #6fa0f5; }
+    body.office:not(.light) .btn-copied { background: #2a9d5c !important; color: #ffffff !important; }
+    body.office:not(.light) .btn-primary:hover { border-color: #5b8fea; color: #5b8fea; background: #141c2e; }
+    body.office:not(.light) .checkbox-row.active { border-color: #5b8fea; background: #141c2e; }
+    body.office:not(.light) .checkbox-row.active .checkbox-box { border-color: #5b8fea; background: #5b8fea; }
+    body.office:not(.light) .checkbox-row.active .checkbox-label { color: #ffffff; }
+    body.office:not(.light) .checkbox-row.active .checkbox-sample { color: rgba(255,255,255,0.6); }
+    body.office:not(.light) .checkbox-row { background: #1e222b; border-color: #2a2f3a; }
+    body.office:not(.light) .always-row { background: #1a1d24; border-color: #2a2f3a; }
+    body.office:not(.light) input[type=range] { background: #2a2f3a; }
+    body.office:not(.light) input[type=range]::-webkit-slider-thumb { background: #5b8fea; border-color: #111318; box-shadow: 0 0 0 2px rgba(91,143,234,0.3); }
+    body.office:not(.light) input[type=range]::-moz-range-thumb { background: #5b8fea; border-color: #111318; box-shadow: 0 0 0 2px rgba(91,143,234,0.3); }
+    body.office:not(.light) .len-display { background: #1e222b; border-color: #3a4050; box-shadow: none; }
+    body.office:not(.light) .len-number { color: #d8dbe3 !important; }
+    body.office:not(.light) #dialNotchDisplay { color: #d8dbe3 !important; }
+    body.office:not(.light) #dialLenDisplay { background: #1e222b; border-color: #3a4050; }
+    body.office:not(.light) #dialLenInput { color: #d8dbe3 !important; }
+    body.office:not(.light) .info-btn:hover { border-color: #5b8fea; color: #5b8fea; background: #141c2e; }
+    body.office:not(.light) .app-bar-select { background: #1e222b; border-color: #2a2f3a; color: #d8dbe3; }
+    body.office:not(.light) .app-bar-logo-fallback { color: #d8dbe3; }
+    body.office:not(.light) .privacy-trigger:hover { color: #5b8fea; }
+    body.office:not(.light) .section-label::after { background: #2a2f3a; }
+    body.office:not(.light).maxspeed .pw-card { border-color: #5b8fea; box-shadow: 0 0 8px rgba(91,143,234,0.15); }
+    body.office:not(.light).maxspeed .pw-card::before { background: #5b8fea !important; }
+    /* Office mode button active state */
+    body.office #modeOffice { background: var(--orange); color: #ffffff; }
+
     /* ── APP BAR ELEMENTS ── */
     .app-bar-logo {
       display: flex;
@@ -1655,6 +1792,7 @@
             <button class="mode-btn" id="modeLight" onclick="setMode('light')" title="Light mode" aria-label="Switch to light mode">☀️</button>
             <button class="mode-btn active" id="modeDark" onclick="setMode('dark')" title="Dark mode" aria-label="Switch to dark mode">🌙</button>
           </div>
+          <button class="mode-btn" id="modeOffice" onclick="toggleOffice()" title="Office mode — clean, professional look" aria-label="Toggle office mode" style="border:1px solid var(--border);border-radius:6px;flex-shrink:0;">💼</button>
           <a href="https://ko-fi.com/socialhwy" target="_blank" rel="noopener" class="kofi-btn" title="Support us on Ko-fi">
             <img id="kofiImg" src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/kofi_icon.png"
               alt="Ko-fi" width="22" height="22" style="object-fit:contain;border-radius:3px;" />
@@ -1932,7 +2070,7 @@
 
         <div class="modal-section">
           <div class="modal-section-title">Display preferences</div>
-          <p class="modal-text">Your chosen theme and light/dark mode are saved locally in your browser so they are remembered next time you visit. This uses your browser's built-in storage only. <strong>Nothing is sent to any server and no personal information is involved.</strong> You can clear this any time by clearing your browser data.</p>
+          <p class="modal-text">Your chosen theme and display mode (dark, light, or office) are saved locally in your browser so they are remembered next time you visit. This uses your browser's built-in storage only. <strong>Nothing is sent to any server and no personal information is involved.</strong> You can clear this any time by clearing your browser data.</p>
         </div>
 
         <div class="modal-section">
@@ -2003,6 +2141,12 @@
 
         <div style="margin-top:16px; padding:12px; border-radius:6px; background:var(--surface2); border:1px solid var(--border); text-align:center;">
           <span style="font-family:var(--ui); font-size:11px; color:var(--muted2); letter-spacing:0.04em;">
+            💼 <strong style="color:var(--text);">Office mode</strong> — Need to generate a password at work without your boss questioning your taste in movie-themed tools? Hit the 💼 briefcase button in the top bar to switch to a clean, professional look. Your chosen theme will be waiting when you switch back.
+          </span>
+        </div>
+
+        <div style="margin-top:16px; padding:12px; border-radius:6px; background:var(--surface2); border:1px solid var(--border); text-align:center;">
+          <span style="font-family:var(--ui); font-size:11px; color:var(--muted2); letter-spacing:0.04em;">
             💡 Got an idea or feature request?
             <a href="https://ko-fi.com/socialhwy" target="_blank" rel="noopener"
                style="color:var(--orange); text-decoration:none; font-weight:600;">Buy us a Ko-fi</a>
@@ -2057,6 +2201,37 @@
     }
 
     function applySpeedTheme(len) {
+      // Office mode: neutral styling, skip all themed visuals
+      if (document.body.classList.contains('office')) {
+        const isLight = document.body.classList.contains('light');
+        const accent = isLight ? '#3b6fca' : '#5b8fea';
+        const textCol = isLight ? '#1a1d23' : '#d8dbe3';
+        const trackBg = isLight ? '#dce0e6' : '#2a2f3a';
+        const borderCol = isLight ? '#c4cad4' : '#3a4050';
+        const actualLen = getLen();
+        const title = document.getElementById('headerTitle');
+        title.innerHTML = actualLen + '&nbsp;chars';
+        title.style.background = 'none';
+        title.style.webkitTextFillColor = textCol;
+        title.style.textShadow = 'none';
+        const lenNum = document.getElementById('lenNum');
+        if (lenNum) { lenNum.value = actualLen; lenNum.style.color = ''; lenNum.style.textShadow = ''; }
+        const ld = document.getElementById('lenDisplay');
+        if (ld) { ld.style.borderColor = ''; ld.style.boxShadow = ''; }
+        const slider = document.getElementById('slider');
+        if (slider) {
+          const pct = ((actualLen - THEME.minSpeed) / (THEME.maxSpeed - THEME.minSpeed)) * 100;
+          slider.style.background = `linear-gradient(to right, ${accent} 0%, ${accent} ${pct}%, ${trackBg} ${pct}%, ${trackBg} 100%)`;
+        }
+        document.getElementById('charCount').textContent = actualLen + ' characters';
+        document.getElementById('charCount').style.color = '';
+        document.getElementById('lenLabel').style.color = accent;
+        document.getElementById('headerDivider').style.background = `linear-gradient(90deg, transparent, ${borderCol}, transparent)`;
+        const fq = document.getElementById('themeFooterQuote');
+        if (fq) { fq.textContent = 'Cryptographically secure — client-side only'; fq.style.color = ''; }
+        return;
+      }
+
       const range = THEME.maxSpeed - THEME.minSpeed;
       const t = Math.min((len - THEME.minSpeed) / range, 1);
       const col = lerpColour(t);
@@ -2844,6 +3019,11 @@
     function enterMax() {
       if (at88) return;
       at88 = true;
+      // Office mode: skip all visual effects
+      if (document.body.classList.contains('office')) {
+        document.body.classList.add('maxspeed');
+        return;
+      }
       triggerFlash();
       document.body.classList.add('maxspeed');
       const title = document.getElementById('headerTitle');
@@ -2948,6 +3128,11 @@
     }
 
     function getLen() {
+      // Office mode always uses the standard slider
+      if (document.body.classList.contains('office')) {
+        const raw = parseInt(document.getElementById('slider').value, 10);
+        return isNaN(raw) ? 30 : raw;
+      }
       if (THEME.useDial) {
         const v = parseInt(document.getElementById('dialLenInput').value, 10);
         return isNaN(v) ? notchToChars(dialNotch) : v;
@@ -3000,6 +3185,19 @@
 
     function clampInput() {
       const raw = parseInt(document.getElementById('lenNum').value, 10);
+
+      // Office mode — always use standard slider path
+      if (document.body.classList.contains('office')) {
+        const def = Math.round((THEME.minSpeed + THEME.maxSpeed) / 2);
+        const clamped = isNaN(raw) ? def : Math.min(THEME.maxSpeed, Math.max(THEME.minSpeed, raw));
+        document.getElementById('lenNum').value = clamped;
+        document.getElementById('slider').value = clamped;
+        applySpeedTheme(clamped);
+        if (clamped === THEME.maxSpeed) enterMax();
+        else exitMax();
+        generate();
+        return;
+      }
 
       // Custom slider themes (DeLorean/bobsled style)
       if (THEME.useCustomSlider) {
@@ -3132,9 +3330,12 @@
     }
 
     function updateStrength(pw, len) {
+      const isOffice = document.body.classList.contains('office');
+
       // For dial themes, score off the notch (0–11); for slider, score off len vs min/max
-      const useDial = THEME.useDial;
-      const val = useDial ? dialNotch : len;
+      // In office mode, always use standard slider value
+      const useDial = isOffice ? false : THEME.useDial;
+      const val = isOffice ? len : (useDial ? dialNotch : len);
       const min = useDial ? 0 : THEME.minSpeed;
       const max = useDial ? dialNotches() : THEME.maxSpeed;
       const range = max - min;
@@ -3150,9 +3351,24 @@
       // Top label exclusively earned by hitting max
       if (val >= max) score = 6;
 
-      // [THEME:strength-labels]
-      const labels = THEME.strengthLabels;
+      // Office mode: neutral professional labels
+      const officeLabels = ['Weak', 'Fair', 'Moderate', 'Good', 'Strong', 'Very Strong', 'Maximum'];
+      const labels = isOffice ? officeLabels : THEME.strengthLabels;
       const t = (val - min) / range;
+
+      if (isOffice) {
+        // Neutral color ramp: red → amber → green → blue
+        const officeColors = ['#d04040','#d07030','#c09020','#50a050','#3090a0','#3b6fca','#2a5cb0'];
+        const barCol = officeColors[Math.min(score, 6)];
+        const lblCol = barCol;
+        document.getElementById('strName').textContent = labels[score];
+        document.getElementById('strName').style.color = lblCol;
+        for (let i = 1; i <= 6; i++) {
+          document.getElementById('sb' + i).style.background = i <= score ? barCol : '';
+        }
+        return;
+      }
+
       const col = lerpColour(Math.min(t, 1));
 
       // In light mode, darken the colour so yellows/whites stay visible on cream bg
@@ -5326,15 +5542,116 @@
       }
     });
 
-    // ── Light / dark mode ──
+    // ── Light / dark mode + independent office toggle ──
+    // Office mode layers ON TOP of light or dark. Stored separately in localStorage.
     function setMode(mode) {
-      document.body.classList.toggle('light', mode === 'light');
+      // mode is 'light' or 'dark' only
+      document.body.classList.remove('light');
+      if (mode === 'light') document.body.classList.add('light');
       document.getElementById('modeLight').classList.toggle('active', mode === 'light');
       document.getElementById('modeDark').classList.toggle('active', mode === 'dark');
-      if (THEME.useCustomSlider && document.getElementById('dlTrack')) dlRender();
-      // Re-colour strength bars for light/dark without regenerating password
+
+      const isOffice = document.body.classList.contains('office');
+      if (isOffice) {
+        // Re-apply office overrides so colours adapt to new light/dark base
+        applyOfficeOverrides();
+      } else {
+        if (THEME.useCustomSlider && document.getElementById('dlTrack')) dlRender();
+      }
+      // Re-colour strength bars for mode change
       updateStrength('', getLen());
       try { localStorage.setItem('pp_mode', mode); } catch(e) {}
+    }
+
+    function toggleOffice() {
+      const isOffice = document.body.classList.contains('office');
+      if (isOffice) {
+        // Leaving office mode
+        document.body.classList.remove('office');
+        document.getElementById('modeOffice').classList.remove('active');
+        try { localStorage.setItem('pp_office', 'off'); } catch(e) {}
+        // Restore theme visuals
+        restoreThemeVisuals();
+      } else {
+        // Entering office mode
+        document.body.classList.add('office');
+        document.getElementById('modeOffice').classList.add('active');
+        try { localStorage.setItem('pp_office', 'on'); } catch(e) {}
+        applyOfficeOverrides();
+      }
+      updateStrength('', getLen());
+    }
+
+    function applyOfficeOverrides() {
+      const isLight = document.body.classList.contains('light');
+      const accent = isLight ? '#3b6fca' : '#5b8fea';
+      const textCol = isLight ? '#1a1d23' : '#d8dbe3';
+      const mutedCol = isLight ? '#7a8290' : '#8a90a0';
+      const borderCol = isLight ? '#c4cad4' : '#3a4050';
+      const trackBg = isLight ? '#dce0e6' : '#2a2f3a';
+
+      // Sync the standard slider value from whatever the current theme control has
+      const slider = document.getElementById('slider');
+      if (slider) {
+        slider.min = THEME.minSpeed;
+        slider.max = THEME.maxSpeed;
+        let currentLen;
+        if (THEME.useDial) {
+          currentLen = notchToChars(dialNotch);
+          currentLen = Math.max(THEME.minSpeed, Math.min(THEME.maxSpeed, currentLen));
+        } else if (THEME.useCustomSlider) {
+          currentLen = dlVal;
+        } else {
+          currentLen = parseInt(slider.value, 10) || THEME.defaultLen;
+        }
+        slider.value = currentLen;
+      }
+
+      const len = getLen();
+
+      // Override header to show generic text
+      const title = document.getElementById('headerTitle');
+      title.innerHTML = len + '&nbsp;chars';
+      title.style.background = 'none';
+      title.style.webkitTextFillColor = textCol;
+      title.style.textShadow = 'none';
+      const sub = document.getElementById('headerSub');
+      if (sub) sub.style.color = mutedCol;
+      const lenLabel = document.getElementById('lenLabel');
+      if (lenLabel) { lenLabel.style.color = accent; lenLabel.textContent = 'Length'; }
+      const ld = document.getElementById('lenDisplay');
+      if (ld) { ld.style.borderColor = ''; ld.style.boxShadow = ''; }
+      const lenNum = document.getElementById('lenNum');
+      if (lenNum) { lenNum.style.color = ''; lenNum.style.textShadow = ''; lenNum.value = len; }
+      const fq = document.getElementById('themeFooterQuote');
+      if (fq) { fq.textContent = 'Cryptographically secure — client-side only'; fq.style.color = ''; }
+      const cc = document.getElementById('charCount');
+      if (cc) { cc.style.color = ''; cc.textContent = len + ' characters'; }
+      const pl = document.getElementById('pwLabel');
+      if (pl) pl.style.color = '';
+      const stdWrap = document.getElementById('standardSliderWrap');
+      if (stdWrap) stdWrap.style.display = 'flex';
+      if (slider) {
+        const pct = ((slider.value - THEME.minSpeed) / (THEME.maxSpeed - THEME.minSpeed)) * 100;
+        slider.style.background = `linear-gradient(to right, ${accent} 0%, ${accent} ${pct}%, ${trackBg} ${pct}%, ${trackBg} 100%)`;
+      }
+      const lenUnit = document.querySelector('.len-unit');
+      if (lenUnit) lenUnit.textContent = 'chars';
+      const div = document.getElementById('headerDivider');
+      if (div) div.style.background = `linear-gradient(90deg, transparent, ${borderCol}, transparent)`;
+      exitMax();
+      // Override modal text to generic (non-movie) versions
+      const mt = document.getElementById('modalTitle');
+      if (mt) mt.textContent = 'How It Works';
+      const mq = document.getElementById('modalQuote');
+      if (mq) mq.textContent = 'Strong passwords. Zero compromise.';
+      generate();
+    }
+
+    function restoreThemeVisuals() {
+      // Re-apply the current theme fully (shows/hides correct controls)
+      const themeId = THEME.id;
+      applyTheme(themeId);
     }
 
     // Populate theme dropdown from THEMES object — one place to add themes
@@ -5380,8 +5697,13 @@
     // Restore saved mode or default to dark
     try {
       const saved = localStorage.getItem('pp_mode');
-      setMode(saved || 'dark');
+      setMode(saved === 'light' ? 'light' : 'dark');
     } catch(e) { setMode('dark'); }
+    // Restore office mode independently
+    try {
+      const officeState = localStorage.getItem('pp_office');
+      if (officeState === 'on') toggleOffice();
+    } catch(e) {}
     // Reveal page now that theme + mode are applied — no flash
     document.querySelector('.page-wrap').classList.add('ready');
   </script>
