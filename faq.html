@@ -107,6 +107,9 @@
     html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--ui); overflow-x: hidden; }
     body { padding: 0; margin: 0; }
 
+    /* Zoom wrapper — mirrors index.html .tool-panel so app bar + content scale together */
+    .page-panel { background: var(--bg); }
+
     /* Light mode */
     body.light {
       --bg: #f5f0e8; --surface: #fffdf8; --surface2: #f0ebe0;
@@ -115,30 +118,107 @@
       --blue: #1a6fa8; --orange: #c05a10;
     }
 
-    /* Top bar */
-    .top-bar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.75rem 1.5rem; border-bottom: 1px solid var(--border); width: 100%;
+    /* Top bar — copied verbatim from index.html app-bar */
+    .app-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 16px;
+      padding: 0.75rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      width: 100%;
     }
-    .top-bar-logo {
-      font-family: var(--ui); font-size: 14px; font-weight: 700;
-      letter-spacing: 0.1em; color: var(--orange); text-transform: uppercase;
-      text-decoration: none; white-space: nowrap;
+    .app-bar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      flex-shrink: 1;
+      min-width: 0;
+      overflow: hidden;
+      margin-right: auto;
     }
-    .top-bar-logo:hover { opacity: 0.85; }
-    .top-bar-right { display: flex; align-items: center; gap: 12px; }
-    .top-bar-link {
+    .app-bar-logo:hover { opacity: 0.85; }
+    .app-bar-logo-fallback {
+      font-family: var(--ui);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--orange);
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+    .app-bar-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .app-bar-link {
       font-family: var(--ui); font-size: 12px; font-weight: 600;
       letter-spacing: 0.1em; text-transform: uppercase;
       color: var(--muted2); text-decoration: none; transition: color 0.15s;
     }
-    .top-bar-link:hover { color: var(--orange); }
-    .top-bar-link.active { color: var(--orange); }
-    .mode-toggle { display: flex; align-items: center; gap: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; flex-shrink: 0; }
-    .mode-btn { font-size: 16px; padding: 7px 11px; background: transparent; border: none; cursor: pointer; color: var(--muted); transition: background 0.15s, color 0.15s; line-height: 1; }
+    .app-bar-link:hover { color: var(--orange); }
+    .app-bar-link.active { color: var(--orange); }
+    .mode-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .mode-btn {
+      font-size: 18px;
+      padding: 9px 13px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      transition: background 0.15s, color 0.15s;
+      line-height: 1;
+    }
     .mode-btn.active { background: #3a4555; color: #ffffff; }
-    body.light .mode-btn.active { background: #d0ccc2; color: #1a1a18; }
     .mode-btn:hover:not(.active) { color: var(--text); }
+    body.light .mode-btn.active { background: #d0ccc2; color: #1a1a18; }
+
+    /* Ko-fi button — copied verbatim from index.html */
+    .kofi-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border2);
+      background: #f5f5f5;
+      text-decoration: none;
+      flex-shrink: 0;
+      line-height: 1;
+      overflow: hidden;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.15s;
+    }
+    .kofi-btn:hover {
+      border-color: var(--orange);
+      background: #ffffff;
+      box-shadow: 0 0 12px rgba(249,115,22,0.25);
+      transform: translateY(-1px);
+    }
+    body.light .kofi-btn { border-color: var(--border); background: #ffffff; }
+    body.light .kofi-btn:hover { border-color: var(--orange); box-shadow: 0 0 10px rgba(249,115,22,0.2); }
+
+    /* Tablet */
+    @media (max-width: 900px) {
+      .app-bar-logo-fallback { font-size: 14px; }
+      .kofi-btn { width: 34px; height: 34px; }
+    }
 
     /* CTA banner */
     .cta-banner {
@@ -224,12 +304,16 @@
     .page-footer a:hover { color: var(--orange); }
     .footer-sep { opacity: 0.4; margin: 0 8px; }
 
-    /* Mobile */
+    /* Phone — matches index.html app-bar phone sizing */
     @media (max-width: 540px) {
       .content { padding: 1.5rem 1rem 3rem; }
       .page-title { font-size: 24px; }
-      .top-bar { padding: 0.5rem 0.75rem; }
-      .top-bar-logo { font-size: 12px; }
+      .app-bar { padding: 0.5rem 0.75rem; gap: 8px; }
+      .app-bar-logo-fallback { font-size: 11px; letter-spacing: 0.04em; }
+      .app-bar-link { font-size: 11px; }
+      .mode-btn { font-size: 14px; padding: 6px 9px; }
+      .kofi-btn { width: 30px; height: 30px; }
+      .kofi-btn img { width: 18px; height: 18px; }
       .faq-q h3 { font-size: 13px; }
       .faq-a p { font-size: 12px; }
     }
@@ -237,16 +321,26 @@
 </head>
 <body>
 
-  <!-- Top bar -->
-  <div class="top-bar">
-    <a href="/" class="top-bar-logo">🍿 PopcornPasswords</a>
-    <div class="top-bar-right">
-      <a href="/" class="top-bar-link">Generator</a>
-      <a href="/faq" class="top-bar-link active">FAQ</a>
+  <!-- Zoom wrapper — matches index.html .tool-panel zoom behavior -->
+  <div class="page-panel">
+
+  <!-- App bar — identical structure to index.html -->
+  <div class="app-bar">
+    <a href="/" class="app-bar-logo">
+      <span class="app-bar-logo-fallback">🍿 POPCORNPASSWORDS — FREE STRONG PASSWORD GENERATOR</span>
+    </a>
+    <div class="app-bar-controls">
+      <a href="/" class="app-bar-link">Generator</a>
+      <a href="/faq" class="app-bar-link active">FAQ</a>
       <div class="mode-toggle">
         <button class="mode-btn" id="modeLight" onclick="setMode('light')" title="Light mode" aria-label="Switch to light mode">☀️</button>
         <button class="mode-btn active" id="modeDark" onclick="setMode('dark')" title="Dark mode" aria-label="Switch to dark mode">🌙</button>
       </div>
+      <button class="mode-btn" style="border:1px solid var(--border);border-radius:6px;flex-shrink:0;" title="Office mode — available on the generator" aria-label="Office mode">💼</button>
+      <a href="https://ko-fi.com/socialhwy" target="_blank" rel="noopener" class="kofi-btn" title="Support us on Ko-fi">
+        <img src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/kofi_icon.png"
+          alt="Ko-fi" width="22" height="22" style="object-fit:contain;border-radius:3px;" />
+      </a>
     </div>
   </div>
 
@@ -430,6 +524,8 @@
 
   </div>
 
+  </div><!-- /.page-panel -->
+
   <!-- Footer -->
   <footer class="page-footer">
     <span>Built in Adelaide, Australia</span>
@@ -449,6 +545,21 @@
       document.getElementById('modeDark').classList.toggle('active', mode === 'dark');
       try { localStorage.setItem('pp_mode', mode); } catch(e) {}
     }
+
+    // Fluid viewport zoom — same formula as index.html, applied to .page-panel
+    // so both the app bar AND content scale together, matching the index
+    function updateFluidZoom() {
+      const el = document.querySelector('.page-panel');
+      if (!el) return;
+      const vw = window.innerWidth;
+      if (vw <= 900) { el.style.zoom = ''; return; }
+      const raw = 0.55 + vw / 2600;
+      const z = Math.min(1.4, Math.max(1.0, raw));
+      el.style.zoom = z;
+    }
+    updateFluidZoom();
+    window.addEventListener('resize', updateFluidZoom);
+
     // Restore saved mode
     try {
       const saved = localStorage.getItem('pp_mode');
