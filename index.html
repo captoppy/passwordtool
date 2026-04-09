@@ -3034,7 +3034,7 @@
       if (fq) { fq.textContent = THEME.maxQuote; fq.style.color = THEME.maxColour; }
       THEME.startEffect();
       // Continuous particle loop for custom slider themes at max
-      if (THEME.useCustomSlider) {
+      if (THEME.useCustomSlider && THEME.sliderStyle !== 'destruction') {
         clearInterval(dlFireInterval);
         let puffFn, puffMs;
         if (THEME.sliderStyle === 'treasure') {
@@ -3454,6 +3454,8 @@
       const wrap  = document.getElementById('dlSmokeWrap');
       const track = document.getElementById('dlTrack');
       if (!wrap || !track) return;
+      // No smoke trails for Independence Day — beam only
+      if (THEME.sliderStyle === 'destruction') return;
       const isIce = THEME.sliderStyle === 'ice';
       const isTreasure = THEME.sliderStyle === 'treasure';
       const isDestruction = THEME.sliderStyle === 'destruction';
@@ -3576,7 +3578,7 @@
             { label: '25%', pct: 25 },
             { label: '50%', pct: 50 },
             { label: '75%', pct: 75 },
-            { label: '100%', pct: 100 }
+            { label: '100%', pct: 91 }
           ];
           const accent = THEME.maxColour || '#ff6a00';
           markers.innerHTML = items.map((m, i) => {
@@ -3698,116 +3700,149 @@
       let building   = document.getElementById('dlBuilding');
 
       if (isDestruction) {
+        // Hide normal car elements
         if (car) car.style.display = 'none';
-        // Create mothership (the vehicle that slides)
+        if (carWrap) carWrap.style.display = 'none';
+
+        const trackW = track.offsetWidth;
+        const shipW = 52;
+        const buildingRight = 12;
+        const buildingW = 28;
+        // Beam Y is aligned to the ship's underside weapon port
+        const shipBottom = 32; // ship positioned well above the road
+        const beamY = shipBottom + 7; // aligns with weapon port on ship underside
+
+        // ── Static mothership — fixed top-left, positioned higher ──
         if (!mothership) {
           mothership = document.createElement('div');
           mothership.id = 'dlMothership';
-          mothership.style.cssText = 'position:absolute;bottom:6px;line-height:1;pointer-events:none;transition:filter 0.2s,transform 0.15s;z-index:3;';
-          // SVG mothership — disc shape with lights
-          mothership.innerHTML = `<svg width="50" height="22" viewBox="0 0 50 22" style="display:block;">
-            <ellipse cx="25" cy="14" rx="24" ry="7" fill="#1a2540" stroke="#3a5a8a" stroke-width="0.8"/>
-            <ellipse cx="25" cy="14" rx="18" ry="4" fill="#0d1828" stroke="#4a7ab0" stroke-width="0.5"/>
-            <ellipse cx="25" cy="12" rx="10" ry="5" fill="#111e30"/>
-            <circle cx="25" cy="11" r="3" fill="#0a1520" stroke="#5090cc" stroke-width="0.6"/>
-            <circle cx="25" cy="11" r="1.2" fill="#8ec5ff" opacity="0.9"/>
-            <circle cx="12" cy="15" r="1" fill="#4a90d9" opacity="0.7"/><circle cx="18" cy="16" r="0.8" fill="#7ab8ff" opacity="0.6"/>
-            <circle cx="32" cy="16" r="0.8" fill="#7ab8ff" opacity="0.6"/><circle cx="38" cy="15" r="1" fill="#4a90d9" opacity="0.7"/>
+          mothership.style.cssText = `position:absolute;bottom:${shipBottom}px;left:0;line-height:1;pointer-events:none;z-index:5;`;
+          mothership.innerHTML = `<svg width="52" height="26" viewBox="0 0 52 26" style="display:block;overflow:visible;">
+            <!-- Main hull -->
+            <ellipse cx="26" cy="16" rx="25" ry="8" fill="#1a2540" stroke="#3a5a8a" stroke-width="0.8"/>
+            <ellipse cx="26" cy="16" rx="19" ry="4.5" fill="#0d1828" stroke="#4a7ab0" stroke-width="0.5"/>
+            <!-- Dome -->
+            <ellipse cx="26" cy="13" rx="11" ry="6" fill="#111e30"/>
+            <circle cx="26" cy="12" r="3.5" fill="#0a1520" stroke="#5090cc" stroke-width="0.6"/>
+            <circle cx="26" cy="12" r="1.5" fill="#8ec5ff" opacity="0.9"/>
+            <!-- Hull lights -->
+            <circle cx="12" cy="17" r="1.1" fill="#4a90d9" opacity="0.7"/>
+            <circle cx="19" cy="18" r="0.9" fill="#7ab8ff" opacity="0.6"/>
+            <circle cx="33" cy="18" r="0.9" fill="#7ab8ff" opacity="0.6"/>
+            <circle cx="40" cy="17" r="1.1" fill="#4a90d9" opacity="0.7"/>
+            <!-- Weapon port — bottom right, where beam fires from -->
+            <ellipse cx="48" cy="18" rx="3" ry="2" fill="#0a1828" stroke="#5090cc" stroke-width="0.5"/>
+            <circle cx="48" cy="18" r="1.2" fill="rgba(140,200,255,${(0.4 + t * 0.6).toFixed(2)})"/>
           </svg>`;
-          if (carWrap) carWrap.appendChild(mothership);
+          if (track) track.appendChild(mothership);
         }
         mothership.style.filter = isMax
-          ? 'drop-shadow(0 0 12px rgba(255,106,0,0.9)) drop-shadow(0 0 25px rgba(255,60,0,0.5)) brightness(1.3)'
-          : `drop-shadow(0 0 ${4 + t * 8}px rgba(74,144,217,${0.3 + t * 0.5}))`;
-        mothership.style.transform = isMax ? 'scale(1.1)' : 'none';
+          ? 'drop-shadow(0 0 14px rgba(100,180,255,0.9)) drop-shadow(0 0 25px rgba(255,106,0,0.5)) brightness(1.3)'
+          : `drop-shadow(0 0 ${4 + t * 10}px rgba(74,144,217,${0.3 + t * 0.5}))`;
 
-        // Building on the track — progressively cracks/glows as power increases
-        // Skyscraper at end of track — single building with character
+        // ── Horizontal laser beam — fires from ship weapon port to the right ──
+        let beam = document.getElementById('dlBeam');
+        if (!beam) {
+          beam = document.createElement('div');
+          beam.id = 'dlBeam';
+          beam.style.cssText = 'position:absolute;pointer-events:none;z-index:4;';
+          if (track) track.appendChild(beam);
+        }
+        const beamStartX = shipW - 2;
+        // Beam tip matches the actual drag position (left + carW/2 is where the mouse is)
+        const beamEndX = left + carW / 2;
+        const beamLen = Math.max(0, beamEndX - beamStartX);
+        const intensity = Math.min(t * 1.2, 1);
+        // Thick, vibrant beam
+        const beamH = 8 + intensity * 10;
+        const coreH = 3 + intensity * 4;
+        const glowH = beamH * 1.6;
+
+        beam.style.left = beamStartX + 'px';
+        beam.style.bottom = (beamY - beamH / 2) + 'px';
+        beam.style.width = beamLen + 'px';
+        beam.style.height = beamH + 'px';
+
+        if (beamLen > 2) {
+          const bA = (0.3 + intensity * 0.5).toFixed(2);
+          const cA = (0.5 + intensity * 0.45).toFixed(2);
+          const gA = (0.12 + intensity * 0.2).toFixed(2);
+          beam.innerHTML = `<svg width="${beamLen}" height="${beamH}" viewBox="0 0 ${beamLen} ${beamH}" preserveAspectRatio="none" style="display:block;overflow:visible;">
+            <!-- Wide outer glow -->
+            <rect x="0" y="${(beamH - glowH) / 2}" width="${beamLen}" height="${glowH}" rx="${glowH / 2}"
+              fill="rgba(60,140,255,${gA})"/>
+            <!-- Main beam body -->
+            <rect x="0" y="0" width="${beamLen}" height="${beamH}" rx="${beamH / 2}"
+              fill="rgba(80,170,255,${bA})"/>
+            <!-- Bright inner beam -->
+            <rect x="0" y="${(beamH - coreH * 1.5) / 2}" width="${beamLen}" height="${coreH * 1.5}" rx="${coreH * 0.75}"
+              fill="rgba(140,210,255,${bA})"/>
+            <!-- White-hot core -->
+            <rect x="0" y="${(beamH - coreH) / 2}" width="${beamLen}" height="${coreH}" rx="${coreH / 2}"
+              fill="rgba(220,240,255,${cA})"/>
+            <!-- Bright impact point at tip -->
+            <circle cx="${beamLen}" cy="${beamH / 2}" r="${3 + intensity * 4}"
+              fill="rgba(180,225,255,${(intensity * 0.6).toFixed(2)})"/>
+            <circle cx="${beamLen}" cy="${beamH / 2}" r="${1.5 + intensity * 2}"
+              fill="rgba(240,250,255,${(intensity * 0.5).toFixed(2)})"/>
+          </svg>`;
+        } else {
+          beam.innerHTML = '';
+        }
+        beam.style.filter = isMax
+          ? 'drop-shadow(0 0 12px rgba(100,180,255,0.9)) drop-shadow(0 0 20px rgba(255,120,0,0.5))'
+          : `drop-shadow(0 0 ${(intensity * 10).toFixed(0)}px rgba(80,170,255,${(intensity * 0.5).toFixed(2)}))`;
+
+        // ── Static building — explodes only at MAX ──
         if (!building) {
           building = document.createElement('div');
           building.id = 'dlBuilding';
           building.style.cssText = 'position:absolute;bottom:4px;right:12px;pointer-events:none;z-index:1;transition:filter 0.3s;';
           if (track) track.appendChild(building);
         }
-        const dmg = Math.min(t * 1.2, 1);
-        const beamOp = Math.min(dmg * 0.65, 0.5);
-        const fireOp = Math.max(0, (dmg - 0.45) * 1.8);
-        const gR = Math.round(100 + dmg * 155);
-        const gG = Math.round(180 - dmg * 100);
         const bodyFill = isLight ? '#788898' : '#111f30';
         const bodyStk = isLight ? '#5a6a7a' : '#1e3550';
-        const winBase = isLight ? 40 : 20;
-        // Window colour shifts from blue-white → orange with damage
-        const wR = Math.round(80 + dmg * 175);
-        const wG = Math.round(160 - dmg * 60);
-        const wB = Math.round(255 - dmg * 200);
-        const wA = (0.25 + dmg * 0.5).toFixed(2);
-        building.innerHTML = `<svg width="28" height="60" viewBox="0 0 28 60" style="display:block;">
-          <!-- Beam from above — widens as charge grows -->
-          <polygon points="11,0 17,0 ${19 + dmg * 4},60 ${9 - dmg * 4},60"
-            fill="rgba(${gR},${gG},255,${beamOp})" opacity="${dmg > 0.05 ? 1 : 0}"/>
-          <!-- Rooftop structure -->
-          <rect x="11" y="6" width="6" height="4" fill="${bodyFill}" stroke="${bodyStk}" stroke-width="0.4" rx="0.5"/>
-          <rect x="13" y="2" width="2" height="4" fill="${bodyStk}" rx="0.3"/>
-          <circle cx="14" cy="2" r="1" fill="rgba(255,${Math.round(60 + dmg * 140)},${Math.round(dmg * 40)},${(0.3 + dmg * 0.7).toFixed(2)})"/>
-          <!-- Main tower -->
-          <rect x="4" y="10" width="20" height="48" fill="${bodyFill}" stroke="${bodyStk}" stroke-width="0.5" rx="0.5"/>
-          <!-- Setback detail -->
-          <rect x="6" y="10" width="16" height="2" fill="${isLight ? '#6a7a8a' : '#1a3050'}" rx="0.3"/>
-          <!-- Window grid — 4 columns × 7 rows -->
-          ${Array.from({length: 7}, (_, row) =>
-            Array.from({length: 4}, (_, col) => {
-              const wx = 6.5 + col * 4.5;
-              const wy = 15 + row * 5.5;
-              const flicker = Math.sin(row * 1.7 + col * 2.3) * 0.15;
-              return `<rect x="${wx}" y="${wy}" width="2.5" height="2" rx="0.3"
-                fill="rgba(${wR},${wG},${wB},${Math.max(0.1, parseFloat(wA) + flicker).toFixed(2)})"/>`;
-            }).join('')
-          ).join('')}
-          <!-- Cracks — appear with damage -->
-          <line x1="8" y1="18" x2="18" y2="38" stroke="rgba(255,100,20,${(dmg * 0.5).toFixed(2)})" stroke-width="${(0.3 + dmg * 1.2).toFixed(1)}"/>
-          <line x1="20" y1="22" x2="12" y2="42" stroke="rgba(255,70,0,${(dmg * 0.4).toFixed(2)})" stroke-width="${(0.2 + dmg * 0.9).toFixed(1)}"/>
-          <line x1="14" y1="35" x2="18" y2="52" stroke="rgba(255,50,0,${(dmg * 0.35).toFixed(2)})" stroke-width="${(0.2 + dmg * 0.7).toFixed(1)}"/>
-          <!-- Fire at base -->
-          ${fireOp > 0 ? `<ellipse cx="14" cy="56" rx="${(5 + dmg * 5).toFixed(1)}" ry="${(2 + dmg * 3).toFixed(1)}" fill="rgba(255,100,0,${(fireOp * 0.5).toFixed(2)})"/>
-          <ellipse cx="14" cy="54" rx="${(3 + dmg * 3).toFixed(1)}" ry="${(1.5 + dmg * 2).toFixed(1)}" fill="rgba(255,200,50,${(fireOp * 0.4).toFixed(2)})"/>` : ''}
-          <!-- Debris particles at high damage -->
-          ${dmg > 0.6 ? [0,1,2].map(i => {
-            const dx = 8 + i * 6 + Math.sin(i * 3.7) * 3;
-            const dy = 20 + i * 12;
-            return `<rect x="${dx}" y="${dy}" width="1.5" height="1" fill="rgba(255,140,40,${(dmg * 0.4).toFixed(2)})" transform="rotate(${i * 25} ${dx} ${dy})"/>`;
-          }).join('') : ''}
-        </svg>`;
-        // At MAX — building obliterated: simple explosion with blue lights
+        const wCol = isLight ? 'rgba(120,180,255,0.35)' : 'rgba(80,160,255,0.25)';
+
         if (isMax) {
           building.innerHTML = `<svg width="36" height="56" viewBox="0 0 36 56" style="display:block;overflow:visible;">
-            <!-- Explosion starburst — jagged shape -->
             <polygon points="18,4 21,16 30,10 24,20 35,22 24,26 30,36 21,30 18,42 15,30 6,36 12,26 1,22 12,20 6,10 15,16"
               fill="rgba(100,170,255,0.35)"/>
             <polygon points="18,10 20,18 26,14 22,22 30,24 22,26 26,32 20,28 18,36 16,28 10,32 14,26 6,24 14,22 10,14 16,18"
               fill="rgba(160,210,255,0.4)"/>
-            <!-- Bright blue-white centre -->
             <circle cx="18" cy="22" r="6" fill="rgba(120,190,255,0.5)"/>
             <circle cx="18" cy="22" r="3.5" fill="rgba(200,230,255,0.6)"/>
             <circle cx="18" cy="22" r="1.5" fill="rgba(240,248,255,0.8)"/>
-            <!-- Blue light sparks flying out -->
             <circle cx="6" cy="12" r="1.2" fill="rgba(100,180,255,0.6)"/>
             <circle cx="30" cy="14" r="1" fill="rgba(140,210,255,0.5)"/>
             <circle cx="4" cy="30" r="0.9" fill="rgba(120,190,255,0.5)"/>
             <circle cx="32" cy="32" r="1.1" fill="rgba(100,170,255,0.55)"/>
-            <circle cx="10" cy="38" r="0.8" fill="rgba(160,220,255,0.45)"/>
-            <circle cx="26" cy="40" r="1" fill="rgba(130,200,255,0.5)"/>
-            <circle cx="18" cy="44" r="0.9" fill="rgba(140,210,255,0.4)"/>
-            <!-- Orange fire underneath -->
             <ellipse cx="18" cy="46" rx="10" ry="4" fill="rgba(255,100,20,0.3)"/>
             <ellipse cx="18" cy="44" rx="6" ry="3" fill="rgba(255,160,50,0.25)"/>
           </svg>`;
-          building.style.filter = 'drop-shadow(0 0 10px rgba(100,180,255,0.7)) drop-shadow(0 0 6px rgba(140,210,255,0.5)) brightness(1.3)';
+          building.style.filter = 'drop-shadow(0 0 12px rgba(120,180,255,0.7)) drop-shadow(0 0 8px rgba(255,106,0,0.8)) brightness(1.4)';
+        } else {
+          building.innerHTML = `<svg width="28" height="60" viewBox="0 0 28 60" style="display:block;">
+            <rect x="11" y="6" width="6" height="4" fill="${bodyFill}" stroke="${bodyStk}" stroke-width="0.4" rx="0.5"/>
+            <rect x="13" y="2" width="2" height="4" fill="${bodyStk}" rx="0.3"/>
+            <circle cx="14" cy="2" r="1" fill="rgba(255,80,40,0.35)"/>
+            <rect x="4" y="10" width="20" height="48" fill="${bodyFill}" stroke="${bodyStk}" stroke-width="0.5" rx="0.5"/>
+            <rect x="6" y="10" width="16" height="2" fill="${isLight ? '#6a7a8a' : '#1a3050'}" rx="0.3"/>
+            ${Array.from({length: 7}, (_, row) =>
+              Array.from({length: 4}, (_, col) => {
+                const wx = 6.5 + col * 4.5;
+                const wy = 15 + row * 5.5;
+                return `<rect x="${wx}" y="${wy}" width="2.5" height="2" rx="0.3" fill="${wCol}"/>`;
+              }).join('')
+            ).join('')}
+          </svg>`;
+          building.style.filter = 'drop-shadow(0 0 2px rgba(80,140,200,0.15))';
         }
-        building.style.filter = isMax
-          ? 'drop-shadow(0 0 12px rgba(120,180,255,0.7)) drop-shadow(0 0 8px rgba(255,106,0,0.8)) brightness(1.4)'
-          : `drop-shadow(0 0 ${(dmg * 6).toFixed(1)}px rgba(${gR},${Math.round(gG * 0.5)},0,${(dmg * 0.35).toFixed(2)}))`;
       } else {
+        // Clean up destruction elements when switching away
+        const beam = document.getElementById('dlBeam');
+        if (beam) beam.remove();
+        if (carWrap) carWrap.style.display = '';
         if (mothership) mothership.remove();
         if (building) building.remove();
       }
@@ -5345,12 +5380,16 @@
       // Remove Cool Runnings bobsled
       const oldBobsled = document.getElementById('dlBobsled');
       if (oldBobsled) oldBobsled.remove();
-      // Remove Independence Day mothership + building
+      // Remove Independence Day mothership + beam + building
       const oldMothership = document.getElementById('dlMothership');
       if (oldMothership) oldMothership.remove();
+      const oldBeam = document.getElementById('dlBeam');
+      if (oldBeam) oldBeam.remove();
       const oldBuilding = document.getElementById('dlBuilding');
       if (oldBuilding) oldBuilding.remove();
-      // Restore road/markers/car visibility
+      // Restore road/markers/car/carWrap visibility
+      const oldCarWrap = document.getElementById('dlCarWrap');
+      if (oldCarWrap) oldCarWrap.style.display = '';
       const oldRoad = document.getElementById('dlRoad');
       if (oldRoad) { oldRoad.style.display = ''; oldRoad.style.background = ''; oldRoad.style.boxShadow = ''; oldRoad.style.height = ''; oldRoad.style.borderRadius = ''; }
       const oldMarkers = document.getElementById('dlMarkers');
