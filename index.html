@@ -264,8 +264,8 @@
     .page-wrap {
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
+      overflow-y: auto;
       opacity: 0;
       transition: opacity 0.15s ease-in;
     }
@@ -275,7 +275,7 @@
       min-height: 0;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      overflow: visible;
       background: var(--bg);
     }
 
@@ -290,10 +290,12 @@
     body.compact .pw-text { min-height: calc(1.6em * 4); }
     body.compact .pw-actions { margin-top: 10px; padding-top: 8px; }
     body.compact .strength-row { margin-bottom: 0.5rem; min-height: auto; }
+    body.compact .mode-switch { margin-bottom: 0.5rem; }
     body.compact .section { margin-bottom: 0.5rem; }
     body.compact .section-label { margin-bottom: 4px; }
     body.compact .col { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-    body.compact .info-btn { width: 22px; height: 22px; font-size: 11px; }
+    body.compact .info-btn { padding: 4px; }
+    body.compact .info-btn svg { width: 16px; height: 16px; }
     body.compact #dialWrap { width: 190px !important; height: 190px !important; }
     body.compact #dialCanvas { width: 190px !important; height: 190px !important; }
     body.compact #dialNotchDisplay { font-size: 28px !important; }
@@ -311,6 +313,7 @@
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
       width: 100%;
+      flex-wrap: wrap;
     }
     .app-bar-logo { margin-right: auto; }
 
@@ -318,7 +321,7 @@
     .cols-wrap {
       display: flex;
       flex: 1;
-      overflow: hidden;
+      overflow: visible;
       align-items: flex-start;
       justify-content: center;
     }
@@ -378,6 +381,103 @@
     }
     body.light .cast-image:hover { opacity: 1; }
 
+    /* ── MOVIE INFO OVERLAY ── */
+    .movie-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 400;
+      background: rgba(5,7,13,0.92);
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+    .movie-overlay.open { display: flex; }
+    body.light .movie-overlay { background: rgba(255,255,255,0.92); }
+    .movie-card {
+      position: relative;
+      max-width: 500px;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+    }
+    .movie-card-img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      display: block;
+    }
+    .movie-card-body {
+      padding: 1.25rem 1.5rem 1.5rem;
+    }
+    .movie-card-title {
+      font-family: var(--display);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 4px;
+    }
+    .movie-card-meta {
+      font-family: var(--ui);
+      font-size: 11px;
+      color: var(--muted2);
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+    .movie-card-tagline {
+      font-family: var(--ui);
+      font-size: 13px;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .movie-card-synopsis {
+      font-family: var(--ui);
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .movie-card-facts {
+      font-family: var(--ui);
+      font-size: 11px;
+      color: var(--muted2);
+      line-height: 1.6;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .movie-card-facts strong { color: var(--orange); }
+    .movie-card-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+    .movie-card-close:hover { background: rgba(0,0,0,0.8); }
+    @media (max-width: 540px) {
+      .movie-card-img { height: 180px; }
+      .movie-card-body { padding: 1rem 1.25rem 1.25rem; }
+      .movie-card-title { font-size: 16px; }
+    }
+
     .col {
       overflow-y: auto;
       padding: 1.25rem 1rem;
@@ -423,18 +523,8 @@
       .col-chars { flex: 0 0 auto; width: 100%; }
       .cols-wrap {
         flex-direction: column;
-        overflow-y: auto;
         justify-content: flex-start;
         align-items: stretch;
-      }
-      /* Let page scroll naturally on tablets and phones */
-      .page-wrap {
-        height: auto;
-        min-height: 100vh;
-        overflow: visible;
-      }
-      .tool-panel {
-        overflow: visible;
       }
       /* Scale app bar for tablet */
       .app-bar-logo-fallback {
@@ -843,7 +933,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 1.25rem;
+      margin-bottom: 0;
       min-height: calc(1.4em * 2 + 4px);
     }
     .str-lbl {
@@ -874,6 +964,52 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
+    }
+
+    /* ── PASSPHRASE MODE TOGGLE (prominent, near password card) ── */
+    .mode-switch {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    .mode-switch-label {
+      font-family: var(--display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      color: var(--muted2);
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .mode-switch-btns {
+      display: flex;
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .mode-switch-btn {
+      flex: 1;
+      padding: 7px 10px;
+      font-family: var(--ui);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--muted2);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .mode-switch-btn.active {
+      background: var(--orange);
+      color: var(--bg);
+    }
+    .mode-switch-btn:not(.active):hover {
+      background: var(--surface2);
     }
 
     /* ── SECTION ── */
@@ -1118,24 +1254,184 @@
 
     /* ── INFO BUTTON ── */
     .info-btn {
-      width: 20px;
-      height: 20px;
-      border-radius: 3px;
-      border: 1px solid var(--border2);
       background: transparent;
-      color: var(--muted2);
-      font-family: var(--display);
-      font-size: 11px;
-      font-weight: 600;
-      line-height: 1;
+      border: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      padding: 6px;
+      color: var(--orange);
+      transition: color 0.15s, opacity 0.15s;
+      opacity: 0.7;
+      line-height: 0;
     }
-    .info-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-dim); }
+    .info-btn:hover {
+      opacity: 1;
+      color: var(--orange);
+    }
+    .info-btn svg {
+      display: block;
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ── GUIDED TOUR ── */
+    .tour-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+    }
+    .tour-overlay.open { display: block; }
+    .tour-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(5,7,13,0.8);
+      pointer-events: auto;
+    }
+    .tour-highlight {
+      position: absolute;
+      border-radius: 10px;
+      border: 2px solid var(--orange);
+      box-shadow: 0 0 24px rgba(249,115,22,0.5), inset 0 0 12px rgba(249,115,22,0.08);
+      z-index: 501;
+      pointer-events: none;
+      transition: top 0.35s ease, left 0.35s ease, width 0.35s ease, height 0.35s ease;
+      animation: tourPulse 2s ease-in-out infinite;
+    }
+    @keyframes tourPulse {
+      0%, 100% { box-shadow: 0 0 24px rgba(249,115,22,0.5), inset 0 0 12px rgba(249,115,22,0.08); }
+      50% { box-shadow: 0 0 36px rgba(249,115,22,0.7), inset 0 0 18px rgba(249,115,22,0.12); }
+    }
+    .tour-tooltip {
+      position: absolute;
+      z-index: 502;
+      background: var(--surface);
+      border: 1px solid var(--orange);
+      border-radius: 8px;
+      padding: 14px 16px;
+      padding-top: 12px;
+      max-width: 300px;
+      width: max-content;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      transition: top 0.3s ease, left 0.3s ease;
+    }
+    .tour-close {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      background: none;
+      border: none;
+      color: var(--muted2);
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 2px 4px;
+      transition: color 0.15s;
+    }
+    .tour-close:hover { color: var(--orange); }
+    /* Lock page interaction during tour */
+    body.tour-active .page-wrap,
+    body.tour-active .seo-section { pointer-events: none; }
+    .tour-tooltip-title {
+      font-family: var(--display);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 6px;
+    }
+    .tour-tooltip-body {
+      font-family: var(--ui);
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .tour-tooltip-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tour-dots {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+    .tour-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border2);
+      transition: background 0.2s;
+    }
+    .tour-dot.active { background: var(--orange); }
+    .tour-btns {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .tour-btn-skip {
+      font-family: var(--ui);
+      font-size: 11px;
+      color: var(--muted2);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 8px;
+      letter-spacing: 0.04em;
+    }
+    .tour-btn-skip:hover { color: var(--text); }
+    .tour-btn-back {
+      font-family: var(--display);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .tour-btn-back:hover { border-color: var(--orange); color: var(--text); }
+    .tour-btn-next {
+      font-family: var(--display);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--orange);
+      border: none;
+      border-radius: 4px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .tour-btn-next:hover { filter: brightness(1.1); }
+    .tour-step-count {
+      font-family: var(--ui);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+    @media (max-width: 540px) {
+      .tour-tooltip { max-width: 260px; padding: 12px 14px; }
+      .tour-tooltip-title { font-size: 12px; }
+      .tour-tooltip-body { font-size: 11px; }
+    }
 
     /* ── MODAL ── */
     .modal-backdrop {
@@ -1332,6 +1628,7 @@
     body.office .len-number { text-shadow: none !important; }
     body.office #dialNotchDisplay { text-shadow: none !important; }
     body.office #dialLenInput { text-shadow: none !important; }
+    body.office .mode-switch-btn.active { background: var(--orange); color: #fff; }
 
     /* ── OFFICE + LIGHT (light background office) ── */
     body.office.light {
@@ -1344,9 +1641,6 @@
       --blue-dim:  #e8eef8;
       --blue-lo:   #b8cce8;
       --yellow:    #3b6fca;
-      --mono:      'SF Mono', 'Cascadia Code', 'Consolas', 'Menlo', monospace;
-      --display:   -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-      --ui:        -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
     }
     body.office.light .pw-card { background: #ffffff; border-color: var(--border2); box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
     body.office.light .pw-card::before { background: var(--border2) !important; }
@@ -1374,7 +1668,7 @@
     body.office.light #dialNotchDisplay { color: #1a1d23 !important; }
     body.office.light #dialLenDisplay { background: #ffffff; border-color: var(--border2); }
     body.office.light #dialLenInput { color: #1a1d23 !important; }
-    body.office.light .info-btn:hover { border-color: #3b6fca; color: #3b6fca; background: #e8eef8; }
+    body.office.light .info-btn:hover { color: #3b6fca; opacity: 1; }
     body.office.light .app-bar-select { background: #ffffff; border-color: var(--border); color: var(--text); }
     body.office.light .app-bar-logo-fallback { color: #1a1d23; }
     body.office.light .privacy-trigger:hover { color: #3b6fca; }
@@ -1402,9 +1696,6 @@
       --blue-lo:   #2a4070;
       --yellow:    #5b8fea;
       --red:       #e05050;
-      --mono:      'SF Mono', 'Cascadia Code', 'Consolas', 'Menlo', monospace;
-      --display:   -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-      --ui:        -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
     }
     body.office:not(.light) .pw-card { background: #181b22; border-color: #3a4050; box-shadow: 0 1px 6px rgba(0,0,0,0.25); }
     body.office:not(.light) .pw-card::before { background: #3a4050 !important; }
@@ -1432,7 +1723,7 @@
     body.office:not(.light) #dialNotchDisplay { color: #d8dbe3 !important; }
     body.office:not(.light) #dialLenDisplay { background: #1e222b; border-color: #3a4050; }
     body.office:not(.light) #dialLenInput { color: #d8dbe3 !important; }
-    body.office:not(.light) .info-btn:hover { border-color: #5b8fea; color: #5b8fea; background: #141c2e; }
+    body.office:not(.light) .info-btn:hover { color: #5b8fea; opacity: 1; }
     body.office:not(.light) .app-bar-select { background: #1e222b; border-color: #2a2f3a; color: #d8dbe3; }
     body.office:not(.light) .app-bar-logo-fallback { color: #d8dbe3; }
     body.office:not(.light) .privacy-trigger:hover { color: #5b8fea; }
@@ -1469,7 +1760,9 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      flex-shrink: 0;
+      flex-shrink: 1;
+      flex-wrap: wrap;
+      min-width: 0;
     }
     .app-bar-select {
       font-family: var(--ui);
@@ -1502,7 +1795,7 @@
       font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--blue);
+      color: var(--orange);
       white-space: nowrap;
       animation: hintPulse 2.5s ease-in-out infinite;
     }
@@ -1808,7 +2101,7 @@
           <img class="brand-img-dark"
             src="https://raw.githubusercontent.com/captoppy/passwordtool/refs/heads/main/word_icon_white.png"
             alt="PopcornPasswords" />
-          <img id="castImage" class="cast-image" src="" alt="" style="display:none;" />
+          <img id="castImage" class="cast-image" src="" alt="" style="display:none; cursor:pointer;" onclick="openMovieInfo()" />
         </div>
 
         <!-- Col 2: title + password + strength + length -->
@@ -1827,8 +2120,9 @@
           </div>
 
           <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:6px;">
-            <button class="info-btn" onclick="openPrivacyModal()" title="Security" aria-label="Open security information">!</button>
-            <button class="info-btn" onclick="openModal()" title="How does this work?" aria-label="Open help and information">?</button>
+            <button class="info-btn" onclick="openPrivacyModal()" title="Security" aria-label="Open security information"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></button>
+            <button class="info-btn" onclick="openModal()" title="How does this work?" aria-label="Open help and information"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="11" y1="11" x2="12" y2="11"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="10" y1="17" x2="14" y2="17"/><circle cx="12" cy="7.5" r="0.7" fill="currentColor" stroke="none"/></svg></button>
+            <button class="info-btn" onclick="startTour()" title="Quick tour" aria-label="Start guided tour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="1.2" fill="currentColor" stroke="none"/></svg></button>
           </div>
 
           <div class="pw-card" id="pwCard">
@@ -1844,17 +2138,12 @@
             </div>
           </div>
 
-          <div class="strength-row" role="status" aria-live="polite" aria-label="Password strength">
-            <span class="str-lbl">Strength</span>
-            <div class="str-bars" role="progressbar" aria-valuemin="0" aria-valuemax="6" aria-label="Strength meter">
-              <div class="sbar" id="sb1"></div>
-              <div class="sbar" id="sb2"></div>
-              <div class="sbar" id="sb3"></div>
-              <div class="sbar" id="sb4"></div>
-              <div class="sbar" id="sb5"></div>
-              <div class="sbar" id="sb6"></div>
+          <div class="mode-switch" id="modeSwitch">
+            <span class="mode-switch-label">Mode</span>
+            <div class="mode-switch-btns">
+              <button class="mode-switch-btn active" id="modeRandom" onclick="setPasswordMode('random')">Random Characters</button>
+              <button class="mode-switch-btn" id="modePassphrase" onclick="setPasswordMode('passphrase')">Passphrase</button>
             </div>
-            <span class="str-name" id="strName"></span>
           </div>
 
           <div class="section">
@@ -1906,6 +2195,18 @@
                   <span class="len-unit">chars</span>
                 </div>
               </div>
+            </div>
+            <div class="strength-row" role="status" aria-live="polite" aria-label="Password strength" style="margin-top:0.75rem;">
+              <span class="str-lbl">Strength</span>
+              <div class="str-bars" role="progressbar" aria-valuemin="0" aria-valuemax="6" aria-label="Strength meter">
+                <div class="sbar" id="sb1"></div>
+                <div class="sbar" id="sb2"></div>
+                <div class="sbar" id="sb3"></div>
+                <div class="sbar" id="sb4"></div>
+                <div class="sbar" id="sb5"></div>
+                <div class="sbar" id="sb6"></div>
+              </div>
+              <span class="str-name" id="strName"></span>
             </div>
           </div><!-- /.section -->
 
@@ -2013,7 +2314,7 @@
     <span style="opacity:0.4; margin:0 8px;">·</span>
     <span>Built in Adelaide, Australia</span>
     <span style="opacity:0.4; margin:0 8px;">·</span>
-    <a href="https://x.com/socialhwy" target="_blank" rel="noopener" style="color:var(--muted); text-decoration:none; transition:color 0.15s;" onmouseover="this.style.color='var(--orange)'" onmouseout="this.style.color='var(--muted)'">@socialhwy</a>
+    <a href="https://x.com/socialhighwy" target="_blank" rel="noopener" style="color:var(--muted); text-decoration:none; transition:color 0.15s;" onmouseover="this.style.color='var(--orange)'" onmouseout="this.style.color='var(--muted)'">@socialhighwy</a>
   </footer>
 
   <!-- Privacy modal -->
@@ -2154,6 +2455,41 @@
           </span>
         </div>
 
+      </div>
+    </div>
+  </div>
+
+  <!-- Movie info overlay -->
+  <div class="movie-overlay" id="movieOverlay" onclick="if(event.target===this)closeMovieInfo()">
+    <div class="movie-card" id="movieCard">
+      <button class="movie-card-close" onclick="closeMovieInfo()" aria-label="Close">&times;</button>
+      <img class="movie-card-img" id="movieImg" src="" alt="" />
+      <div class="movie-card-body">
+        <div class="movie-card-title" id="movieTitle"></div>
+        <div class="movie-card-meta" id="movieMeta"></div>
+        <div class="movie-card-tagline" id="movieTagline"></div>
+        <div class="movie-card-synopsis" id="movieSynopsis"></div>
+        <div class="movie-card-facts" id="movieFacts"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Guided tour overlay -->
+  <div class="tour-overlay" id="tourOverlay">
+    <div class="tour-backdrop"></div>
+    <div class="tour-highlight" id="tourHighlight"></div>
+    <div class="tour-tooltip" id="tourTooltip">
+      <button class="tour-close" onclick="endTour()" title="Close tour" aria-label="Close tour">&times;</button>
+      <div class="tour-tooltip-title" id="tourTitle"></div>
+      <div class="tour-tooltip-body" id="tourBody"></div>
+      <div class="tour-tooltip-footer">
+        <div class="tour-dots" id="tourDots"></div>
+        <div class="tour-btns">
+          <span class="tour-step-count" id="tourCount"></span>
+          <button class="tour-btn-skip" onclick="endTour()">Skip</button>
+          <button class="tour-btn-back" id="tourBack" onclick="prevTourStep()" style="display:none;">Back</button>
+          <button class="tour-btn-next" id="tourNext" onclick="nextTourStep()">Next</button>
+        </div>
       </div>
     </div>
   </div>
@@ -4710,6 +5046,13 @@
     function togglePassphrase() {
       usePassphrase = !usePassphrase;
       document.getElementById('passphraseToggle').classList.toggle('active', usePassphrase);
+      // Sync the prominent mode switch buttons
+      const modeRandom = document.getElementById('modeRandom');
+      const modePass = document.getElementById('modePassphrase');
+      if (modeRandom && modePass) {
+        modeRandom.classList.toggle('active', !usePassphrase);
+        modePass.classList.toggle('active', usePassphrase);
+      }
 
       const upperRow = document.getElementById('upperRow');
       const numbersRow = document.getElementById('numbersRow');
@@ -4766,6 +5109,14 @@
         ambigRow.classList.toggle('active', useNoAmbig);
       }
       generate();
+    }
+
+    // Prominent mode switch — calls togglePassphrase only if state needs to change
+    function setPasswordMode(mode) {
+      const wantPassphrase = (mode === 'passphrase');
+      if (wantPassphrase !== usePassphrase) {
+        togglePassphrase();
+      }
     }
 
     function togglePPUpper() {
@@ -4872,6 +5223,13 @@
       bttf: {
         id:            'bttf',
         castImage:     'https://raw.githubusercontent.com/captoppy/passwordtool/main/bttf_cast_.jpg',
+        movieInfo: {
+          year: 1985,
+          director: 'Robert Zemeckis',
+          tagline: '"If you put your mind to it, you can accomplish anything."',
+          synopsis: 'Marty McFly, a teenager, is accidentally sent 30 years into the past in a time-travelling DeLorean invented by his eccentric friend Doc Brown. Stranded in 1955, Marty must make sure his parents fall in love — or he\'ll cease to exist — while finding a way to get back to the future.',
+          facts: 'The DeLorean was chosen because its stainless steel body made the gag about a "spaceship" believable. The film launched one of the most beloved trilogies in cinema and turned 88 MPH into a cultural icon. Eric Stoltz was originally cast as Marty and filmed for five weeks before being replaced by Michael J. Fox.'
+        },
         label:         'Back to the Future',
         pageTitle:     'PopcornPasswords — 88 MPH',
         headerSub:     'PopcornPasswords',
@@ -4951,6 +5309,13 @@
       spinal_tap: {
         id:              'spinal_tap',
         castImage:       'https://raw.githubusercontent.com/captoppy/passwordtool/main/spinal_tap_cast_.jpg',
+        movieInfo: {
+          year: 1984,
+          director: 'Rob Reiner',
+          tagline: '"It\'s such a fine line between stupid and clever."',
+          synopsis: 'A "documentary" film crew follows the fictional British heavy metal band Spinal Tap on their disastrous American tour. As venues shrink, props malfunction, and band members quit, the film delivers a pitch-perfect satire of rock excess that many real musicians have mistaken for an actual documentary.',
+          facts: 'Most of the dialogue was improvised. The film popularised the phrase "up to eleven" — now in the Oxford English Dictionary. Real rock stars including Ozzy Osbourne and Eddie Van Halen have said they didn\'t realise it was a comedy at first because it hit so close to home.'
+        },
         label:           'This Is Spinal Tap',
         pageTitle:       'PopcornPasswords — These Go to 11',
         headerSub:       'PopcornPasswords',
@@ -5039,6 +5404,13 @@
       top_gun: {
         id:            'top_gun',
         castImage:     'https://raw.githubusercontent.com/captoppy/passwordtool/main/top_gun_cast_.jpg',
+        movieInfo: {
+          year: 1986,
+          director: 'Tony Scott',
+          tagline: '"I feel the need... the need for speed."',
+          synopsis: 'Lieutenant Pete "Maverick" Mitchell is a talented but reckless Navy fighter pilot sent to the elite Top Gun academy. Competing against the best pilots in the world, Maverick pushes every limit while dealing with tragedy, rivalry, and a romance with his civilian instructor.',
+          facts: 'The film boosted US Navy recruitment by 500%. Tom Cruise learned to fly a plane for the role. The iconic volleyball scene was not in the original script — Tony Scott added it to show off the cast. The 2022 sequel became one of the highest-grossing films of all time.'
+        },
         label:         'Top Gun',
         pageTitle:     'PopcornPasswords — Top Gun',
         headerSub:     'PopcornPasswords',
@@ -5125,6 +5497,13 @@
       cool_runnings: {
         id:            'cool_runnings',
         castImage:     'https://raw.githubusercontent.com/captoppy/passwordtool/main/cool_runnings_cast_.jpg',
+        movieInfo: {
+          year: 1993,
+          director: 'Jon Turteltaub',
+          tagline: '"Feel the rhythm, feel the rhyme, get on up, it\'s bobsled time!"',
+          synopsis: 'Based on the true story of the Jamaican national bobsled team\'s unlikely journey to the 1988 Calgary Winter Olympics. A disgraced former sprint coach recruits four Jamaican athletes to compete in a sport they\'ve never tried, in a country of ice and snow they\'ve never seen.',
+          facts: 'The real Jamaican bobsled team finished 14th at the 1988 Olympics — ahead of several established teams. John Candy took a massive pay cut to star in the film because he loved the script. The movie\'s chant "Cool Runnings" means "peaceful journey" in Jamaican patois.'
+        },
         label:         'Cool Runnings',
         pageTitle:     'PopcornPasswords: Feel the Rhythm',
         headerSub:     'PopcornPasswords',
@@ -5210,6 +5589,13 @@
       goonies: {
         id:              'goonies',
         castImage:       'https://raw.githubusercontent.com/captoppy/passwordtool/main/goonies_cast_.jpg',
+        movieInfo: {
+          year: 1985,
+          director: 'Richard Donner',
+          tagline: '"Goonies never say die!"',
+          synopsis: 'A group of kids from the "Goon Docks" neighbourhood discover an old pirate treasure map and set off on an underground adventure to find One-Eyed Willy\'s legendary rich stuff — all while trying to save their homes from demolition by greedy developers.',
+          facts: 'Steven Spielberg produced and co-wrote the story. The cast genuinely hadn\'t seen the pirate ship set before filming that scene — their reactions are real. Sean Astin kept the treasure map prop, and his mum threw it away. The film\'s cult following has only grown since the \'80s, spawning annual fan festivals.'
+        },
         label:           'The Goonies',
         pageTitle:       'PopcornPasswords: Goonies Never Say Die',
         headerSub:       'PopcornPasswords',
@@ -5289,6 +5675,13 @@
       independence_day: {
         id:              'independence_day',
         castImage:       'https://raw.githubusercontent.com/captoppy/passwordtool/main/independence_cast_.jpg',
+        movieInfo: {
+          year: 1996,
+          director: 'Roland Emmerich',
+          tagline: '"Today we celebrate our Independence Day!"',
+          synopsis: 'When enormous alien spacecraft appear over major cities worldwide, humanity faces extinction. A ragtag group — a Marine pilot, a satellite technician, and the President of the United States — must find a way to strike back before the aliens finish what they started.',
+          facts: 'The White House explosion scene became one of the most iconic visual effects shots in film history. Will Smith\'s ad-libbed "Welcome to Earth" punch wasn\'t in the script. The film grossed $817 million worldwide and kicked off the modern disaster movie genre.'
+        },
         label:           'Independence Day',
         pageTitle:       'PopcornPasswords — Independence Day',
         headerSub:       'PopcornPasswords',
@@ -5567,8 +5960,28 @@
       document.getElementById('privacyPolicyBackdrop').classList.remove('open');
       document.body.style.overflow = '';
     }
+
+    // ── Movie info overlay ──
+    function openMovieInfo() {
+      const info = THEME.movieInfo;
+      if (!info) return;
+      document.getElementById('movieImg').src = THEME.castImage || '';
+      document.getElementById('movieImg').alt = THEME.label + ' cast';
+      document.getElementById('movieTitle').textContent = THEME.label;
+      document.getElementById('movieMeta').textContent = info.year + '  ·  Directed by ' + info.director;
+      document.getElementById('movieTagline').textContent = info.tagline;
+      document.getElementById('movieSynopsis').textContent = info.synopsis;
+      document.getElementById('movieFacts').innerHTML = '<strong>Did you know?</strong> ' + info.facts;
+      document.getElementById('movieOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMovieInfo() {
+      document.getElementById('movieOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { closeModal(); closePrivacyModal(); closePrivacyPolicyModal(); }
+      if (e.key === 'Escape') { closeModal(); closePrivacyModal(); closePrivacyPolicyModal(); closeMovieInfo(); }
       // Ctrl/Cmd + Shift + C → Copy password
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
         e.preventDefault();
@@ -5704,6 +6117,225 @@
       });
     })();
 
+    // ── Guided Tour ──
+    const TOUR_STEPS = [
+      {
+        target: null,
+        title: '🍿 Welcome to Popcorn Passwords!',
+        body: 'A fun, free, cryptographically secure password generator — disguised as your favourite movies. Let us show you around! Takes about 30 seconds.',
+        isIntro: true
+      },
+      {
+        target: '#themeSelect',
+        title: '🎬 Set the Scene',
+        body: 'First things first — pick your movie! Each theme transforms the entire tool with its own controls, effects, quotes, and vibes. Go on, try a few.'
+      },
+      {
+        target: '#pwCard',
+        title: '🔐 Your Password, Hot Off the Press',
+        body: 'Here\'s where the magic happens. Your password appears right here — smash Regenerate to roll a fresh one, or hit Copy to grab it and go.'
+      },
+      {
+        target: '#modeSwitch',
+        title: '🎯 Pick Your Style',
+        body: 'Random characters for maximum chaos, or passphrase mode for something you can actually remember (like brave-delta-42-crane). Both are equally secure — it\'s your call.'
+      },
+      {
+        target: '#sliderRow',
+        title: '🏎️ This Is the Fun Bit!',
+        body: 'Drag the DeLorean, spin the amp dial, steer the bobsled — each theme has its own way to control password length. Crank it up and watch the fireworks. Literally.',
+        fallback: '#dialRow'
+      },
+      {
+        target: '#lenDisplay',
+        title: '🔢 Type Your Own Length',
+        body: 'Don\'t fancy the slider? Click the number box and type any length you want. It\'s a text field — punch in 42, 77, whatever you need. Hit Enter and you\'re done.',
+        fallback: '#dialLenDisplay'
+      },
+      {
+        target: '.strength-row',
+        title: '💪 How Tough Is It?',
+        body: 'Your password strength updates live as you tweak the length and options. The goal? Get those bars maxed out. You know you want to.'
+      },
+      {
+        target: '.checkboxes-grid',
+        title: '⚙️ Fine-Tune the Recipe',
+        body: 'Symbols, ambiguous characters, passphrase mode — mix and match to get exactly the password you need. More options = more entropy = harder to crack.'
+      },
+      {
+        target: '#modeOffice',
+        title: '💼 Stealth Mode',
+        body: 'Boss walking by? Hit the briefcase to instantly switch to a clean, professional look. Nobody needs to know you\'re generating passwords via the DeLorean. Your theme is saved underneath.'
+      }
+    ];
+
+    let tourStep = 0;
+    let tourActive = false;
+
+    function startTour() {
+      tourStep = 0;
+      tourActive = true;
+      document.body.classList.add('tour-active');
+      document.getElementById('tourOverlay').classList.add('open');
+      // Build dots
+      const dotsEl = document.getElementById('tourDots');
+      dotsEl.innerHTML = TOUR_STEPS.map((_, i) =>
+        `<div class="tour-dot${i === 0 ? ' active' : ''}" data-step="${i}"></div>`
+      ).join('');
+      showTourStep();
+    }
+
+    function endTour() {
+      tourActive = false;
+      _tourClearElevated();
+      document.body.classList.remove('tour-active');
+      document.getElementById('tourOverlay').classList.remove('open');
+      try { localStorage.setItem('pp_tour_seen', '1'); } catch(e) {}
+    }
+
+    function nextTourStep() {
+      tourStep++;
+      if (tourStep >= TOUR_STEPS.length) {
+        endTour();
+        return;
+      }
+      showTourStep();
+    }
+
+    function prevTourStep() {
+      if (tourStep > 0) {
+        tourStep--;
+        showTourStep();
+      }
+    }
+
+    let _tourElevated = null; // track elevated element to restore later
+    let _tourElevatedStyles = {};
+
+    function _tourClearElevated() {
+      if (_tourElevated) {
+        _tourElevated.style.position = _tourElevatedStyles.position || '';
+        _tourElevated.style.zIndex = _tourElevatedStyles.zIndex || '';
+        _tourElevated.style.pointerEvents = _tourElevatedStyles.pointerEvents || '';
+        _tourElevated = null;
+        _tourElevatedStyles = {};
+      }
+    }
+
+    function showTourStep() {
+      const step = TOUR_STEPS[tourStep];
+      const hl = document.getElementById('tourHighlight');
+      const tt = document.getElementById('tourTooltip');
+      const backBtn = document.getElementById('tourBack');
+
+      // Restore previously elevated element
+      _tourClearElevated();
+
+      // Show/hide back button
+      backBtn.style.display = tourStep > 0 ? '' : 'none';
+
+      // Update tooltip content
+      document.getElementById('tourTitle').textContent = step.title;
+      document.getElementById('tourBody').textContent = step.body;
+      document.getElementById('tourCount').textContent = (tourStep + 1) + ' / ' + TOUR_STEPS.length;
+      document.getElementById('tourNext').textContent = tourStep === TOUR_STEPS.length - 1 ? 'Let\'s Go!' : tourStep === 0 ? 'Show Me' : 'Next';
+
+      // Update dots
+      document.querySelectorAll('.tour-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i <= tourStep);
+      });
+
+      // Intro step — no target, centre the tooltip
+      if (step.isIntro) {
+        hl.style.display = 'none';
+        tt.style.left = '';
+        tt.style.top = '';
+        tt.style.right = '';
+        tt.style.bottom = '';
+        requestAnimationFrame(() => {
+          const ttRect = tt.getBoundingClientRect();
+          const vw = window.innerWidth;
+          const vh = window.innerHeight;
+          tt.style.top = Math.max(16, (vh - ttRect.height) / 2) + 'px';
+          tt.style.left = Math.max(16, (vw - ttRect.width) / 2) + 'px';
+        });
+        return;
+      }
+
+      hl.style.display = '';
+      let el = document.querySelector(step.target);
+
+      // If primary target is hidden, try fallback
+      if (el && (el.offsetParent === null || el.style.display === 'none') && step.fallback) {
+        el = document.querySelector(step.fallback);
+      }
+      if (step.fallback === '#dialRow' && el && el.style.display === 'none') {
+        el = document.querySelector(step.target);
+      }
+
+      if (!el) { nextTourStep(); return; }
+
+      // Elevate target element above the overlay so it shows at full brightness
+      _tourElevatedStyles = {
+        position: el.style.position,
+        zIndex: el.style.zIndex,
+        pointerEvents: el.style.pointerEvents
+      };
+      _tourElevated = el;
+      const computed = window.getComputedStyle(el);
+      if (computed.position === 'static') {
+        el.style.position = 'relative';
+      }
+      el.style.zIndex = '501';
+      el.style.pointerEvents = 'none';
+
+      // Scroll target into view first, then position
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      // Small delay to let scroll settle
+      setTimeout(() => {
+        const rect = el.getBoundingClientRect();
+        const pad = 10;
+
+        // Position highlight border
+        hl.style.top = (rect.top - pad) + 'px';
+        hl.style.left = (rect.left - pad) + 'px';
+        hl.style.width = (rect.width + pad * 2) + 'px';
+        hl.style.height = (rect.height + pad * 2) + 'px';
+
+        // Position tooltip below or above the highlight
+        tt.style.left = '';
+        tt.style.top = '';
+        tt.style.right = '';
+        tt.style.bottom = '';
+
+        requestAnimationFrame(() => {
+          const ttRect = tt.getBoundingClientRect();
+          const vw = window.innerWidth;
+          const vh = window.innerHeight;
+
+          let top = rect.bottom + pad + 10;
+          let left = rect.left;
+
+          if (top + ttRect.height > vh - 20) {
+            top = rect.top - pad - 10 - ttRect.height;
+          }
+          if (left + ttRect.width > vw - 16) {
+            left = vw - ttRect.width - 16;
+          }
+          if (left < 16) left = 16;
+          if (top < 16) top = rect.bottom + pad + 10;
+
+          tt.style.top = top + 'px';
+          tt.style.left = left + 'px';
+        });
+      }, 150);
+    }
+
+    // Reposition on resize/scroll while tour is active
+    window.addEventListener('resize', () => { if (tourActive) showTourStep(); });
+    window.addEventListener('scroll', () => { if (tourActive) showTourStep(); }, true);
+
     // ── Fluid viewport zoom — scales tool panel to fill any screen ──
     // Gentle scale: ~1.0 at 1100px, ~1.29 at 1920px, caps at 1.4.
     // Below 901px (tablet/mobile) → no zoom, responsive layout handles it.
@@ -5745,6 +6377,12 @@
     } catch(e) {}
     // Reveal page now that theme + mode are applied — no flash
     document.querySelector('.page-wrap').classList.add('ready');
+    // Auto-start tour on first visit
+    try {
+      if (!localStorage.getItem('pp_tour_seen')) {
+        setTimeout(startTour, 600);
+      }
+    } catch(e) {}
   </script>
 </body>
 </html>
