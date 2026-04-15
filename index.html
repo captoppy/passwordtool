@@ -506,9 +506,9 @@
     /* On narrow screens collapse to single column */
     @media (max-width: 700px) {
       .brand-panel { display: none; }
-      .cols-wrap { flex-direction: column; overflow-y: auto; justify-content: flex-start; }
+      .cols-wrap { flex-direction: column; overflow: visible; justify-content: flex-start; }
       .col-tool { flex: none; width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
-      .col-chars { flex: 1; }
+      .col-chars { flex: none; }
     }
 
     /* App bar logo shows on narrow screens only */
@@ -518,55 +518,41 @@
 
     /* ── TABLET (max-width: 900px) ── */
     @media (max-width: 900px) {
-      .brand-panel { display: none; }
-      .col-tool { flex: 0 0 auto; width: 100%; border-right: none; }
-      .col-chars { flex: 0 0 auto; width: 100%; }
+      /* Break the flex height chain — let everything size to content */
+      html, body {
+        height: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      .page-wrap {
+        display: block;
+        min-height: 0;
+        height: auto;
+        overflow: visible;
+      }
+      .tool-panel {
+        display: block;
+        height: auto;
+        overflow: visible;
+      }
       .cols-wrap {
+        display: flex;
         flex-direction: column;
+        height: auto;
+        overflow: visible;
         justify-content: flex-start;
         align-items: stretch;
       }
-      /* Scale app bar for tablet */
-      .app-bar-logo-fallback {
-        font-size: 14px;
-      }
-      .app-bar-select {
-        font-size: 14px;
-        padding: 8px 14px;
-      }
-      .kofi-btn {
-        width: 34px;
-        height: 34px;
-      }
+      .brand-panel { display: none; }
+      .col { overflow-y: visible; }
+      .col-tool { flex: 0 0 auto; width: 100%; border-right: none; }
+      .col-chars { flex: 0 0 auto; width: 100%; }
+      /* Hide tagline on tablet/mobile */
+      .app-bar-logo-tagline { display: none; }
     }
 
     /* ── PHONE (max-width: 540px) ── */
     @media (max-width: 540px) {
-      /* App bar — tighter on phone */
-      .app-bar {
-        padding: 0.5rem 0.75rem;
-        gap: 8px;
-      }
-      .app-bar-logo-fallback {
-        font-size: 11px;
-        letter-spacing: 0.04em;
-      }
-      .app-bar-select {
-        font-size: 13px;
-        padding: 7px 10px;
-      }
-      .mode-btn {
-        font-size: 14px;
-        padding: 6px 9px;
-      }
-      .kofi-btn {
-        width: 30px;
-        height: 30px;
-      }
-      .kofi-btn img {
-        width: 18px;
-        height: 18px;
-      }
       /* Header — scale down title */
       .header {
         margin-bottom: 1.25rem;
@@ -593,17 +579,17 @@
       }
       /* Password card */
       .pw-card {
-        padding: 1.25rem 1rem 1rem;
+        padding: 1rem 1rem 0.75rem;
         margin-bottom: 1rem;
       }
       .pw-text {
         font-size: 13px;
-        min-height: calc(1.6em * 4);
+        min-height: 0 !important;
       }
       .pw-actions {
         gap: 8px;
-        margin-top: 14px;
-        padding-top: 10px;
+        margin-top: 8px;
+        padding-top: 8px;
       }
       .btn {
         font-size: 11px;
@@ -716,18 +702,6 @@
       }
       .pw-text {
         font-size: 12px;
-      }
-      .app-bar-logo-fallback {
-        font-size: 10px;
-        letter-spacing: 0.02em;
-      }
-      .app-bar-select {
-        font-size: 11px;
-        padding: 6px 8px;
-      }
-      .mode-btn {
-        font-size: 14px;
-        padding: 6px 8px;
       }
     }
 
@@ -1831,6 +1805,68 @@
     .mode-btn.active { background: #3a4555; color: #ffffff; }
     .mode-btn:hover:not(.active) { color: var(--text); }
     body.light .mode-btn.active { background: #d0ccc2; color: #1a1a18; }
+
+    /* ── MOBILE APP BAR LAYOUT — must come after base rules to win by source order ── */
+    @media (max-width: 900px) {
+      .app-bar {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+        align-items: center;
+        gap: 5px 10px;
+        padding: 0.6rem 0.85rem;
+        flex-wrap: unset;
+      }
+      .app-bar-logo {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        align-self: center;
+        margin-right: 0;
+      }
+      .app-bar-logo-fallback {
+        font-size: 20px;
+        white-space: nowrap;
+      }
+      .app-bar-controls {
+        grid-column: 2;
+        grid-row: 1 / 3;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 7px;
+        flex-shrink: unset;
+        min-width: unset;
+      }
+      .theme-hint-wrap {
+        flex: 0 0 100%;
+        display: flex;
+        justify-content: flex-end;
+      }
+      .app-bar-select {
+        font-size: 14px;
+        padding: 7px 12px;
+      }
+      .mode-toggle { flex-shrink: 0; }
+      .mode-btn { font-size: 16px; padding: 7px 9px; }
+      .kofi-btn { width: 34px; height: 34px; flex-shrink: 0; }
+      .kofi-btn img { width: 21px; height: 21px; }
+    }
+    @media (max-width: 540px) {
+      .app-bar { padding: 0.5rem 0.6rem; gap: 4px 7px; }
+      .app-bar-logo-fallback { font-size: 15px; letter-spacing: 0.03em; }
+      .app-bar-controls { gap: 6px; }
+      .app-bar-select { font-size: 13px; padding: 6px 9px; }
+      .mode-btn { font-size: 15px; padding: 6px 8px; }
+      .kofi-btn { width: 30px; height: 30px; }
+      .kofi-btn img { width: 17px; height: 17px; }
+    }
+    @media (max-width: 380px) {
+      .app-bar-logo-fallback { font-size: 14px; letter-spacing: 0.02em; }
+      .app-bar-select { font-size: 11px; padding: 5px 7px; }
+      .mode-btn { font-size: 14px; padding: 5px 6px; }
+    }
     .theme-row {
       display: flex;
       align-items: center;
@@ -2073,7 +2109,7 @@
       <!-- App bar spans full width -->
       <div class="app-bar">
         <div class="app-bar-logo">
-          <span class="app-bar-logo-fallback">🍿 POPCORNPASSWORDS — FREE STRONG PASSWORD GENERATOR</span>
+          <span class="app-bar-logo-fallback">🍿 POPCORNPASSWORDS<span class="app-bar-logo-tagline"> — FREE STRONG PASSWORD GENERATOR</span></span>
         </div>
         <div class="app-bar-controls">
           <div class="theme-hint-wrap">
@@ -3762,7 +3798,7 @@
       wrap.addEventListener('mousedown',  e => { dlDragging = true; dlSet(getVal(e)); });
       wrap.addEventListener('touchstart', e => { dlDragging = true; dlSet(getVal(e)); e.preventDefault(); }, { passive: false });
       window.addEventListener('mousemove', e => { if (dlDragging) dlSet(getVal(e)); });
-      window.addEventListener('touchmove', e => { if (dlDragging) dlSet(getVal(e)); e.preventDefault(); }, { passive: false });
+      window.addEventListener('touchmove', e => { if (dlDragging) { dlSet(getVal(e)); e.preventDefault(); } }, { passive: false });
       window.addEventListener('mouseup',   () => dlDragging = false);
       window.addEventListener('touchend',  () => dlDragging = false);
       window.addEventListener('resize',    () => dlRender());
