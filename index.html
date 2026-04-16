@@ -582,10 +582,6 @@
         padding: 1rem 1rem 0.75rem;
         margin-bottom: 1rem;
       }
-      .pw-text {
-        font-size: 13px;
-        min-height: 0 !important;
-      }
       .pw-actions {
         gap: 8px;
         margin-top: 8px;
@@ -853,6 +849,18 @@
     .pw-text .c-l { color: var(--text); }
     .pw-text .c-n { color: var(--yellow); }
     .pw-text .c-s { color: var(--orange-hi); }
+
+    /* Mobile: fix pw-text to exactly 3 rows — scroll internally if longer */
+    @media (max-width: 900px) {
+      .pw-text {
+        font-size: 13px;
+        height: calc(1.6em * 3);
+        min-height: calc(1.6em * 3);
+        max-height: calc(1.6em * 3);
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+    }
 
     .pw-actions {
       display: flex;
