@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jellar — Knowledge Hub</title>
+<meta name="description" content="Everything you need to know about Jellar — submission rules, categories, karma, tiers, and how missions work.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  /* JELLAR wordmark — Cinzel gives it a Norse/runic weight without being costume-y */
+  .jellar-wordmark {
+    font-family: 'Cinzel', serif;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    color: var(--neon);
+    text-shadow: 0 0 14px rgba(124,255,80,0.4);
+    font-size: 1.15rem;
+  }
+  :root {
+    --bg: #05070a; --bg-2: #0a0e14; --line: #1a2028;
+    --neon: #7cff50; --hot: #ff3864; --ice: #38d7ff; --gold: #ffd24a;
+    --text: #e6edf3; --text-dim: #7a8896;
+  }
+  html, body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .neon-text { color: var(--neon); }
+  .pulse-dot { position: relative; width: 10px; height: 10px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 10px var(--neon); }
+  h2, h3, .card, section, [id] { scroll-margin-top: 200px; }
+  .toc a { color: var(--text-dim); font-size: 13px; text-decoration: none; display: block; padding: 3px 0; }
+  .toc a:hover { color: var(--neon); }
+  .toc .section-label { color: var(--text-dim); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'JetBrains Mono', monospace; margin-top: 12px; margin-bottom: 4px; }
+  code { background: var(--bg-2); padding: 2px 6px; border: 1px solid var(--line); font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+  .card { border: 1px solid var(--line); background: var(--bg-2); padding: 16px; }
+  .card h3 { color: var(--neon); font-family: 'JetBrains Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 16px; }
+  .cat-card { border: 1px solid var(--line); background: var(--bg-2); padding: 14px; }
+  .cat-card .cat-name { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--neon); margin-bottom: 4px; }
+  .cat-card .cat-tag { font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--text-dim); }
+  .tier-row { border: 1px solid var(--line); background: var(--bg-2); padding: 14px; margin-bottom: 8px; display: grid; grid-template-columns: 100px 1fr; gap: 16px; align-items: start; }
+  .faq-item { border-bottom: 1px solid var(--line); padding: 16px 0; }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-q { font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .faq-q:hover { color: var(--neon); }
+  .faq-a { font-size: 14px; color: var(--text-dim); margin-top: 8px; line-height: 1.6; display: none; }
+  .faq-item.open .faq-a { display: block; }
+  .faq-item.open .faq-arrow { transform: rotate(90deg); }
+  .faq-arrow { transition: transform 0.2s; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="border-b border-[var(--line)] bg-[var(--bg-2)]/80 backdrop-blur sticky top-0 z-30">
+  <div class="max-w-[1200px] mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="pulse-dot"></div>
+      <a href="index.html" class="jellar-wordmark">JELLAR</a>
+      <span class="mono text-xs text-[var(--text-dim)] ml-4">KNOWLEDGE HUB</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="submit.html" class="mono text-xs uppercase text-[var(--text-dim)] hover:neon-text">Submit</a>
+      <a href="updates.html" class="mono text-xs uppercase text-[var(--text-dim)] hover:neon-text">Updates</a>
+      <a href="index.html" class="mono text-xs uppercase text-[var(--text-dim)] hover:neon-text">← Pulse</a>
+    </div>
+  </div>
+</header>
+
+<div class="max-w-[1200px] mx-auto px-6 py-10 flex gap-10">
+
+  <!-- SIDEBAR TOC -->
+  <aside class="hidden lg:block w-56 shrink-0">
+    <div class="sticky top-24 toc">
+      <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Contents</div>
+
+      <div class="section-label">Getting started</div>
+      <a href="#what-is-jellar">What is Jellar?</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#roles">Builders vs Testers</a>
+
+      <div class="section-label">For builders</div>
+      <a href="#submitting">Submitting a project</a>
+      <a href="#categories">Project categories</a>
+      <a href="#tiers">Tiers explained</a>
+      <a href="#preflight">Pre-flight checks</a>
+      <a href="#manual-review">Manual review</a>
+
+      <div class="section-label">For testers</div>
+      <a href="#missions">Doing a mission</a>
+      <a href="#karma">Karma & Credits</a>
+      <a href="#karma-gift">Rewarding great reviews</a>
+      <a href="#karma-decay">Karma decay</a>
+      <a href="#quality">Feedback quality</a>
+
+      <div class="section-label">Rules</div>
+      <a href="#banned">What gets you banned</a>
+      <a href="#profanity">Language policy</a>
+
+      <div class="section-label">Help</div>
+      <a href="#faq">FAQ</a>
+      <a href="#origin">About the name</a>
+
+      <div class="section-label">What's coming</div>
+      <a href="updates.html">Updates & Roadmap</a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 min-w-0 space-y-16">
+
+    <div>
+      <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)]">Knowledge Hub</div>
+      <h1 class="text-3xl md:text-4xl font-bold mt-1">Everything about Jellar</h1>
+      <p class="text-[var(--text-dim)] mt-2">Your complete guide to building, testing, and earning on Jellar.</p>
+
+      <!-- SEARCH BAR — prominent, always visible -->
+      <div class="mt-6 relative">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-dim)]" style="font-size:16px;pointer-events:none;">⌕</span>
+        <input type="text" id="search-input-main"
+          placeholder="Search — e.g. 'how does karma work' or 'sponsored slot'"
+          class="w-full border border-[var(--line)] text-[var(--text)] pl-10 pr-10 py-3 focus:outline-none focus:border-[var(--neon)] transition text-sm"
+          style="background:var(--bg-2);font-family:inherit;">
+        <button id="search-clear" onclick="clearSearch()" 
+          class="absolute right-3 top-1/2 -translate-y-1/2 mono text-xs text-[var(--text-dim)] hover:neon-text transition"
+          style="display:none;background:none;border:none;cursor:pointer;padding:2px 4px;">✕</button>
+      </div>
+      <div id="search-results-main" class="border border-[var(--line)] border-t-0" style="background:var(--bg-2);display:none;"></div>
+    </div>
+
+    <!-- ═══ GETTING STARTED ═══════════════════════════════════════ -->
+    <section>
+      <h2 id="what-is-jellar" class="text-2xl font-bold border-b border-[var(--line)] pb-3">What is Jellar?</h2>
+      <p class="mt-4 text-sm leading-relaxed">Jellar is a <strong>Human Signal testing platform</strong> for AI builders — people who use AI to build apps, tools, and products fast (sometimes called "vibe coders").</p>
+      <p class="mt-3 text-sm leading-relaxed">The problem: you can build something in a weekend with AI, but getting <em>real humans to actually test it</em> is hard. Friends are too polite. Social media is too noisy. User research firms are too expensive.</p>
+      <p class="mt-3 text-sm leading-relaxed">Jellar solves this. Builders list their projects, Testers review them with structured feedback, and everyone earns karma and credits for participating.</p>
+    </section>
+
+    <section>
+      <h2 id="how-it-works" class="text-2xl font-bold border-b border-[var(--line)] pb-3">How it works</h2>
+      <div class="mt-4 space-y-3">
+        <div class="card">
+          <div class="mono text-xs neon-text mb-1">01 — BUILDER SUBMITS</div>
+          <p class="text-sm">A builder lists their project with a URL, a short mission for testers ("try to sign up and send a message"), and answers a safety questionnaire. Automated checks run instantly, then a human admin reviews within 24 hours.</p>
+        </div>
+        <div class="card">
+          <div class="mono text-xs neon-text mb-1">02 — PROJECT GOES LIVE</div>
+          <p class="text-sm">Approved projects appear on the Pulse globe and the Ladder. They're ranked by tier, then by builder karma within each tier. Sponsored projects sit at the top in gold.</p>
+        </div>
+        <div class="card">
+          <div class="mono text-xs neon-text mb-1">03 — TESTER RUNS A MISSION</div>
+          <p class="text-sm">Testers pick a project, read the briefing, then click to open it in a new tab. A 3-minute timer enforces minimum dwell time. Testers fill in structured feedback — friction points, magic moments, a summary.</p>
+        </div>
+        <div class="card">
+          <div class="mono text-xs neon-text mb-1">04 — KARMA IS AWARDED</div>
+          <p class="text-sm">Testers earn Vibe Credits and karma based on completeness. Builders see reviews in their dashboard. Builder karma improves, lifting their project higher on the Ladder.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 id="roles" class="text-2xl font-bold border-b border-[var(--line)] pb-3">Builders vs Testers</h2>
+      <div class="mt-4 grid md:grid-cols-2 gap-4">
+        <div class="card">
+          <h3>Builders</h3>
+          <p class="text-sm text-[var(--text-dim)]">You've made something and want real feedback. You submit your project, define a mission for testers, and earn builder karma as reviews come in. Higher builder karma = higher position on the Ladder = more visibility = more reviews.</p>
+        </div>
+        <div class="card">
+          <h3>Testers</h3>
+          <p class="text-sm text-[var(--text-dim)]">You spend 5–60 minutes using someone's build and give structured, honest feedback. You earn Vibe Credits and tester karma for every completed review. High tester karma gets you on the leaderboard.</p>
+        </div>
+      </div>
+      <p class="mt-4 text-sm text-[var(--text-dim)]">Most people are both. Builders are encouraged (and on some tiers, required) to test other projects before listing their own. This keeps the community healthy.</p>
+    </section>
+
+    <!-- ═══ FOR BUILDERS ══════════════════════════════════════════ -->
+    <section>
+      <h2 id="submitting" class="text-2xl font-bold border-b border-[var(--line)] pb-3">Submitting a project</h2>
+      <ol class="mt-4 space-y-3 text-sm leading-relaxed list-decimal list-inside">
+        <li>Sign in with GitHub. Your account must be at least <strong>5 days old</strong>.</li>
+        <li>Go to <a href="submit.html" class="neon-text hover:underline">Submit</a> and fill in the form. You'll need a live HTTPS URL, a category, a mission brief, and answers to the Vibe Check safety questions.</li>
+        <li>Automated pre-flight checks run instantly in your browser. If any fail, you'll see exactly why and how to fix it.</li>
+        <li>If all checks pass, your submission enters the manual review queue. A human reviews it within 24 hours.</li>
+        <li>Approved → your project goes live on the Pulse globe and Ladder. Rejected → you'll see the reason and can resubmit after fixing the issue.</li>
+      </ol>
+      <div class="mt-4 p-4 border border-[var(--gold)] bg-[var(--gold)]/5">
+        <div class="mono text-xs font-bold mb-1" style="color:var(--gold)">MISSION LENGTH LIMIT</div>
+        <p class="text-sm">Missions are currently capped at <strong>60 minutes</strong>. If your project needs a longer test (e.g. tracking something over days), that requires a paid bounty mission — coming soon. For now, design your mission to fit within an hour.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2 id="categories" class="text-2xl font-bold border-b border-[var(--line)] pb-3">Project categories</h2>
+      <p class="text-sm text-[var(--text-dim)] mt-3">Pick the category that best describes <em>what your project does</em>, not what technology it uses. Not sure? If AI is the whole point of the product, pick AI Tool. If AI is just under the hood, pick the category that describes the user-facing purpose.</p>
+      <div class="cat-grid">
+        <div class="cat-card">
+          <div class="cat-name">AI Tool</div>
+          <p class="text-sm">AI or an LLM is the <em>core feature</em> — chat assistants, AI writers, code generators, image tools, AI search.</p>
+          <div class="cat-tag mt-2">e.g. ChatGPT wrappers, AI copywriters, AI image editors</div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-name">Developer Tool</div>
+          <p class="text-sm">Built for developers. APIs, CLIs, code helpers, debugging tools, deployment dashboards, devex improvements.</p>
+          <div class="cat-tag mt-2">e.g. snippet managers, API testers, error trackers</div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-name">Productivity</div>
+          <p class="text-sm">Helps people get things done. Task management, note-taking, workflow automation, scheduling, focus tools.</p>
+          <div class="cat-tag mt-2">e.g. to-do apps, time trackers, meeting schedulers</div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-name">SaaS / Business</div>
+          <p class="text-sm">B2B or business-focused software. CRMs, dashboards, reporting tools, team collaboration, ops software.</p>
+          <div class="cat-tag mt-2">e.g. CRMs, project trackers, HR tools, invoicing</div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-name">Creative & Design</div>
+          <p class="text-sm">Tools for making things look or sound good. Image generation, video editing, typography, brand tools, music.</p>
+          <div class="cat-tag mt-2">e.g. logo makers, palette generators, music composers</div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-name">Finance & Fintech</div>
+          <p class="text-sm">Money-related tools. Budgeting, invoicing, expense tracking, payments, crypto, personal finance.</p>
+          <div class="cat-tag mt-2">e.g. budget trackers, invoice generators, crypto wallets</div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-name">Health & Wellness</div>
+          <p class="text-sm">Fitness, mental health, habit tracking, nutrition, sleep, meditation, and wellbeing tools.</p>
+          <div class="cat-tag mt-2">e.g. habit trackers, mood logs, workout planners</div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-name">Education & Learning</div>
+          <p class="text-sm">Tools that teach or help people learn. Courses, tutoring, flashcards, skill trackers, language learning.</p>
+          <div class="cat-tag mt-2">e.g. flashcard apps, coding tutors, language tools</div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-name">E-commerce & Retail</div>
+          <p class="text-sm">Selling things online. Shops, marketplaces, product discovery, inventory tools, dropshipping.</p>
+          <div class="cat-tag mt-2">e.g. Shopify alternatives, product finders, print-on-demand</div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-name">Games & Entertainment</div>
+          <p class="text-sm">Games of any kind, interactive experiences, browser toys, party games, entertainment apps.</p>
+          <div class="cat-tag mt-2">e.g. browser games, trivia apps, interactive fiction</div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-name">Communication</div>
+          <p class="text-sm">Tools for talking to people. Chat apps, email clients, team tools, newsletters, social features.</p>
+          <div class="cat-tag mt-2">e.g. messaging apps, email tools, community platforms</div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-name">Data & Analytics</div>
+          <p class="text-sm">Tools for understanding data. Dashboards, reporting, data viz, analytics, business intelligence.</p>
+          <div class="cat-tag mt-2">e.g. analytics dashboards, chart builders, BI tools</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 id="tiers" class="text-2xl font-bold border-b border-[var(--line)] pb-3">Tiers explained</h2>
+      <p class="text-sm text-[var(--text-dim)] mt-3">Your tier determines how many reviews your project can receive, how many domains you can list, and whether you need to complete missions before posting. Within each tier, projects are ranked by builder karma.</p>
+
+      <div class="mt-6 space-y-2">
+        <div class="tier-row" style="border-color:var(--gold)">
+          <div><div class="mono text-xs font-bold" style="color:var(--gold)">SPONSORED</div><div class="mono text-xs text-[var(--text-dim)] mt-1">Contact us</div></div>
+          <div class="text-sm">7 days at the very top of the Ladder in gold. Up to 50 reviews. No mission review requirement. Stacks with any subscription tier. <strong style="color:var(--gold)">Testers earn DOUBLE KARMA (2× credits) for completing sponsored missions.</strong></div>
+        </div>
+        <div class="tier-row" style="border-color:var(--neon)">
+          <div><div class="mono text-xs font-bold neon-text">TIER 3</div><div class="mono text-xs text-[var(--text-dim)] mt-1">$49.99/mo</div></div>
+          <div class="text-sm">50 reviews per mission. Unlimited domains. No mission review requirement. Top section of the Ladder. 30-day listing. Resubmit button. Comprehensive AI testing included.</div>
+        </div>
+        <div class="tier-row" style="border-color:var(--ice)">
+          <div><div class="mono text-xs font-bold" style="color:var(--ice)">TIER 2</div><div class="mono text-xs text-[var(--text-dim)] mt-1">$19.99/mo</div></div>
+          <div class="text-sm">25 reviews per mission. 2 active domains. Must complete 1 mission before submitting own build. Mid section of the Ladder. 14-day listing.</div>
+        </div>
+        <div class="tier-row">
+          <div><div class="mono text-xs font-bold text-[var(--text-dim)]">TIER 1</div><div class="mono text-xs text-[var(--text-dim)] mt-1">$4.99/mo</div></div>
+          <div class="text-sm">10 reviews per mission. 1 active domain. Must complete 5 missions before submitting own build. Base section of the Ladder. 7-day listing.</div>
+        </div>
+      </div>
+
+      <!-- Individual feature anchors for pricing page ? links -->
+      <div class="mt-8 space-y-4">
+
+        <div id="reviews-per-mission" class="card">
+          <h3>Reviews per mission</h3>
+          <p class="text-sm mt-1">Each tier caps how many testers can review your project in a single listing period. Once the cap is reached, no new testers can be assigned — you'd need to resubmit (Tier 3) or start a fresh submission. Tier 1: 10. Tier 2: 25. Tier 3: 50.</p>
+        </div>
+
+        <div id="domains" class="card">
+          <h3>Active domains</h3>
+          <p class="text-sm mt-1">How many distinct domains (project URLs) you can have listed at one time. Tier 1: 1 domain. Tier 2: 2 domains. Tier 3: unlimited — meaning any number of separate projects across any number of domains, all active simultaneously.</p>
+        </div>
+
+        <div id="listing-duration" class="card">
+          <h3>Listing duration</h3>
+          <p class="text-sm mt-1">How long your project stays live on the Pulse before it automatically expires. Tier 1: 7 days. Tier 2: 14 days. Tier 3: 30 days. Expired listings are archived — testers can no longer be assigned. With vibe coding, a lot can change in a week — expiry keeps the Pulse fresh and ensures testers are seeing current builds, not abandoned ones.</p>
+        </div>
+
+        <div id="resubmit" class="card">
+          <h3>Resubmit button (Tier 3 only)</h3>
+          <p class="text-sm mt-1">Tier 3 builders get a one-click Resubmit button on their profile. This refreshes the listing with the same details — resetting the review count to zero and the listing timer — without having to fill in the form again. Tier 1 and Tier 2 builders must fill in a fresh submission each time.</p>
+        </div>
+
+        <div id="mission-review-requirement" class="card">
+          <h3>Must review missions before submitting own build</h3>
+          <p class="text-sm mt-1">To keep Jellar reciprocal, some tiers require you to complete a set number of missions as a tester before you can list your own project. Tier 1: 5 missions. Tier 2: 1 mission. Tier 3: none required. This ensures builders understand what it feels like to be a tester — which makes their own mission briefs better.</p>
+        </div>
+
+        <div id="ladder-position" class="card">
+          <h3>Ladder position</h3>
+          <p class="text-sm mt-1">The Pulse Ladder is divided into sections by tier. Sponsored projects sit at the top in gold. Tier 3 projects occupy the next section. Tier 2 below that. Tier 1 at the base. Within each section, projects are sorted by builder karma — the more karma you have, the higher you appear within your section. Higher position = more visibility = more testers finding your project.</p>
+        </div>
+
+        <div id="ai-testing" class="card">
+          <h3>Comprehensive AI testing (Tier 3)</h3>
+          <p class="text-sm mt-1">Tier 3 builders receive an AI-assisted analysis pass across all their feedback sessions. This surfaces patterns across multiple reviews — common friction points, contradictions between testers, what most people struggled with, what most people loved — and produces a prioritised list of recommended fixes. This is above and beyond what any individual tester can provide. Coming soon.</p>
+        </div>
+
+        <div id="sponsored" class="card">
+          <h3>Sponsored slot</h3>
+          <p class="text-sm mt-1">A sponsored slot places your project at the very top of the Ladder in gold for 7 days, above all tier sections. Your globe marker also appears in gold, standing out from all other projects. We limit the number of active sponsored slots to maintain quality. Sponsored slots are available to any builder regardless of subscription tier and are priced by enquiry.</p>
+        </div>
+
+        <div id="priority-support" class="card">
+          <h3>Priority support (Tier 2 and 3)</h3>
+          <p class="text-sm mt-1">Tier 2 and Tier 3 builders get priority responses to submission reviews, appeal requests, and platform questions. During the MVP period this means a human response within 24 hours. Tier 1 and free accounts are handled in order of request.</p>
+        </div>
+
+      </div>
+      <p class="text-sm text-[var(--text-dim)] mt-6">Payments are coming soon via Stripe. During the MVP period, all accounts have testing access with admin-granted tier exceptions.</p>
+    </section>
+
+    <section>
+      <h2 id="preflight" class="text-2xl font-bold border-b border-[var(--line)] pb-3">Pre-flight checks</h2>
+      <p class="text-sm text-[var(--text-dim)] mt-3">These run automatically in your browser when you hit submit. Here's exactly what each one checks.</p>
+      <div class="mt-4 space-y-3">
+        <div class="card"><h3>01 — HTTPS required</h3><p class="text-sm">Your URL must start with <code>https://</code>. Unencrypted <code>http://</code> sites are a risk to testers.</p></div>
+        <div class="card"><h3>02 — Valid domain format</h3><p class="text-sm">Must be a real domain (e.g. <code>myapp.com</code>), not a raw IP like <code>192.168.1.1</code>.</p></div>
+        <div class="card"><h3>03 — Not a URL shortener</h3><p class="text-sm">Blocks <code>bit.ly, tinyurl.com, t.co, goo.gl</code> and similar. Shorteners hide the real destination.</p></div>
+        <div class="card"><h3>04 — No banned TLDs</h3><p class="text-sm">Rejects <code>.tk .ml .ga .cf .gq .zip .mov</code> — disproportionately used for abuse.</p></div>
+        <div class="card"><h3>05 — No phishing patterns</h3><p class="text-sm">Scans for brand impersonation: <code>paypal-secure</code>, <code>apple-login</code>, <code>google-verify</code>, etc.</p></div>
+        <div class="card"><h3>06 — No lookalike characters</h3><p class="text-sm">Rejects punycode (<code>xn--</code>) or non-ASCII characters used to impersonate real domains (e.g. Cyrillic letters that look like English).</p></div>
+        <div class="card"><h3>08 — Account at least 5 days old</h3><p class="text-sm">Your Jellar account must be ≥ 5 days old. Prevents throwaway account abuse.</p></div>
+        <div class="card"><h3>09 — URL not already submitted</h3><p class="text-sm">Blocks duplicate submissions. If your URL is listed and you're the real owner, contact us.</p></div>
+        <div class="card"><h3>10 — Description matches content</h3><p class="text-sm">A basic keyword match between your description and the site's visible text. Catches obvious mismatches.</p></div>
+        <div class="card"><h3>11 — Site appears online</h3><p class="text-sm">Confirms your site is actually reachable. A fail means it's down, not deployed, or blocking requests.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2 id="manual-review" class="text-2xl font-bold border-b border-[var(--line)] pb-3">Manual review</h2>
+      <p class="text-sm mt-3">After automated checks pass, a human admin opens your site and checks:</p>
+      <ul class="mt-2 text-sm space-y-1 list-disc list-inside text-[var(--text-dim)]">
+        <li>Does the site match what you described in the Vibe Check?</li>
+        <li>Is the mission actually doable in the stated time?</li>
+        <li>Are there hidden dark patterns, misleading flows, or tester risks?</li>
+        <li>If test credentials were provided, do they work?</li>
+        <li>If AI is claimed, is it actually present?</li>
+      </ul>
+      <p class="text-sm text-[var(--text-dim)] mt-4">Most submissions are reviewed within 24 hours. You'll see status updates on your profile page.</p>
+    </section>
+
+    <!-- ═══ FOR TESTERS ═══════════════════════════════════════════ -->
+    <section>
+      <h2 id="missions" class="text-2xl font-bold border-b border-[var(--line)] pb-3">Doing a mission</h2>
+      <ol class="mt-4 space-y-3 text-sm leading-relaxed list-decimal list-inside">
+        <li>Pick a project from the Pulse Ladder on the homepage.</li>
+        <li>Read the Mission Briefing — it tells you what the builder wants you to do, what the project is about, and any warnings (login required, data collection, etc.).</li>
+        <li>Click <strong>Open Project + Start Timer</strong>. This opens the project in a new tab and starts a 3-minute minimum dwell timer.</li>
+        <li>Use the project as a real user would. Actually try to complete the mission.</li>
+        <li>Come back to Jellar and fill in the feedback form. The more you fill in, the more credits you earn.</li>
+        <li>Submit. Credits and karma are awarded immediately.</li>
+      </ol>
+      <div class="mt-4 p-4 border border-[var(--line)] bg-[var(--bg-2)]">
+        <div class="mono text-xs uppercase text-[var(--text-dim)] mb-1">One review per project</div>
+        <p class="text-sm">You can only review each project once. If the builder submits a new version (new URL or updated Vibe Check), you can review again.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2 id="karma" class="text-2xl font-bold border-b border-[var(--line)] pb-3">Karma & Credits</h2>
+      <p class="text-sm text-[var(--text-dim)] mt-3">There are two separate karma scores:</p>
+      <div class="mt-4 grid md:grid-cols-2 gap-4">
+        <div class="card">
+          <h3>Tester Karma</h3>
+          <p class="text-sm">Earned by completing reviews. Higher tester karma puts you on the Top Testers leaderboard. Leaderboard position boosts visibility — especially if you have a live project, since clicking your name highlights your build.</p>
+          <p class="text-sm mt-2" style="color:var(--gold)"><strong>🔥 Sponsored missions pay DOUBLE karma</strong> — complete a sponsored mission to earn 2× credits. Look for the gold badge on the Ladder.</p>
+        </div>
+        <div class="card">
+          <h3>Builder Karma</h3>
+          <p class="text-sm">Earned when testers complete your missions. Higher builder karma moves your project up the Ladder within your tier. More visibility = more reviews = more karma = more visibility.</p>
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="mono text-xs uppercase text-[var(--text-dim)] mb-2">Credit scoring per review</div>
+        <div class="card text-sm space-y-1">
+          <div class="flex justify-between"><span>Base (completing any review)</span><span class="mono neon-text">+5</span></div>
+          <div class="flex justify-between"><span>1+ friction points added</span><span class="mono neon-text">+1</span></div>
+          <div class="flex justify-between"><span>3+ friction points added</span><span class="mono neon-text">+1</span></div>
+          <div class="flex justify-between"><span>1+ magic moments added</span><span class="mono neon-text">+1</span></div>
+          <div class="flex justify-between"><span>Summary 100+ characters</span><span class="mono neon-text">+1</span></div>
+          <div class="flex justify-between"><span>Expectation vs Reality filled in</span><span class="mono neon-text">+1</span></div>
+          <div class="border-t border-[var(--line)] flex justify-between pt-1 font-bold"><span>Maximum per review</span><span class="mono neon-text">+10</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <section>
+        <h2 id="karma-gift" class="text-2xl font-bold border-b border-[var(--line)] pb-3">Rewarding great reviews</h2>
+        <p class="text-sm mt-3">When you receive reviews on your project, you'll see a <strong class="text-[var(--text)]">+1 karma</strong> button next to each one on your profile page. If a tester gave you genuinely useful, specific feedback — use it. It's a small signal that says "this person did the work."</p>
+        <div class="card mt-4">
+          <div class="grid md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <div class="mono text-xs uppercase mb-2 neon-text">How it works</div>
+              <p class="text-[var(--text-dim)]">Go to your Profile page → Reviews Received. Each review card has a "+1 karma" button. Click it to award one karma point to that tester. You can only award it once per review.</p>
+            </div>
+            <div>
+              <div class="mono text-xs uppercase mb-2 neon-text">Why it matters</div>
+              <p class="text-[var(--text-dim)]">Karma affects a tester's position in the leaderboard and their reputation on the platform. Testers with higher karma are more visible to other builders. Quality feedback gets rewarded.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <p class="text-sm mt-3">To keep the leaderboard and Ladder reflecting <em>active</em> community members, karma decays for inactive accounts.</p>
+      <ul class="mt-3 text-sm space-y-2 list-disc list-inside text-[var(--text-dim)]">
+        <li>If you haven't submitted any reviews in <strong>30 days</strong>, your tester karma drops by 15% on the 1st of the following month.</li>
+        <li>Decay is floored at 0 — you won't go negative.</li>
+        <li>Builder karma decays by the same rule if your project receives no reviews in 30 days.</li>
+        <li>You'll receive an email warning before decay kicks in. <em>(Email notifications coming soon.)</em></li>
+      </ul>
+      <p class="text-sm text-[var(--text-dim)] mt-3">The fix is simple: complete one review, and the 30-day clock resets.</p>
+    </section>
+
+    <section>
+      <h2 id="quality" class="text-2xl font-bold border-b border-[var(--line)] pb-3">Feedback quality</h2>
+      <p class="text-sm mt-3">Good feedback is specific. "The UX is bad" is useless to a builder. "The sign-up button wasn't visible on mobile — I had to scroll down to find it" is gold.</p>
+      <div class="mt-4 grid md:grid-cols-2 gap-4">
+        <div class="card border-[var(--neon)]">
+          <h3 style="color:var(--neon)">Good feedback</h3>
+          <ul class="text-sm space-y-1 text-[var(--text-dim)] list-disc list-inside">
+            <li>Specific friction points with context</li>
+            <li>What you expected vs what happened</li>
+            <li>Your honest "would I use this again" answer</li>
+            <li>The single most important thing to fix</li>
+          </ul>
+        </div>
+        <div class="card border-[var(--hot)]">
+          <h3 style="color:var(--hot)">What gets flagged</h3>
+          <ul class="text-sm space-y-1 text-[var(--text-dim)] list-disc list-inside">
+            <li>Vague one-liners with no detail</li>
+            <li>Copy-pasted responses across sessions</li>
+            <li>Profanity or abusive language</li>
+            <li>Submitting feedback without actually using the product</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ RULES ═════════════════════════════════════════════════ -->
+    <section>
+      <h2 id="banned" class="text-2xl font-bold border-b border-[var(--line)] pb-3">What gets you banned</h2>
+      <ul class="mt-4 space-y-2 text-sm list-disc list-inside text-[var(--text-dim)]">
+        <li>Submitting a project you don't own without permission</li>
+        <li>Lying on the Vibe Check questionnaire (hiding data collection, payments, or login requirements)</li>
+        <li>Submitting phishing, malware, scam, or illegal content</li>
+        <li>Using Jellar to harvest test credentials or personal info from testers</li>
+        <li>Creating throwaway accounts to bypass submission limits or review gates</li>
+        <li>Submitting fake or bot-generated feedback</li>
+      </ul>
+      <p class="text-sm text-[var(--text-dim)] mt-4">Bans are tied to your GitHub account and IP. Ban appeals can be sent to the email on your GitHub profile.</p>
+    </section>
+
+    <section>
+      <h2 id="profanity" class="text-2xl font-bold border-b border-[var(--line)] pb-3">Language policy</h2>
+      <div class="card mt-4 mb-4" style="border-color:rgba(56,215,255,.3)">
+        <div class="mono text-xs uppercase mb-2" style="color:var(--ice)">English only — current requirement</div>
+        <p class="text-sm text-[var(--text-dim)]">All project submissions, mission briefs, and feedback must currently be written in <strong class="text-[var(--text)]">English</strong>. This is a platform requirement during early access to ensure our team can review all content. Support for additional languages is on the roadmap — see the <a href="updates.html#roadmap" class="neon-text hover:underline">Roadmap</a> for details.</p>
+      </div>
+      <p class="text-sm mt-3">Jellar is a professional feedback platform. The system automatically blocks profanity and prohibited language from all submissions and feedback. If your text contains profanity, the field will be highlighted and you'll be asked to remove it before you can proceed. It simply won't go through.</p>
+      <p class="text-sm text-[var(--text-dim)] mt-2">This applies to project titles, mission briefs, descriptions, and all tester feedback fields.</p>
+    </section>
+
+    <!-- ═══ FAQ ══════════════════════════════════════════════════ -->
+    <section>
+      <h2 id="faq" class="text-2xl font-bold border-b border-[var(--line)] pb-3">FAQ</h2>
+      <div class="mt-4">
+
+        <div class="faq-item">
+          <div class="faq-q">My domain is on Vercel/Netlify — will the domain age check pass? <span class="faq-arrow">›</span></div>
+          <div class="faq-a">Subdomain services (*.vercel.app, *.netlify.app) often don't have RDAP records. If your age check fails for this reason, contact us for manual whitelisting — it's a common situation and we'll sort it quickly.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Can I edit a project after it goes live? <span class="faq-arrow">›</span></div>
+          <div class="faq-a">You can update the mission, description, and expected duration. Changing the URL requires a fresh submission and re-approval, as the URL is what the safety checks verify.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">My URL contains "secure" or "login" — will it be flagged? <span class="faq-arrow">›</span></div>
+          <div class="faq-a">The phishing check combines known brand names with suspicious suffixes. "my-secure-notes.com" is fine. "paypal-secure.net" is not. If you're legitimately flagged in error, contact us with an explanation.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Do I need to pay to list a project? <span class="faq-arrow">›</span></div>
+          <div class="faq-a">During the MVP period, listing is free. Tier subscriptions (which give more review slots and better ladder positioning) and sponsored slots are coming soon.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Can testers leave anonymous feedback? <span class="faq-arrow">›</span></div>
+          <div class="faq-a">No. Every feedback session is tied to a verified GitHub account. This is what makes the signal trustworthy — builders know feedback came from a real human, not a bot.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">What if a project is dangerous or misleading? <span class="faq-arrow">›</span></div>
+          <div class="faq-a">Don't submit feedback — leave the site and report the project. We'll investigate and remove it. Your safety as a tester is more important than any review.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Why do I need to test others before listing my own project? <span class="faq-arrow">›</span></div>
+          <div class="faq-a">It keeps the platform reciprocal. If everyone only lists and nobody tests, there's no signal for anyone. The tier review requirements ensure builders understand what it's like to be a tester — which makes their own missions better too.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Can I test my own project? <span class="faq-arrow">›</span></div>
+          <div class="faq-a">No — you can't review your own listing. The system checks this automatically.</div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="pt-8 border-t border-[var(--line)] text-center">
+      <p class="mono text-xs text-[var(--text-dim)]">Still have questions? Reach out via GitHub or email.</p>
+      <a href="submit.html" class="inline-block mt-4 mono font-bold px-8 py-3 bg-[var(--neon)] text-black hover:shadow-[0_0_20px_var(--neon)] transition">
+        READY TO SUBMIT →
+      </a>
+    </div>
+
+    <!-- ═══ ABOUT THE NAME ══════════════════════════════════════ -->
+    <section id="origin">
+      <h2 class="text-2xl font-bold border-b border-[var(--line)] pb-3">About the name</h2>
+      <div class="mt-6 border border-[var(--line)] bg-[var(--bg-2)] p-6 relative overflow-hidden">
+        <!-- Subtle Norse decorative element -->
+        <div class="absolute top-0 right-0 mono text-[80px] font-bold opacity-[0.04] leading-none select-none pointer-events-none" style="color:var(--neon);font-family:'Cinzel',serif">ᚷ</div>
+        <div class="mono text-xs uppercase tracking-widest mb-3" style="color:#ffffff;opacity:.7">The Gjallarhorn</div>
+        <p class="text-sm leading-relaxed text-[var(--text-dim)] mb-3">
+          The name <strong class="jellar-wordmark" style="font-size:.9rem;color:#ffffff">JELLAR</strong> traces back to <em>Gjallar</em> — a word from Old Norse meaning <strong class="text-[var(--text)]">to resound, to yell, to broadcast a signal</strong>. In Norse mythology, the <em>Gjallarhorn</em> is the horn of Heimdall, the watchman of the gods. When sounded, it sends a signal across all nine worlds — a call to attention that cannot be ignored.
+        </p>
+        <p class="text-sm leading-relaxed text-[var(--text-dim)] mb-3">
+          That's the idea behind this platform. Builders ship things into the void. Jellar is the horn — it broadcasts their signal to the humans who will actually listen, test it, and send back a real response.
+        </p>
+        <p class="text-sm leading-relaxed text-[var(--text-dim)] mb-3">
+          The original team behind Jellar has Scandinavian heritage, and Norse mythology felt like the right well to draw from — timeless, a little dramatic, and genuinely about communication across distance. It also has a stellar ring to it, which felt right for something meant to travel far.
+        </p>
+        <p class="text-sm leading-relaxed text-[var(--text-dim)]">
+          The domain was available. The gods aligned. Here we are.
+        </p>
+        <div class="mt-4 pt-4 border-t border-[var(--line)] mono text-xs text-[var(--text-dim)]">
+          <span style="color:#ffffff;opacity:.8">Gjallar (Old Norse)</span> → resound, broadcast, signal · <span style="color:#ffffff;opacity:.8">Gjallarhorn</span> → the horn that calls across worlds · <span style="color:#ffffff;opacity:.8">Jellar</span> → the platform that does the same thing, but for your SaaS
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// FAQ accordion
+document.querySelectorAll('.faq-item').forEach(item => {
+  item.querySelector('.faq-q').addEventListener('click', () => {
+    item.classList.toggle('open');
+  });
+});
+
+// ── KNOWLEDGE CENTRE SEARCH ───────────────────────────────────────────────────
+// Build search index from all sections and cards in the page
+const searchIndex = [];
+
+// Index section headings + their following content
+document.querySelectorAll('main section').forEach(section => {
+  const h2 = section.querySelector('h2[id]');
+  if (!h2) return;
+  const id = h2.id;
+  const title = h2.textContent.trim();
+  const body = section.textContent.replace(title, '').trim().slice(0, 400);
+  searchIndex.push({ id, title, body, type: 'section' });
+});
+
+// Index individual cards (feature definitions)
+document.querySelectorAll('main .card[id]').forEach(card => {
+  const h3 = card.querySelector('h3');
+  const id = card.id;
+  const title = h3 ? h3.textContent.trim() : id;
+  const body = card.textContent.replace(title, '').trim().slice(0, 300);
+  searchIndex.push({ id, title, body, type: 'card' });
+});
+
+// Index FAQ items
+document.querySelectorAll('.faq-item').forEach((item, i) => {
+  const q = item.querySelector('.faq-q');
+  const a = item.querySelector('.faq-a');
+  if (!q) return;
+  const title = q.textContent.replace('›', '').trim();
+  const body  = a ? a.textContent.trim().slice(0, 200) : '';
+  searchIndex.push({ id: 'faq', title, body, type: 'faq' });
+});
+
+function highlight(text, query) {
+  if (!query) return text;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark style="background:rgba(124,255,80,.25);color:var(--neon)">$1</mark>');
+}
+
+function renderResults(matches, query, containerEl, tocEl) {
+  if (!containerEl) return;
+
+  if (!query || query.trim().length < 2) {
+    containerEl.style.display = 'none';
+    if (tocEl) tocEl.style.display = '';
+    return;
+  }
+
+  if (matches.length === 0) {
+    containerEl.style.display = 'block';
+    containerEl.innerHTML = `<div class="p-4 mono text-xs text-[var(--text-dim)]">Nothing found for "<em>${query}</em>" — try different words, or browse the contents below.</div>`;
+    if (tocEl) tocEl.style.display = 'none';
+    return;
+  }
+
+  if (tocEl) tocEl.style.display = 'none';
+  containerEl.style.display = 'block';
+  containerEl.innerHTML = matches.map(m => {
+    const typeLabel = m.type === 'faq' ? 'FAQ' : m.type === 'card' ? 'FEATURE' : 'SECTION';
+    const typeColor = m.type === 'section' ? 'var(--neon)' : m.type === 'faq' ? 'var(--ice)' : 'var(--text-dim)';
+    const snippet   = m.body ? highlight(m.body.slice(0,120), query) + (m.body.length > 120 ? '…' : '') : '';
+    return '<div class="result-item block px-4 py-3 border-b border-[var(--line)] hover:bg-[rgba(124,255,80,0.05)] transition cursor-pointer" data-target="' + m.id + '">'
+      + '<div class="mono text-xs uppercase mb-1" style="color:' + typeColor + '">' + typeLabel + '</div>'
+      + '<div class="text-sm font-medium" style="color:var(--text)">' + highlight(m.title, query) + '</div>'
+      + (snippet ? '<div class="text-xs mt-1 leading-relaxed" style="color:var(--text-dim)">' + snippet + '</div>' : '')
+      + '</div>';
+  }).join('');
+
+  // Wire clicks via event delegation - reliable, no inline JS
+  containerEl.querySelectorAll('.result-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var id = item.getAttribute('data-target');
+      var target = document.getElementById(id);
+      if (target) {
+        // Hide results first
+        if (mainResults) mainResults.style.display = 'none';
+        if (sideResults) sideResults.style.display = 'none';
+        if (tocLabel) tocLabel.style.display = '';
+        // Scroll after a tick so results are gone
+        setTimeout(function() {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
+      }
+    });
+  });
+}
+
+function runSearch(query, mainResultsEl, sideResultsEl, tocEl) {
+  if (!query || query.trim().length < 2) {
+    if (mainResultsEl) mainResultsEl.style.display = 'none';
+    if (sideResultsEl) sideResultsEl.style.display = 'none';
+    if (tocEl) tocEl.style.display = '';
+    return;
+  }
+  const q = query.toLowerCase();
+  const matches = searchIndex
+    .map(item => {
+      let score = 0;
+      if (item.title.toLowerCase().includes(q)) score += 3;
+      if (item.body.toLowerCase().includes(q))  score += 1;
+      return { ...item, score };
+    })
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 8);
+
+  // Show in main results bar
+  renderResults(matches, query, mainResultsEl, null);
+  // Show abbreviated in sidebar
+  renderResults(matches.slice(0, 5), query, sideResultsEl, tocEl);
+}
+
+const mainInput   = document.getElementById('search-input-main');
+const sideInput   = document.getElementById('search-input');
+const mainResults = document.getElementById('search-results-main');
+const sideResults = document.getElementById('search-results');
+const tocLabel    = document.getElementById('toc-label');
+const clearBtn    = document.getElementById('search-clear');
+
+// Scroll to section with proper offset (accounts for sticky header)
+// scrollToSection replaced by inline event delegation in renderResults
+
+// Clear search
+function clearSearch() {
+  if (mainInput) mainInput.value = '';
+  if (sideInput) sideInput.value = '';
+  if (mainResults) mainResults.style.display = 'none';
+  if (sideResults) sideResults.style.display = 'none';
+  if (tocLabel) tocLabel.style.display = '';
+  if (clearBtn) clearBtn.style.display = 'none';
+  if (mainInput) mainInput.focus();
+}
+
+// Sync both inputs
+if (mainInput) mainInput.addEventListener('input', e => {
+  const q = e.target.value;
+  if (sideInput) sideInput.value = q;
+  if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+  runSearch(q, mainResults, sideResults, tocLabel);
+});
+if (sideInput) sideInput.addEventListener('input', e => {
+  const q = e.target.value;
+  if (mainInput) mainInput.value = q;
+  if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+  runSearch(q, mainResults, sideResults, tocLabel);
+});
+
+// Hide results when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#search-results-main') && !e.target.closest('#search-input-main') &&
+      !e.target.closest('#search-results')      && !e.target.closest('#search-input') &&
+      !e.target.closest('#search-clear')) {
+    if (mainResults) mainResults.style.display = 'none';
+    if (sideResults) sideResults.style.display = 'none';
+    if (tocLabel) tocLabel.style.display = '';
+  }
+});
+</script>
+
+<!-- ── SITE FOOTER ──────────────────────────────────────────────────────────── -->
+<footer id="site-footer" class="border-t border-[var(--line)] py-8 px-6" style="background:var(--bg-2);display:none;opacity:0;transform:translateY(20px);transition:opacity 0.4s ease,transform 0.4s ease;">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Jellar</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="index.html" class="hover:neon-text transition">Pulse</a></div>
+          <div><a href="pricing.html" class="hover:neon-text transition">Pricing</a></div>
+          <div><a href="help.html" class="hover:neon-text transition">Knowledge Hub</a></div>
+          <div><a href="leaderboard.html" class="hover:neon-text transition">Leaderboard</a></div>
+        </div>
+      </div>
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Platform</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="submit.html" class="hover:neon-text transition">Submit a Project</a></div>
+          <div><a href="profile.html" class="hover:neon-text transition">Your Profile</a></div>
+          <div><a href="settings.html" class="hover:neon-text transition">Settings</a></div>
+          <div class="pt-1 text-[10px] border-t border-[var(--line)] mt-2" style="color:var(--hot)">Web projects only — no iOS or Android apps</div>
+        </div>
+      </div>
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Legal</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="privacy.html" class="hover:neon-text transition">Privacy Policy</a></div>
+          <div><a href="terms.html" class="hover:neon-text transition">Terms &amp; Conditions</a></div>
+          <div><a href="mailto:hello@jellar.io" class="hover:neon-text transition">Contact Us</a></div>
+        </div>
+      </div>
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Other Tools</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="https://popcornpasswords.com" target="_blank" rel="noopener" class="hover:neon-text transition">Fun Password Generator</a></div>
+          <div class="mt-3">
+            <a href="https://x.com/socialhighwy" target="_blank" rel="noopener" class="hover:neon-text transition">𝕏 Follow us on X</a>
+          </div>
+        </div>
+        <div class="mt-4 text-[10px] text-[var(--text-dim)] leading-relaxed">
+          Prices in local currency are indicative. All transactions in USD via Stripe. Amount may vary at payment due to exchange rates.
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-[var(--line)] pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+      <div class="mono text-xs text-[var(--text-dim)]">© Jellar. Built for vibe coders.</div>
+      <div class="flex gap-6 mono text-xs text-[var(--text-dim)]">
+        <a href="privacy.html" class="hover:neon-text transition">Privacy</a>
+        <a href="terms.html" class="hover:neon-text transition">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<script>
+// Reveal footer when user scrolls near the bottom
+(function() {
+  var footer = document.getElementById('site-footer');
+  if (!footer) return;
+  var revealed = false;
+  function checkScroll() {
+    if (revealed) return;
+    var scrollBottom = window.scrollY + window.innerHeight;
+    var docHeight = document.documentElement.scrollHeight;
+    if (scrollBottom > docHeight - 200) {
+      footer.style.display = 'block';
+      // Trigger reflow so transition fires
+      footer.offsetHeight;
+      footer.style.opacity = '1';
+      footer.style.transform = 'translateY(0)';
+      revealed = true;
+    }
+  }
+  window.addEventListener('scroll', checkScroll, { passive: true });
+  // Also check on load in case page is short
+  setTimeout(checkScroll, 300);
+})();
+</script>
+<!-- ── BUG REPORT / CONTACT WIDGET ─────────────────────────────────────────── -->
+<button id="bug-report-btn" onclick="openBugReport()"
+  style="position:fixed;bottom:20px;right:20px;z-index:999;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:8px 14px;border:1px solid var(--hot);color:var(--hot);background:var(--bg-2,#0a0e14);cursor:pointer;opacity:.7;transition:opacity .2s"
+  onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='.7'">
+  🐛 Contact / Report
+</button>
+<div id="bug-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center">
+  <div style="background:#0a0e14;border:1px solid #ff3864;padding:28px;max-width:480px;width:90%;max-height:80vh;overflow-y:auto">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#ff3864;margin-bottom:16px">Contact / Report a Bug</div>
+    <p style="font-size:13px;color:#7a8896;margin-bottom:16px">Got a question, spotted a bug, or want to get in touch? Fill this in and we will get back to you.</p>
+    <div style="margin-bottom:10px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;color:#7a8896;margin-bottom:4px">What is this about? *</div>
+      <input type="text" id="bug-what" placeholder="e.g. Question about pricing, bug on submit page..." style="background:#05070a;border:1px solid #1a2028;color:#e6edf3;padding:8px 10px;width:100%;font-family:inherit;font-size:13px;box-sizing:border-box">
+    </div>
+    <div style="margin-bottom:10px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;color:#7a8896;margin-bottom:4px">Details</div>
+      <textarea id="bug-desc" rows="3" placeholder="Tell us more..." style="background:#05070a;border:1px solid #1a2028;color:#e6edf3;padding:8px 10px;width:100%;font-family:inherit;font-size:13px;resize:vertical;box-sizing:border-box"></textarea>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;color:#7a8896;margin-bottom:4px">Type</div>
+      <select id="bug-severity" style="background:#05070a;border:1px solid #1a2028;color:#e6edf3;padding:8px 10px;width:100%;font-family:inherit;font-size:13px">
+        <option value="low">General enquiry</option>
+        <option value="medium" selected>Something does not work</option>
+        <option value="high">Cannot complete a key action</option>
+        <option value="critical">Platform is broken for me</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button onclick="submitBugReport()" style="flex:1;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;text-transform:uppercase;padding:12px;background:#ff3864;color:#000;border:none;cursor:pointer">SEND →</button>
+      <button onclick="closeBugReport()" style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:12px 16px;border:1px solid #1a2028;color:#7a8896;background:transparent;cursor:pointer">CANCEL</button>
+    </div>
+    <div id="bug-sent" style="display:none;font-family:'JetBrains Mono',monospace;font-size:11px;color:#7cff50;margin-top:12px">Message sent. We will be in touch.</div>
+    <div id="bug-err" style="display:none;font-family:'JetBrains Mono',monospace;font-size:11px;color:#ff3864;margin-top:8px"></div>
+  </div>
+</div>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const SUPA_URL = 'https://csfuhpljjfcrxpsvoqjx.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzZnVocGxqamZjcnhwc3ZvcWp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjA3OTksImV4cCI6MjA5MTczNjc5OX0.WBkYhEi75xBqDWP8BWjzIQeqUgFHKt1JPCf-X-tAcAI';
+window.openBugReport = async function(pre) {
+  const _sb2 = createClient(SUPA_URL, SUPA_KEY);
+  const { data: { session: _s } } = await _sb2.auth.getSession();
+  if (!_s) {
+    window.location.href = 'signin.html?next=' + encodeURIComponent('help.html');
+    return;
+  }
+  document.getElementById('bug-modal').style.display = 'flex';
+  document.getElementById('bug-sent').style.display = 'none';
+  document.getElementById('bug-err').style.display = 'none';
+  if (pre) { document.getElementById('bug-what').value = pre; document.getElementById('bug-severity').value = 'high'; }
+  else { document.getElementById('bug-what').value = ''; document.getElementById('bug-desc').value = ''; document.getElementById('bug-severity').value = 'medium'; }
+};
+window.closeBugReport = function() { document.getElementById('bug-modal').style.display = 'none'; };
+window.submitBugReport = async function() {
+  const what = document.getElementById('bug-what').value.trim();
+  const errEl = document.getElementById('bug-err');
+  if (!what) { errEl.textContent = 'Please describe what this is about.'; errEl.style.display = 'block'; return; }
+  try {
+    const _sb = createClient(SUPA_URL, SUPA_KEY);
+    const { data: { session: s } } = await _sb.auth.getSession();
+    let username = null, userId = s?.user?.id || null;
+    if (userId) { const { data: p } = await _sb.from('profiles').select('username').eq('id', userId).single(); username = p?.username; }
+    await _sb.from('bug_reports').insert({
+      user_id: userId, username, page: window.location.pathname,
+      what_doing: document.getElementById('bug-what').value.trim(),
+      error_description: document.getElementById('bug-desc').value.trim(),
+      severity: document.getElementById('bug-severity').value, status: 'open',
+      diagnostics: JSON.stringify({ url: window.location.href, browser: navigator.userAgent, timestamp: new Date().toISOString() })
+    });
+    document.getElementById('bug-sent').style.display = 'block';
+    document.getElementById('bug-what').value = ''; document.getElementById('bug-desc').value = '';
+    setTimeout(window.closeBugReport, 2500);
+  } catch(e) { errEl.textContent = 'Could not send — try again.'; errEl.style.display = 'block'; }
+};
+document.getElementById('bug-modal').addEventListener('click', function(e) { if (e.target===this) window.closeBugReport(); });
+</script>
+</body>
+</html>

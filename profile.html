@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jellar — Your Profile</title>
+<meta name="robots" content="noindex">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  .jellar-wordmark { font-family: "Cinzel", serif; font-weight: 900; letter-spacing: .12em; color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,.15); }
+  :root {
+    --bg: #05070a; --bg-2: #0a0e14; --line: #1a2028;
+    --neon: #7cff50; --hot: #ff3864; --ice: #38d7ff; --gold: #ffd24a;
+    --text: #e6edf3; --text-dim: #7a8896;
+  }
+  html, body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .neon-text { color: var(--neon); text-shadow: 0 0 12px rgba(124,255,80,0.6); }
+  .pulse-dot { position: relative; width: 10px; height: 10px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 10px var(--neon); }
+  .card { border: 1px solid var(--line); background: var(--bg-2); padding: 20px; }
+  .stat-val { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; }
+  .tier-chip {
+    display: inline-block; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 3px 10px; border: 1px solid;
+  }
+  .tier-free     { border-color: var(--line);  color: var(--text-dim); }
+  .tier-tier1    { border-color: var(--line);  color: var(--text-dim); }
+  .tier-tier2    { border-color: var(--ice);   color: var(--ice); }
+  .tier-tier3    { border-color: var(--neon);  color: var(--neon); }
+  .tier-sponsored{ border-color: var(--gold);  color: var(--gold); }
+  .review-card { border: 1px solid var(--line); background: var(--bg); padding: 14px; margin-bottom: 8px; }
+  .star { color: var(--neon); }
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="border-b border-[var(--line)] bg-[var(--bg-2)]/80 backdrop-blur sticky top-0 z-30">
+  <div class="max-w-[1000px] mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="pulse-dot"></div>
+      <a href="index.html" class="jellar-wordmark">JELLAR</a>
+    </div>
+    <div class="flex items-center gap-4 mono text-xs uppercase">
+      <a href="settings.html" class="text-[var(--text-dim)] hover:neon-text transition">Settings</a>
+      <a href="index.html" class="text-[var(--text-dim)] hover:neon-text transition">← Pulse</a>
+    </div>
+  </div>
+</header>
+
+<div id="auth-gate" class="hidden max-w-[500px] mx-auto px-6 py-20 text-center">
+  <div class="mono text-xs uppercase tracking-widest text-[var(--hot)]">Not signed in</div>
+  <h1 class="text-2xl font-bold mt-2">Sign in to view your profile</h1>
+  <a href="index.html" class="inline-block mt-6 mono font-bold px-6 py-3 border border-[var(--neon)] neon-text hover:bg-[var(--neon)] hover:text-black transition">← BACK TO PULSE</a>
+</div>
+
+<main id="profile-wrap" class="hidden max-w-[1000px] mx-auto px-6 py-10">
+
+  <!-- HEADER ROW -->
+  <div class="flex items-start gap-6 mb-8">
+    <img id="p-avatar" class="w-20 h-20 rounded-full border-2 border-[var(--line)] shrink-0" src="" alt="">
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-3 flex-wrap">
+        <h1 id="p-username" class="text-3xl font-bold"></h1>
+        <span id="p-tier-chip" class="tier-chip tier-free">Free</span>
+      </div>
+      <div id="p-handle" class="mono text-xs text-[var(--text-dim)] mt-1"></div>
+      <div class="mt-3">
+        <a href="settings.html" class="mono text-xs px-4 py-2 border border-[var(--line)] hover:border-[var(--neon)] hover:neon-text transition">
+          ⚙ EDIT PROFILE / SETTINGS →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS GRID -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+    <div class="card text-center">
+      <div class="mono text-xs uppercase text-[var(--text-dim)] mb-1">Vibe Credits</div>
+      <div class="stat-val neon-text" id="p-credits">—</div>
+    </div>
+    <div class="card text-center">
+      <div class="mono text-xs uppercase text-[var(--text-dim)] mb-1">Tester Karma</div>
+      <div class="stat-val" id="p-karma">—</div>
+    </div>
+    <div class="card text-center">
+      <div class="mono text-xs uppercase text-[var(--text-dim)] mb-1">Builder Karma</div>
+      <div class="stat-val" id="p-builder-karma">—</div>
+    </div>
+    <div class="card text-center">
+      <div class="mono text-xs uppercase text-[var(--text-dim)] mb-1">Reviews Given</div>
+      <div class="stat-val" id="p-reviews-given">—</div>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-6">
+
+    <!-- YOUR ACTIVE LISTING -->
+    <div>
+      <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Your Active Listing</div>
+      <div id="p-listing">
+        <div class="card">
+          <div class="mono text-xs text-[var(--text-dim)]">No active listing.</div>
+          <a href="submit.html" class="inline-block mt-3 mono text-xs px-4 py-2 border border-[var(--neon)] neon-text hover:bg-[var(--neon)] hover:text-black transition">
+            + LIST A PROJECT →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEWS YOU'VE GIVEN -->
+    <div>
+      <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Recent Reviews Given</div>
+      <div id="p-given">
+        <div class="mono text-xs text-[var(--text-dim)]">No reviews yet.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- REVIEWS RECEIVED ON YOUR PROJECTS -->
+  <div class="mt-8">
+    <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Reviews Received</div>
+    <div id="p-received">
+      <div class="mono text-xs text-[var(--text-dim)]">No reviews received yet.</div>
+    </div>
+  </div>
+
+</main>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const supabase = createClient(
+  'https://csfuhpljjfcrxpsvoqjx.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzZnVocGxqamZjcnhwc3ZvcWp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjA3OTksImV4cCI6MjA5MTczNjc5OX0.WBkYhEi75xBqDWP8BWjzIQeqUgFHKt1JPCf-X-tAcAI'
+);
+
+// Single clean auth check — no double getSession race
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    window.location.replace('signin.html?next=profile.html');
+    return;
+  }
+  const { data: p } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+  if (!p || p.onboarding_complete !== true) {
+    window.location.replace('onboarding.html?next=profile.html');
+    return;
+  }
+  document.getElementById('profile-wrap').classList.remove('hidden');
+  await loadProfile(session.user.id);
+})();
+
+async function loadProfile(uid) {
+  const { data: p } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', uid)
+    .single();
+
+  if (!p) {
+    // No profile row — send to onboarding to create one
+    window.location.replace('onboarding.html?next=profile.html');
+    return;
+  }
+
+  // Header
+  document.getElementById('p-avatar').src = p.avatar_url || '';
+  const displayName = p.username || p.github_handle || (p.id ? p.id.slice(0, 8) : 'unnamed');
+  document.getElementById('p-username').textContent = displayName;
+  // Show edit prompt if username hasn't been set by user yet
+  if (!p.username || !p.username_set_by_user) {
+    const h1 = document.getElementById('p-username');
+    h1.innerHTML = esc(displayName) + ' <a href="settings.html" style="font-size:13px;font-family:JetBrains Mono,monospace;color:var(--neon);font-weight:400;text-decoration:none;border-bottom:1px solid var(--neon)">set username →</a>';
+  }
+  document.getElementById('p-handle').textContent = p.github_handle ? '@' + p.github_handle + ' on GitHub' : '';
+
+  // Tier chip
+  const tier = p.user_tier || 'free';
+  const tierChip = document.getElementById('p-tier-chip');
+  const tierLabels = { free: 'Free', tier1: 'Tier 1', tier2: 'Tier 2', tier3: 'Tier 3', sponsored: 'Sponsored' };
+  tierChip.textContent = tierLabels[tier] || tier;
+  tierChip.className = `tier-chip tier-${tier}`;
+
+  // Stats
+  document.getElementById('p-credits').textContent = p.vibe_credits ?? 0;
+  document.getElementById('p-karma').textContent = p.karma_score ?? 0;
+  document.getElementById('p-builder-karma').textContent = p.builder_karma ?? 0;
+
+  // Reviews given count
+  const { count: givenCount } = await supabase
+    .from('feedback_sessions')
+    .select('id', { count: 'exact', head: true })
+    .eq('tester_id', uid);
+  document.getElementById('p-reviews-given').textContent = givenCount ?? 0;
+
+  // All live listings
+  const { data: listings } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('builder_id', uid)
+    .eq('status', 'live')
+    .order('created_at', { ascending: false });
+
+  // Compute real avg_rating from feedback_sessions for each project
+  const listingEl = document.getElementById('p-listing');
+  if (listings && listings.length > 0) {
+    const listingIds = listings.map(l => l.id);
+    const { data: ratingSessions } = await supabase
+      .from('feedback_sessions')
+      .select('project_id, overall_rating')
+      .in('project_id', listingIds)
+      .not('overall_rating', 'is', null);
+
+    // Group ratings by project
+    const ratingMap = {};
+    (ratingSessions || []).forEach(s => {
+      if (!ratingMap[s.project_id]) ratingMap[s.project_id] = [];
+      ratingMap[s.project_id].push(s.overall_rating);
+    });
+
+    listingEl.innerHTML = listings.map(listing => {
+      const pct = Math.round(((listing.sessions_count || 0) / (listing.review_cap || 10)) * 100);
+      const ratings = ratingMap[listing.id] || [];
+      const avgRating = ratings.length > 0
+        ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)
+        : null;
+      return `
+      <div class="card mb-3">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <div class="font-semibold truncate">${esc(listing.title)}</div>
+            <a href="${esc(listing.project_url)}" target="_blank" class="mono text-xs neon-text hover:underline break-all">${esc(listing.project_url)} ↗</a>
+            <div class="mono text-xs text-[var(--text-dim)] mt-1 uppercase">${esc(listing.category || '')} · ${esc(listing.city_name || '')}</div>
+          </div>
+          <span class="mono text-xs px-2 py-1 border border-[var(--neon)] neon-text shrink-0">LIVE</span>
+        </div>
+        <div class="mt-4">
+          <div class="flex justify-between mono text-xs text-[var(--text-dim)] mb-1">
+            <span>Reviews</span><span>${listing.sessions_count || 0} / ${listing.review_cap || 10}</span>
+          </div>
+          <div class="w-full h-1 bg-[var(--line)] rounded-full overflow-hidden">
+            <div class="h-full bg-[var(--neon)] rounded-full" style="width:${pct}%"></div>
+          </div>
+        </div>
+        <div class="mt-3 mono text-xs text-[var(--text-dim)]">Avg rating: ${avgRating ? avgRating + ' ★ (' + ratings.length + ' reviews)' : 'no ratings yet'}</div>
+        <div class="mt-3 pt-3 border-t border-[var(--line)] flex gap-2 flex-wrap">
+          <button onclick="window.location.href='pricing.html#boost'" class="mono text-xs px-3 py-1.5 border transition" style="border-color:var(--ice);color:var(--ice)">
+            ⚡ PULSE BOOST — push this back up the Ladder
+          </button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Recent reviews given (last 5)
+  const { data: given } = await supabase
+    .from('feedback_sessions')
+    .select('*, projects(title, project_url)')
+    .eq('tester_id', uid)
+    .order('completed_at', { ascending: false })
+    .limit(5);
+
+  if (given && given.length > 0) {
+    document.getElementById('p-given').innerHTML = given.map(s => `
+      <div class="review-card">
+        <div class="flex items-start justify-between gap-2">
+          <div class="min-w-0">
+            <div class="text-sm font-medium truncate">${esc(s.projects?.title || 'Unknown project')}</div>
+            <div class="mono text-xs text-[var(--text-dim)]">${formatDate(s.completed_at)}</div>
+          </div>
+          <div class="mono text-xs neon-text shrink-0">${'★'.repeat(s.overall_rating || 0)}${'☆'.repeat(5 - (s.overall_rating || 0))}</div>
+        </div>
+        ${s.summary ? `<p class="text-xs text-[var(--text-dim)] mt-2 leading-relaxed">${esc(s.summary)}</p>` : ''}
+        <div class="mono text-xs mt-2" style="color:var(--neon)">+${s.credits_awarded || 0} credits</div>
+      </div>`).join('');
+  }
+
+  // Reviews received (on your projects)
+  const { data: myProjects } = await supabase
+    .from('projects')
+    .select('id, title')
+    .eq('builder_id', uid);
+
+  if (myProjects && myProjects.length > 0) {
+    const projectIds = myProjects.map(p => p.id);
+    const projectTitles = {};
+    myProjects.forEach(p => { projectTitles[p.id] = p.title; });
+
+    const { data: received } = await supabase
+      .from('feedback_sessions')
+      .select('*, profiles!feedback_sessions_tester_id_fkey(username, avatar_url)')
+      .in('project_id', projectIds)
+      .order('completed_at', { ascending: false })
+      .limit(10);
+
+    if (received && received.length > 0) {
+      document.getElementById('p-received').innerHTML = received.map(s => {
+        // Extract karma from notes JSONB if available
+        let testerKarma = 0;
+        let testerTier = 'free';
+        try {
+          const notes = typeof s.notes === 'string' ? JSON.parse(s.notes) : (s.notes || {});
+          testerKarma = notes.tester_karma_at_submit || 0;
+          testerTier  = notes.tester_tier_at_submit  || 'free';
+        } catch(e) {}
+
+        // Use fake_username from notes if present (seed data), otherwise real profile username
+        const displayUsername = notes.fake_username || s.profiles?.username || 'unknown';
+        const karmaLabel = testerKarma >= 200 ? 'Elite Reviewer'
+          : testerKarma >= 80 ? 'Trusted Reviewer'
+          : testerKarma >= 30 ? 'Active Reviewer'
+          : 'New Reviewer';
+        const karmaColor = testerKarma >= 200 ? 'var(--gold)'
+          : testerKarma >= 80 ? 'var(--neon)'
+          : testerKarma >= 30 ? 'var(--ice)'
+          : 'var(--text-dim)';
+
+        return '<div class="review-card" id="review-' + esc(s.id) + '">'
+          + '<div class="flex items-start justify-between gap-2">'
+            + '<div class="flex items-center gap-2 min-w-0">'
+              + (s.profiles?.avatar_url ? '<img src="' + esc(s.profiles.avatar_url) + '" class="w-6 h-6 rounded-full border border-[var(--line)] shrink-0">' : '')
+              + '<div class="min-w-0">'
+                + '<span class="text-sm font-medium">@' + esc(displayUsername) + '</span>'
+                + '<span class="mono text-xs text-[var(--text-dim)] ml-2">on ' + esc(projectTitles[s.project_id] || '?') + '</span>'
+                + '<div class="mt-1">'
+                  + '<span class="mono text-xs px-2 py-0.5 border" style="border-color:' + karmaColor + ';color:' + karmaColor + '">'
+                    + karmaLabel + (testerKarma > 0 ? ' \u00b7 ' + testerKarma + ' karma' : '') + (testerKarma >= 80 ? ' ✓ weighted' : '')
+                  + '</span>'
+                + '</div>'
+              + '</div>'
+            + '</div>'
+            + '<div class="mono text-xs neon-text shrink-0">' + '\u2605'.repeat(s.overall_rating || 0) + '\u2606'.repeat(5 - (s.overall_rating || 0)) + '</div>'
+          + '</div>'
+          + (s.summary ? '<p class="text-xs text-[var(--text-dim)] mt-2 leading-relaxed">' + esc(s.summary) + '</p>' : '')
+          + (s.friction_points?.length > 0
+            ? '<div class="mt-2"><div class="mono text-xs uppercase mb-1" style="color:var(--hot)">Friction</div>'
+              + s.friction_points.map(f => '<p class="text-xs text-[var(--text-dim)] leading-relaxed">\u00b7 ' + esc(f.text) + '</p>').join('')
+              + '</div>' : '')
+          + (s.magic_moments?.length > 0
+            ? '<div class="mt-2"><div class="mono text-xs uppercase mb-1" style="color:var(--ice)">Magic</div>'
+              + s.magic_moments.map(m => '<p class="text-xs text-[var(--text-dim)] leading-relaxed">\u00b7 ' + esc(m.text) + '</p>').join('')
+              + '</div>' : '')
+          + '<div class="flex items-center justify-between mt-3 pt-2 border-t border-[var(--line)]">'
+            + '<div class="mono text-xs text-[var(--text-dim)]">' + formatDate(s.completed_at) + '</div>'
+            + '<button onclick="awardKarma(\'' + esc(s.id) + '\',\'' + esc(s.tester_id) + '\')" class="karma-award-btn mono text-xs px-2 py-1 border border-[var(--line)] text-[var(--text-dim)] hover:border-[var(--neon)] hover:neon-text transition" title="Award +1 karma for a great review">'
+              + '+1 karma'
+            + '</button>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+    }
+  }
+}
+
+async function awardKarma(sessionId, testerId) {
+  const btn = document.querySelector('#review-' + sessionId + ' .karma-award-btn');
+  if (!btn || btn.disabled) return;
+
+  const awardedKey = 'karma_awarded_' + sessionId;
+  if (localStorage.getItem(awardedKey)) {
+    btn.textContent = 'Already awarded';
+    btn.disabled = true;
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Awarding...';
+
+  // Call the award_karma Supabase RPC function (SECURITY DEFINER — bypasses RLS)
+  // SQL for this function is in the project SQL file. If not yet applied, falls back.
+  const { error: rpcError } = await supabase.rpc('award_karma_to_tester', {
+    p_session_id: sessionId,
+    p_tester_id:  testerId,
+    p_awarder_id: session.user.id,
+  });
+
+  if (rpcError) {
+    // Fallback: direct insert to credit_ledger (may still work depending on RLS)
+    console.warn('[awardKarma] RPC failed, trying direct insert:', rpcError.message);
+    const { error: ledgerErr } = await supabase.from('credit_ledger').insert({
+      profile_id: testerId, amount: 1, reason: 'builder_karma_award',
+      related_session_id: sessionId, notes: 'Builder awarded +1 karma for quality review',
+    });
+    if (ledgerErr) {
+      console.error('[awardKarma] Both methods failed:', ledgerErr.message);
+      btn.textContent = 'Error — run SQL fix';
+      btn.style.color = 'var(--hot)';
+      btn.disabled = false;
+      return;
+    }
+  }
+
+  localStorage.setItem(awardedKey, '1');
+  btn.textContent = '+1 karma awarded \u2713';
+  btn.style.color = 'var(--neon)';
+  btn.style.borderColor = 'var(--neon)';
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+</script>
+<!-- ── BUG REPORT / CONTACT WIDGET ─────────────────────────────────────────── -->
+<button id="bug-report-btn" onclick="openBugReport()"
+  style="position:fixed;bottom:20px;right:20px;z-index:999;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:8px 14px;border:1px solid var(--hot);color:var(--hot);background:var(--bg-2,#0a0e14);cursor:pointer;opacity:.7;transition:opacity .2s"
+  onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='.7'">
+  🐛 Contact / Report
+</button>
+<div id="bug-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center">
+  <div style="background:#0a0e14;border:1px solid #ff3864;padding:28px;max-width:480px;width:90%;max-height:80vh;overflow-y:auto">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#ff3864;margin-bottom:16px">Contact / Report a Bug</div>
+    <p style="font-size:13px;color:#7a8896;margin-bottom:16px">Got a question, spotted a bug, or want to get in touch? Fill this in and we will get back to you.</p>
+    <div style="margin-bottom:10px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;color:#7a8896;margin-bottom:4px">What is this about? *</div>
+      <input type="text" id="bug-what" placeholder="e.g. Question about pricing, bug on submit page..." style="background:#05070a;border:1px solid #1a2028;color:#e6edf3;padding:8px 10px;width:100%;font-family:inherit;font-size:13px;box-sizing:border-box">
+    </div>
+    <div style="margin-bottom:10px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;color:#7a8896;margin-bottom:4px">Details</div>
+      <textarea id="bug-desc" rows="3" placeholder="Tell us more..." style="background:#05070a;border:1px solid #1a2028;color:#e6edf3;padding:8px 10px;width:100%;font-family:inherit;font-size:13px;resize:vertical;box-sizing:border-box"></textarea>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;color:#7a8896;margin-bottom:4px">Type</div>
+      <select id="bug-severity" style="background:#05070a;border:1px solid #1a2028;color:#e6edf3;padding:8px 10px;width:100%;font-family:inherit;font-size:13px">
+        <option value="low">General enquiry</option>
+        <option value="medium" selected>Something does not work</option>
+        <option value="high">Cannot complete a key action</option>
+        <option value="critical">Platform is broken for me</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button onclick="submitBugReport()" style="flex:1;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;text-transform:uppercase;padding:12px;background:#ff3864;color:#000;border:none;cursor:pointer">SEND →</button>
+      <button onclick="closeBugReport()" style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:12px 16px;border:1px solid #1a2028;color:#7a8896;background:transparent;cursor:pointer">CANCEL</button>
+    </div>
+    <div id="bug-sent" style="display:none;font-family:'JetBrains Mono',monospace;font-size:11px;color:#7cff50;margin-top:12px">Message sent. We will be in touch.</div>
+    <div id="bug-err" style="display:none;font-family:'JetBrains Mono',monospace;font-size:11px;color:#ff3864;margin-top:8px"></div>
+  </div>
+</div>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const SUPA_URL = 'https://csfuhpljjfcrxpsvoqjx.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzZnVocGxqamZjcnhwc3ZvcWp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjA3OTksImV4cCI6MjA5MTczNjc5OX0.WBkYhEi75xBqDWP8BWjzIQeqUgFHKt1JPCf-X-tAcAI';
+window.openBugReport = function(pre) {
+  document.getElementById('bug-modal').style.display = 'flex';
+  document.getElementById('bug-sent').style.display = 'none';
+  document.getElementById('bug-err').style.display = 'none';
+  if (pre) { document.getElementById('bug-what').value = pre; document.getElementById('bug-severity').value = 'high'; }
+  else { document.getElementById('bug-what').value = ''; document.getElementById('bug-desc').value = ''; document.getElementById('bug-severity').value = 'medium'; }
+};
+window.closeBugReport = function() { document.getElementById('bug-modal').style.display = 'none'; };
+window.submitBugReport = async function() {
+  const what = document.getElementById('bug-what').value.trim();
+  const errEl = document.getElementById('bug-err');
+  if (!what) { errEl.textContent = 'Please describe what this is about.'; errEl.style.display = 'block'; return; }
+  try {
+    const _sb = createClient(SUPA_URL, SUPA_KEY);
+    const { data: { session: s } } = await _sb.auth.getSession();
+    let username = null, userId = s?.user?.id || null;
+    if (userId) { const { data: p } = await _sb.from('profiles').select('username').eq('id', userId).single(); username = p?.username; }
+    await _sb.from('bug_reports').insert({
+      user_id: userId, username, page: window.location.pathname,
+      what_doing: document.getElementById('bug-what').value.trim(),
+      error_description: document.getElementById('bug-desc').value.trim(),
+      severity: document.getElementById('bug-severity').value, status: 'open',
+      diagnostics: JSON.stringify({ url: window.location.href, browser: navigator.userAgent, timestamp: new Date().toISOString() })
+    });
+    document.getElementById('bug-sent').style.display = 'block';
+    document.getElementById('bug-what').value = ''; document.getElementById('bug-desc').value = '';
+    setTimeout(window.closeBugReport, 2500);
+  } catch(e) { errEl.textContent = 'Could not send — try again.'; errEl.style.display = 'block'; }
+};
+document.getElementById('bug-modal').addEventListener('click', function(e) { if (e.target===this) window.closeBugReport(); });
+</script>
+</body>
+</html>

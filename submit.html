@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jellar — Submit Project</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  .jellar-wordmark { font-family: "Cinzel", serif; font-weight: 900; letter-spacing: .12em; color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,.15); }
+  :root {
+    --bg: #05070a; --bg-2: #0a0e14; --line: #1a2028;
+    --neon: #7cff50; --hot: #ff3864; --ice: #38d7ff; --warn: #ffb347;
+    --text: #e6edf3; --text-dim: #7a8896;
+  }
+  html, body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .neon-text { color: var(--neon); text-shadow: 0 0 12px rgba(124,255,80,0.6); }
+  .neon-border { border-color: var(--neon); box-shadow: 0 0 0 1px var(--neon), 0 0 20px rgba(124,255,80,0.25); }
+  input, textarea, select {
+    background: var(--bg); border: 1px solid var(--line); color: var(--text);
+    padding: 10px 12px; width: 100%; font-family: inherit; transition: border-color 0.15s;
+  }
+  input::placeholder, textarea::placeholder { color: var(--text-dim); opacity: 0.5; }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 0 1px var(--neon); }
+  form.show-errors input:invalid, form.show-errors textarea:invalid, form.show-errors select:invalid { border-color: var(--hot); }
+  form.show-errors input:invalid + .err-msg, form.show-errors textarea:invalid + .err-msg, form.show-errors select:invalid + .err-msg { display: block; }
+  .err-msg { display: none; color: var(--hot); font-size: 11px; margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+  label { display: block; margin-bottom: 6px; }
+  .req { color: var(--neon); margin-left: 2px; }
+  .pulse-dot { position: relative; width: 10px; height: 10px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 10px var(--neon); }
+  .check-row { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .check-row:last-child { border-bottom: 0; }
+  .pass { color: var(--neon); }
+  .fail { color: var(--hot); }
+  .warn { color: var(--warn); }
+  .pending { color: var(--text-dim); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--line); border-top-color: var(--neon); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .cond-hidden { display: none; }
+  .info-note { font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; padding: 8px 12px; border-left: 2px solid var(--line); margin-top: 8px; }
+  .question-help { font-size: 11px; color: var(--text-dim); margin-top: 4px; font-style: italic; }
+
+  /* Modal styles */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(4px); z-index: 1000;
+    display: none; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-box {
+    background: var(--bg-2); border: 1px solid var(--neon);
+    box-shadow: 0 0 40px rgba(124,255,80,0.2);
+    max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto;
+    padding: 24px;
+  }
+  .modal-close {
+    background: none; border: 1px solid var(--line); color: var(--text-dim);
+    padding: 4px 10px; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  }
+  .modal-close:hover { border-color: var(--neon); color: var(--neon); }
+
+  /* Feedback gate card */
+  .gate-card {
+    background: linear-gradient(135deg, rgba(255,56,100,0.1), rgba(0,0,0,0));
+    border: 1px solid var(--hot);
+  }
+</style>
+
+<!-- BOT PROTECTION -->
+<script>
+// ============================================================
+// JELLAR BOT PROTECTION LAYER v1.0
+// Included in mission.html, submit.html, onboarding.html
+// ============================================================
+
+const JellarSecurity = (() => {
+
+  // ── 1. FINGERPRINT ──────────────────────────────────────
+  // Collect passive signals — no user impact, just data
+  const fp = {
+    mouseMovements: 0,
+    keystrokes: 0,
+    touchEvents: 0,
+    focusEvents: 0,
+    pageLoadTime: Date.now(),
+    lastActivity: Date.now(),
+    tabSwitches: 0,
+    scrollEvents: 0,
+    humanScore: 0, // 0-100
+  };
+
+  document.addEventListener('mousemove', () => { fp.mouseMovements++; fp.lastActivity = Date.now(); }, { passive: true });
+  document.addEventListener('keydown',   () => { fp.keystrokes++;     fp.lastActivity = Date.now(); }, { passive: true });
+  document.addEventListener('touchstart',() => { fp.touchEvents++;    fp.lastActivity = Date.now(); }, { passive: true });
+  document.addEventListener('focus',     () => { fp.focusEvents++;    fp.lastActivity = Date.now(); }, { passive: true, capture: true });
+  document.addEventListener('scroll',    () => { fp.scrollEvents++;   fp.lastActivity = Date.now(); }, { passive: true });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) fp.tabSwitches++; });
+
+  // ── 2. HUMAN SCORE ──────────────────────────────────────
+  function computeHumanScore() {
+    let score = 0;
+    const elapsed = (Date.now() - fp.pageLoadTime) / 1000;
+
+    // Mouse movement (bots don't move mouse)
+    if (fp.mouseMovements > 10)  score += 25;
+    else if (fp.mouseMovements > 3) score += 12;
+
+    // Keystrokes (bots inject values, don't type)
+    if (fp.keystrokes > 20) score += 20;
+    else if (fp.keystrokes > 5) score += 10;
+
+    // Time on page (bots are fast)
+    if (elapsed > 30)  score += 20;
+    else if (elapsed > 10) score += 10;
+
+    // Touch (mobile humans)
+    if (fp.touchEvents > 0) score += 15;
+
+    // Scroll (bots rarely scroll)
+    if (fp.scrollEvents > 2) score += 10;
+
+    // Focus events (clicking into fields)
+    if (fp.focusEvents > 2) score += 10;
+
+    fp.humanScore = Math.min(100, score);
+    return fp.humanScore;
+  }
+
+  // ── 3. ENVIRONMENT CHECKS ───────────────────────────────
+  function isHeadlessBrowser() {
+    const ua = navigator.userAgent.toLowerCase();
+    const headlessSignals = [
+      navigator.webdriver === true,
+      ua.includes('headless'),
+      ua.includes('phantomjs'),
+      ua.includes('selenium'),
+      ua.includes('puppeteer'),
+      !window.chrome && ua.includes('chrome') && !ua.includes('android'),
+      navigator.languages === undefined || navigator.languages.length === 0,
+      !navigator.plugins || navigator.plugins.length === 0,
+    ];
+    return headlessSignals.filter(Boolean).length >= 2;
+  }
+
+  function isTorOrVPN() {
+    // Can't detect reliably client-side — handled server-side via Supabase/Netlify
+    return false;
+  }
+
+  // ── 4. RATE LIMITING (localStorage) ─────────────────────
+  const RATE_LIMITS = {
+    'project_submit':   { max: 3,  window: 3600000,  key: 'rl_proj_submit'   }, // 3/hr
+    'feedback_submit':  { max: 10, window: 3600000,  key: 'rl_feedback'      }, // 10/hr
+    'onboarding':       { max: 5,  window: 86400000, key: 'rl_onboarding'    }, // 5/day
+    'bug_report':       { max: 10, window: 3600000,  key: 'rl_bug'           }, // 10/hr
+  };
+
+  function checkRateLimit(action) {
+    const cfg = RATE_LIMITS[action];
+    if (!cfg) return { allowed: true };
+    try {
+      const stored = JSON.parse(localStorage.getItem(cfg.key) || '{"count":0,"window_start":0}');
+      const now = Date.now();
+      // Reset window if expired
+      if (now - stored.window_start > cfg.window) {
+        stored.count = 0;
+        stored.window_start = now;
+      }
+      if (stored.count >= cfg.max) {
+        const resetIn = Math.ceil((cfg.window - (now - stored.window_start)) / 60000);
+        return { allowed: false, resetIn, message: 'Too many attempts. Try again in ' + resetIn + ' minute' + (resetIn !== 1 ? 's' : '') + '.' };
+      }
+      stored.count++;
+      localStorage.setItem(cfg.key, JSON.stringify(stored));
+      return { allowed: true };
+    } catch(e) {
+      return { allowed: true }; // fail open if localStorage broken
+    }
+  }
+
+  // ── 5. HONEYPOT SETUP ───────────────────────────────────
+  // Call this after DOM ready to inject hidden fields
+  function injectHoneypots(formSelector) {
+    const form = document.querySelector(formSelector);
+    if (!form) return;
+
+    // Field 1: hidden text input with plausible name — bots auto-fill, humans won't see it
+    const hp1 = document.createElement('div');
+    hp1.setAttribute('aria-hidden', 'true');
+    hp1.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;tab-index:-1';
+    hp1.innerHTML = '<label for="jl_website">Website</label><input type="text" id="jl_website" name="jl_website" autocomplete="off" tabindex="-1" value="">';
+    form.appendChild(hp1);
+
+    // Field 2: fake email field
+    const hp2 = document.createElement('div');
+    hp2.setAttribute('aria-hidden', 'true');
+    hp2.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;tab-index:-1';
+    hp2.innerHTML = '<label for="jl_confirm_email">Confirm Email</label><input type="email" id="jl_confirm_email" name="jl_confirm_email" autocomplete="off" tabindex="-1" value="">';
+    form.appendChild(hp2);
+  }
+
+  function checkHoneypots(formSelector) {
+    const form = document.querySelector(formSelector);
+    if (!form) return false;
+    const hp1 = form.querySelector('[name="jl_website"]');
+    const hp2 = form.querySelector('[name="jl_confirm_email"]');
+    const triggered = (hp1 && hp1.value !== '') || (hp2 && hp2.value !== '');
+    if (triggered) console.warn('[Security] Honeypot triggered');
+    return triggered;
+  }
+
+  // ── 6. SUBMIT GUARD ─────────────────────────────────────
+  // Call before any Supabase insert. Returns {allowed, reason}
+  function guardSubmit(action) {
+    // Headless browser check
+    if (isHeadlessBrowser()) {
+      return { allowed: false, reason: 'Automated browser detected. Please use a regular browser.' };
+    }
+
+    // Rate limit check
+    const rl = checkRateLimit(action);
+    if (!rl.allowed) {
+      return { allowed: false, reason: rl.message };
+    }
+
+    // Human score check (only for high-value actions)
+    const highValueActions = ['project_submit', 'feedback_submit'];
+    if (highValueActions.includes(action)) {
+      const score = computeHumanScore();
+      if (score < 15) {
+        return { allowed: false, reason: 'Please interact with the page before submitting.' };
+      }
+    }
+
+    return { allowed: true, humanScore: fp.humanScore, fingerprint: getFingerprint() };
+  }
+
+  function getFingerprint() {
+    return {
+      mouse: fp.mouseMovements,
+      keys: fp.keystrokes,
+      scroll: fp.scrollEvents,
+      touch: fp.touchEvents,
+      elapsed: Math.floor((Date.now() - fp.pageLoadTime) / 1000),
+      humanScore: computeHumanScore(),
+      headless: isHeadlessBrowser(),
+      ua: navigator.userAgent.slice(0, 100),
+      lang: navigator.language,
+      tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      screen: window.screen.width + 'x' + window.screen.height,
+      cookieEnabled: navigator.cookieEnabled,
+    };
+  }
+
+  // ── 7. CONTENT VALIDATORS ───────────────────────────────
+  function hasRepeatedContent(text1, text2, threshold = 0.65) {
+    if (!text1 || !text2) return false;
+    const words1 = text1.toLowerCase().split(/\s+/);
+    const words2 = text2.toLowerCase().split(/\s+/);
+    const set1 = new Set(words1);
+    const overlap = words2.filter(w => set1.has(w)).length;
+    return overlap / Math.max(words1.length, words2.length) > threshold;
+  }
+
+  function isTooShort(text, minWords = 5) {
+    if (!text) return true;
+    return text.trim().split(/\s+/).filter(w => w.length > 1).length < minWords;
+  }
+
+  function looksLikeSpam(text) {
+    if (!text) return false;
+    const spamPatterns = [
+      /(.)\1{6,}/,          // repeated chars: aaaaaaa
+      /^[^a-zA-Z]*$/,       // no letters at all
+      /(buy|cheap|click|free|winner|prize|urgent|http|www\.)/i,
+      /[A-Z]{10,}/,         // ALL CAPS run
+    ];
+    return spamPatterns.some(p => p.test(text));
+  }
+
+  return {
+    guardSubmit,
+    injectHoneypots,
+    checkHoneypots,
+    computeHumanScore,
+    getFingerprint,
+    hasRepeatedContent,
+    isTooShort,
+    looksLikeSpam,
+    isHeadlessBrowser,
+    fp,
+  };
+})();
+
+</script>
+</head>
+<body class="min-h-screen">
+
+<header class="border-b border-[var(--line)] bg-[var(--bg-2)]/80 backdrop-blur">
+  <div class="max-w-[1000px] mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="pulse-dot"></div>
+      <a href="index.html" class="jellar-wordmark">JELLAR</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="help.html" class="mono text-xs uppercase text-[var(--text-dim)] hover:neon-text">help</a>
+      <a href="index.html" class="mono text-xs uppercase text-[var(--text-dim)] hover:neon-text">← back to pulse</a>
+    </div>
+  </div>
+</header>
+
+<!-- AUTH GATE -->
+<div id="auth-gate" class="max-w-[600px] mx-auto px-6 py-20 text-center hidden">
+  <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)]">Access Denied</div>
+  <h1 class="text-3xl font-bold mt-2">Sign in to list a project</h1>
+  <p class="text-[var(--text-dim)] mt-2">Only verified GitHub accounts can submit.</p>
+  <button id="btn-login" class="mt-6 px-6 py-3 border border-[var(--neon)] neon-text hover:bg-[var(--neon)] hover:text-black transition mono font-bold">
+    CONNECT.GITHUB
+  </button>
+</div>
+
+<!-- FEEDBACK GATE (Tier 1 without any feedback submitted) -->
+<div id="feedback-gate" class="max-w-[700px] mx-auto px-6 py-20 hidden">
+  <div class="gate-card p-8">
+    <div class="mono text-xs uppercase tracking-widest fail">Contribution Required</div>
+    <h1 class="text-3xl font-bold mt-2">Test before you list</h1>
+    <p class="text-[var(--text-dim)] mt-3">
+      You need to complete <strong class="neon-text"><span id="gate-required">5</span> approved mission(s)</strong> before you can list your own project on a free listing.
+      This keeps Jellar reciprocal — builders who give feedback get feedback.
+    </p>
+    <div class="mt-4 mono text-xs text-[var(--text-dim)]">
+      Missions completed: <span id="gate-count" class="neon-text">0</span> / <span id="gate-required-2">5</span> required
+      · <span id="gate-remaining" class="text-[var(--hot)]">0</span> to go
+    </div>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href="index.html" class="mono font-bold px-6 py-3 bg-[var(--neon)] text-black hover:shadow-[0_0_20px_var(--neon)] transition">
+        FIND A MISSION TO TEST →
+      </a>
+      <a href="pricing.html" class="mono font-bold px-6 py-3 border border-[var(--line)] hover:border-[var(--neon)] hover:neon-text transition">
+        SKIP THE WAIT — BUY A PACK →
+      </a>
+    </div>
+    <div class="mt-6 info-note">
+      Buying a Starter, Signal, or Launch pack lets you list immediately — no review requirement. Free listings require <span id="gate-note-required">5</span> completed missions first.
+    </div>
+  </div>
+</div>
+
+<!-- MAIN FORM -->
+<main id="form-wrap" class="max-w-[900px] mx-auto px-6 py-10 hidden">
+  <div class="flex items-center justify-between">
+    <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)]">New Mission</div>
+    <button type="button" data-modal="rules" class="mono text-xs uppercase text-[var(--text-dim)] hover:neon-text">? submission rules</button>
+  </div>
+  <h1 class="text-3xl md:text-4xl font-bold mt-1">List your project for Human Signal testing</h1>
+  <p class="text-[var(--text-dim)] mt-2 max-w-[600px]">Fill this in honestly. Be as detailed as you can — the more context testers have, the better signal you get back. Automated checks run instantly; a human reviews within 24hrs.</p>
+  <div class="mt-4 border px-4 py-3 mono text-xs" style="border-color:#f97316;background:rgba(249,115,22,0.06);color:#f97316">ℹ Web-based projects only — this platform currently does not support native iOS or Android apps. Progressive web apps (PWAs) are welcome.</div>
+  <form id="submit-form" class="mt-8 space-y-8" novalidate>
+
+    <!-- SECTION 1: BASICS -->
+    <section class="border border-[var(--line)] bg-[var(--bg-2)] p-6">
+      <div class="mono text-xs uppercase tracking-widest neon-text mb-4">01 / The Basics</div>
+      <div class="space-y-4">
+        <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Project Title<span class="req">*</span></label>
+          <input type="text" name="title" required maxlength="80"><div class="err-msg">Required</div></div>
+        <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Project URL<span class="req">*</span></label>
+          <input type="url" name="project_url" id="project_url" required pattern="https://.*" placeholder="https://">
+          <div class="err-msg">Must start with https://</div></div>
+        <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Category<span class="req">*</span></label>
+          <select name="category" required>
+            <option value="">Select one...</option>
+            <option value="ai-tool">AI Tool — AI/LLM is the core feature</option>
+            <option value="dev-tool">Developer Tool — APIs, CLIs, devex, code helpers</option>
+            <option value="productivity">Productivity — tasks, notes, workflow, automation</option>
+            <option value="saas-business">SaaS / Business — B2B software, dashboards, CRMs</option>
+            <option value="creative-design">Creative & Design — image gen, writing aids, design tools</option>
+            <option value="finance-fintech">Finance & Fintech — budgeting, invoicing, payments, crypto</option>
+            <option value="health-wellness">Health & Wellness — fitness, mental health, habit tracking</option>
+            <option value="education">Education & Learning — courses, tutoring, flashcards, skills</option>
+            <option value="ecommerce">E-commerce & Retail — shops, marketplaces, product tools</option>
+            <option value="games">Games & Entertainment — games, interactive experiences</option>
+            <option value="communication">Communication — chat, email, team tools, social</option>
+            <option value="data-analytics">Data & Analytics — dashboards, reporting, data viz</option>
+          </select><div class="err-msg">Pick a category</div></div>
+        <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Project Stage<span class="req">*</span></label>
+          <select name="project_stage" required>
+            <option value="">What state is it in?</option>
+            <option value="prototype">Prototype — rough, things may break</option>
+            <option value="alpha">Alpha — core features work, lots of bugs expected</option>
+            <option value="beta">Beta — mostly polished, some rough edges</option>
+            <option value="live">Live — real users, real product</option>
+            <option value="other">Other</option>
+          </select><div class="err-msg">Pick a stage</div></div>
+        <div>
+          <label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">The Mission — what do you want testers to do?<span class="req">*</span></label>
+          <div class="mb-2">
+            <div class="mono text-xs text-[var(--text-dim)] mb-1">Need a starting point? Pick a template:</div>
+            <div class="flex flex-wrap gap-2" id="mission-templates">
+              <button type="button" class="mission-tpl mono text-xs px-3 py-1.5 border border-[var(--line)] hover:border-[var(--neon)] hover:neon-text transition" data-tpl="Sign up, complete onboarding, and reach the first meaningful action in the app. Note anything that confused you or slowed you down along the way.">Test onboarding</button>
+              <button type="button" class="mission-tpl mono text-xs px-3 py-1.5 border border-[var(--line)] hover:border-[var(--neon)] hover:neon-text transition" data-tpl="Find a product, add it to your cart, and complete the checkout process using the test card details provided. Note any friction points during the purchase flow.">Complete a purchase</button>
+              <button type="button" class="mission-tpl mono text-xs px-3 py-1.5 border border-[var(--line)] hover:border-[var(--neon)] hover:neon-text transition" data-tpl="Log in using the test credentials provided, then create your first item (project, note, report, or similar). Note how intuitive the creation flow feels and whether the result matched your expectation.">Create your first item</button>
+              <button type="button" class="mission-tpl mono text-xs px-3 py-1.5 border border-[var(--line)] hover:border-[var(--neon)] hover:neon-text transition" data-tpl="Use the search bar and/or filter options to find something specific. Note whether the results were what you expected, how fast it felt, and whether anything was missing or hard to find.">Use search and filters</button>
+            </div>
+          </div>
+          <textarea name="mission" id="mission-field" required rows="2" maxlength="200" placeholder="e.g. Sign up, create your first project, and try to invite a team member."></textarea>
+          <div class="err-msg">Required</div>
+          <div class="mono text-xs text-[var(--text-dim)] mt-1">Be specific — good missions name the exact action you want tested, not just "try the app".</div>
+        </div>
+        <div>
+          <label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Expected time to complete<span class="req">*</span></label>
+          <input type="hidden" name="expected_duration_min" id="duration-input" required>
+          <div class="flex gap-2" style="max-width:260px">
+            <input type="number" id="duration-value" min="1" max="999" placeholder="e.g. 30"
+              style="width:100px;background:var(--bg);border:1px solid var(--line);color:var(--text);padding:8px 10px;font-family:inherit;font-size:13px;">
+            <select id="duration-unit" style="flex:1;background:var(--bg);border:1px solid var(--line);color:var(--text);padding:8px 10px;font-family:inherit;font-size:13px;">
+              <option value="minutes">minutes</option>
+              <option value="hours">hours</option>
+              <option value="days">days</option>
+              <option value="weeks">weeks</option>
+            </select>
+          </div>
+          <div class="err-msg" id="duration-err">Please enter a duration</div>
+          <div id="duration-warning" class="hidden mt-2 p-3 border" style="border-color:#f97316;background:rgba(249,115,22,0.05)">
+            <div class="mono text-xs font-bold" style="color:#f97316">⚠ MISSIONS OVER 1 HOUR</div>
+            <p class="text-xs text-[var(--text-dim)] mt-1">Current platform missions are recommended at 60 minutes or under. Longer missions will be flagged for manual review and may be asked to be shortened. For in-depth audits of longer sessions, see our <a href="pricing.html#audit" style="color:#f97316;text-decoration:underline;font-weight:700;">Professional Audit →</a></p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Your City<span class="req">*</span></label>
+            <input type="text" name="city_name" required><div class="err-msg">Required</div></div>
+          <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">State / Region</label>
+            <input type="text" name="state_region">
+          </div>
+        </div>
+        <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Country<span class="req">*</span></label>
+            <select name="country_name" id="country_select" required>
+              <option value="">Select country...</option>
+              <!-- populated by JS -->
+            </select>
+            <div class="err-msg">Required</div>
+            <div id="ip-country-note" class="question-help"></div>
+          </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: VIBE CHECK -->
+    <section class="border border-[var(--line)] bg-[var(--bg-2)] p-6">
+      <div class="flex items-center justify-between mb-4">
+        <div class="mono text-xs uppercase tracking-widest neon-text">02 / Vibe Check</div>
+        <button type="button" data-modal="vibe" class="mono text-xs text-[var(--text-dim)] hover:neon-text">? why we ask this</button>
+      </div>
+      <p class="text-sm text-[var(--text-dim)] mb-4">These answers are cross-checked against your website content. Lying = permanent ban.</p>
+      <div class="space-y-4">
+        <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">One-liner — what is it, really?<span class="req">*</span></label>
+          <input type="text" name="one_liner" required maxlength="140"><div class="err-msg">Required</div></div>
+        <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Who is it for?<span class="req">*</span></label>
+          <input type="text" name="target_user" required maxlength="140"><div class="err-msg">Required</div></div>
+        <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Is this your own project?<span class="req">*</span></label>
+          <select name="is_your_project" required>
+            <option value="">Select...</option>
+            <option value="true">Yes — I built it / I'm on the team</option>
+            <option value="false">No — I'm submitting on behalf of someone else</option>
+          </select><div class="err-msg">Required</div></div>
+        <div>
+          <label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Does this app send tester input to an AI/LLM service?<span class="req">*</span></label>
+          <select name="uses_ai" id="uses_ai" required>
+            <option value="">Select...</option>
+            <option value="true">Yes — input goes to an AI service (OpenAI, Anthropic, etc.)</option>
+            <option value="false">No — no AI/LLM involved, or AI doesn't see tester input</option>
+          </select>
+          <div class="question-help">Testers deserve to know if their input will be sent to an LLM.</div>
+          <div class="err-msg">Required</div>
+        </div>
+        <div id="ai_details_wrap" class="cond-hidden">
+          <label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Which AI service?<span class="req">*</span></label>
+          <input type="text" name="ai_details" maxlength="160" data-cond-required placeholder="e.g. OpenAI GPT-4, Claude Sonnet, Gemini">
+          <div class="err-msg">Required when AI is used</div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Collects user data?<span class="req">*</span></label>
+            <select name="handles_user_data" required><option value="">Select...</option><option value="false">No</option><option value="true">Yes</option></select><div class="err-msg">Required</div></div>
+          <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Asks for login?<span class="req">*</span></label>
+            <select name="asks_for_login" id="asks_for_login" required><option value="">Select...</option><option value="false">No</option><option value="true">Yes</option></select><div class="err-msg">Required</div></div>
+          <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Requires payment?<span class="req">*</span></label>
+            <select name="payment_required" required><option value="">Select...</option><option value="false">No</option><option value="true">Yes</option></select><div class="err-msg">Required</div></div>
+          <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Sensitive content?<span class="req">*</span></label>
+            <select name="content_warning" required>
+              <option value="">Select...</option><option value="none">None</option>
+              <option value="nsfw">NSFW</option><option value="violence">Violence / Gore</option>
+              <option value="financial">Financial / Crypto</option><option value="medical">Medical</option>
+            </select><div class="err-msg">Required</div></div>
+        </div>
+        <div id="creds_wrap" class="cond-hidden">
+          <label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">Test credentials — how do testers access it?<span class="req">*</span></label>
+          <textarea name="test_credentials" rows="2" maxlength="280" data-cond-required></textarea>
+          <div class="err-msg">Required when login is needed</div>
+        </div>
+        <div><label class="mono text-xs uppercase tracking-wider text-[var(--text-dim)]">What should testers NOT do?<span class="req">*</span></label>
+          <textarea name="tester_warnings" required rows="2" maxlength="280"></textarea>
+          <div class="mono text-xs text-[var(--text-dim)] mt-1">If there are no warnings, write "None".</div>
+          <div class="err-msg">Required</div></div>
+        <label class="flex items-start gap-3 mt-4 cursor-pointer">
+          <input type="checkbox" id="attest-accept" class="mt-1 w-auto accent-[var(--neon)]">
+          <span class="text-sm">I attest the answers are accurate, I have the right to list this project, and I understand false submissions result in a permanent ban.<span class="req">*</span></span>
+        </label>
+        <div id="attest-err" class="hidden mono text-xs mt-2 px-2 py-1.5 border" style="color:var(--hot);border-color:var(--hot);background:rgba(255,56,100,0.06)">
+          ✕ You must confirm this before submitting.
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: AUTO CHECKS -->
+    <section id="checks-section" class="border border-[var(--line)] bg-[var(--bg-2)] p-6 hidden">
+      <div class="flex items-center justify-between mb-4">
+        <div class="mono text-xs uppercase tracking-widest neon-text">Pre-Flight Checks</div>
+        <div class="mono text-xs text-[var(--text-dim)]">Running <span id="checks-progress">0</span> of <span id="checks-total">13</span> checks</div>
+      </div>
+      <!-- Progress bar -->
+      <div class="w-full h-1 bg-[var(--line)] rounded-full overflow-hidden mb-5">
+        <div id="checks-bar" class="h-full rounded-full transition-all duration-300" style="width:0%;background:var(--neon)"></div>
+      </div>
+      <!-- Check rows — name + status only, no detail exposed -->
+      <div id="checks-list" class="space-y-2"></div>
+      <div id="checks-result" class="mt-6 p-4 border hidden"></div>
+    </section>
+
+    <div class="flex items-center justify-between">
+      <a href="index.html" class="mono text-xs uppercase text-[var(--text-dim)] hover:neon-text">cancel</a>
+      <!-- T&C ACCEPTANCE -->
+      <div class="mt-4 p-4 border border-[var(--line)] bg-[var(--bg)]" id="terms-block">
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" id="terms-accept" class="mt-0.5 shrink-0 accent-[var(--neon)] w-4 h-4">
+          <span class="text-xs text-[var(--text-dim)] leading-relaxed">
+            I agree to Jellar's <a href="terms.html" target="_blank" class="neon-text hover:underline">Terms &amp; Conditions</a> and <a href="privacy.html" target="_blank" class="neon-text hover:underline">Privacy Policy</a>. I understand that misuse of the platform — including submitting malicious, misleading, or prohibited content — may result in immediate account termination and permanent ban with no refund, at Jellar's sole discretion.
+          </span>
+        </label>
+        <div id="terms-err" class="hidden mono text-xs mt-2 px-2 py-1.5 border" style="color:var(--hot);border-color:var(--hot);background:rgba(255,56,100,0.06)">
+          ✕ You must accept the Terms &amp; Conditions before submitting.
+        </div>
+      </div>
+
+      <button type="submit" id="submit-btn"
+              class="mono font-bold px-8 py-3 bg-[var(--neon)] text-black hover:shadow-[0_0_20px_var(--neon)] transition">
+        RUN CHECKS + SUBMIT →
+      </button>
+    </div>
+  </form>
+</main>
+
+<!-- MODALS -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal-box">
+    <div class="flex items-center justify-between mb-4">
+      <div id="modal-title" class="mono text-sm uppercase neon-text"></div>
+      <button class="modal-close" id="modal-close-btn">CLOSE ✕</button>
+    </div>
+    <div id="modal-body" class="text-sm space-y-3 leading-relaxed"></div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const CONFIG = {
+  SUPABASE_URL: 'https://csfuhpljjfcrxpsvoqjx.supabase.co',
+  SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzZnVocGxqamZjcnhwc3ZvcWp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjA3OTksImV4cCI6MjA5MTczNjc5OX0.WBkYhEi75xBqDWP8BWjzIQeqUgFHKt1JPCf-X-tAcAI',
+};
+const MIN_ACCOUNT_AGE_DAYS = 5;
+const MIN_FEEDBACK_REQUIRED = 1;  // Tier 1 users must submit this many reviews before listing
+
+const supabase = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+
+// Auth guard — redirect to sign in if not logged in
+(async () => {
+  const { data: { session: _gs } } = await supabase.auth.getSession();
+  if (!_gs) {
+    const next = encodeURIComponent(window.location.pathname.split('/').pop() || window.location.href);
+    window.location.replace('signin.html?next=' + next);
+    return;
+  }
+})();
+let session = null;
+let profile = null;
+let tier = 'free'; // set during boot, read during submit
+let detectedCountry = null;  // from IP lookup
+
+// ============================================================
+// COUNTRIES LIST — ISO 3166-1 (~250 countries)
+// ============================================================
+const COUNTRIES = [
+  "Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan",
+  "Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi",
+  "Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo (Brazzaville)","Congo (Kinshasa)","Costa Rica","Côte d'Ivoire","Croatia","Cuba","Cyprus","Czechia",
+  "Denmark","Djibouti","Dominica","Dominican Republic",
+  "Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia",
+  "Fiji","Finland","France",
+  "Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana",
+  "Haiti","Honduras","Hungary",
+  "Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy",
+  "Jamaica","Japan","Jordan",
+  "Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan",
+  "Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg",
+  "Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar",
+  "Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway",
+  "Oman",
+  "Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal",
+  "Qatar",
+  "Romania","Russia","Rwanda",
+  "Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","São Tomé and Príncipe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria",
+  "Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Türkiye","Turkmenistan","Tuvalu",
+  "Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan",
+  "Vanuatu","Vatican City","Venezuela","Vietnam",
+  "Yemen",
+  "Zambia","Zimbabwe",
+  "Not Listed"
+];
+
+// ============================================================
+// MODAL SYSTEM
+// ============================================================
+const modalContent = {
+  rules: {
+    title: 'Submission Rules',
+    body: `
+      <p><strong class="neon-text">All submissions go through two layers of review:</strong></p>
+      <p>1. <strong>Automated pre-flight checks</strong> run in your browser instantly.</p>
+      <p>2. <strong>Manual human review</strong> within 24hrs — a real person opens your site and checks it matches your description.</p>
+      <p class="mt-4"><strong class="fail">What gets you permanently banned:</strong></p>
+      <ul class="list-disc list-inside space-y-1 text-[var(--text-dim)]">
+        <li>Submitting a project you don't own without permission</li>
+        <li>Lying on the Vibe Check questionnaire</li>
+        <li>Hiding that your site collects data, requires payment, or asks for login</li>
+        <li>Phishing, malware, or scam content</li>
+        <li>Using Jellar to harvest tester credentials</li>
+        <li>Throwaway accounts to bypass limits</li>
+      </ul>
+      <p class="mt-4 mono text-xs text-[var(--text-dim)]">See the full help page for every check and requirement.</p>
+    `
+  },
+  vibe: {
+    title: 'Why the Vibe Check?',
+    body: `
+      <p>The Vibe Check questions exist for one reason: <strong class="neon-text">testers deserve to know what they're getting into before they start.</strong></p>
+      <p>Each answer you give is cross-checked against what your site actually does:</p>
+      <ul class="list-disc list-inside space-y-1 text-[var(--text-dim)]">
+        <li><strong>"Does it collect user data?"</strong> — testers decide if they want to feed real data in.</li>
+        <li><strong>"Does it ask for login?"</strong> — you give them test credentials, they don't have to burn their email.</li>
+        <li><strong>"Does it send input to AI?"</strong> — testers know their text may hit OpenAI/Anthropic/Google servers.</li>
+        <li><strong>"Sensitive content?"</strong> — testers with triggers can skip if needed.</li>
+      </ul>
+      <p>Lying here is the fastest way to get banned. Our system compares your answers to your actual page content — mismatches get flagged instantly.</p>
+    `
+  },
+  checks: {
+    title: 'Pre-Flight Checks Explained',
+    body: `
+      <p>We run <strong class="neon-text">12 automated checks</strong> in your browser when you hit submit:</p>
+      <ul class="list-disc list-inside space-y-1 text-[var(--text-dim)]">
+        <li><strong>HTTPS encryption</strong> — no unencrypted sites</li>
+        <li><strong>URL format valid</strong> — catches typos</li>
+        <li><strong>Not a raw IP</strong> — proper domains only</li>
+        <li><strong>Not a shortener</strong> — direct links only</li>
+        <li><strong>Domain TLD allowed</strong> — no abuse-prone TLDs (.tk, .zip, etc.)</li>
+        <li><strong>No phishing patterns</strong> — catches "paypal-secure" style URLs</li>
+        <li><strong>No lookalike characters</strong> — blocks Cyrillic-lookalike attacks</li>
+        <li><strong>Account at least 5 days old</strong> — blocks throwaway accounts</li>
+        <li><strong>Not already submitted</strong> — prevents impersonation</li>
+        <li><strong>Site reachable</strong> — confirms your site is actually online</li>
+        <li><strong>Content matches description</strong> — fetches your page, compares to your answers</li>
+      </ul>
+      <p class="mt-3">We run many automated checks on submissions before they go to manual review — so testers can always trust the builds they test. Failed checks show a clear fix message. Warnings pass through but flag for manual review.</p>
+    `
+  }
+};
+
+function openModal(key) {
+  const c = modalContent[key];
+  if (!c) return;
+  document.getElementById('modal-title').textContent = c.title;
+  document.getElementById('modal-body').innerHTML = c.body;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+document.querySelectorAll('[data-modal]').forEach(btn => btn.addEventListener('click', () => openModal(btn.dataset.modal)));
+document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+document.getElementById('modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+// ============================================================
+// POPULATE COUNTRY DROPDOWN
+// ============================================================
+const countrySelect = document.getElementById('country_select');
+COUNTRIES.forEach(c => {
+  const opt = document.createElement('option');
+  opt.value = c; opt.textContent = c;
+  countrySelect.appendChild(opt);
+});
+
+// ============================================================
+// IP GEOLOCATION — try to detect user's country, warn on mismatch
+// ============================================================
+async function detectCountryFromIP() {
+  try {
+    const res = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(4000) });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return {
+      country_name: data.country_name,
+      country_code: data.country_code,
+      city: data.city,
+    };
+  } catch { return null; }
+}
+
+// Countries where submissions are currently unavailable
+const BLOCKED_COUNTRY_CODES = ['RU', 'IR', 'IL', 'CN'];
+
+async function initCountryCheck() {
+  detectedCountry = await detectCountryFromIP();
+  if (!detectedCountry) return;
+
+  // Block submissions from restricted countries — show message, hide form
+  if (BLOCKED_COUNTRY_CODES.includes(detectedCountry.country_code)) {
+    document.getElementById('submit-form').classList.add('hidden');
+    const gate = document.createElement('div');
+    gate.className = 'max-w-[600px] mx-auto px-6 py-12 text-center';
+    gate.innerHTML = `
+      <div class="mono text-xs uppercase tracking-widest text-[var(--hot)] mb-3">Unavailable</div>
+      <h2 class="text-2xl font-bold mb-3">Submissions are currently unavailable in your region.</h2>
+      <p class="text-[var(--text-dim)] text-sm">If you believe this is an error, please contact us.</p>
+    `;
+    document.getElementById('submit-form').parentNode.insertBefore(gate, document.getElementById('submit-form'));
+    return;
+  }
+
+  const note = document.getElementById('ip-country-note');
+
+  const update = () => {
+    const selected = countrySelect.value;
+    if (!selected || selected === 'Not Listed') { note.textContent = ''; return; }
+    const normalizedSelected = selected.toLowerCase().trim();
+    const normalizedDetected = (detectedCountry.country_name || '').toLowerCase().trim();
+    if (normalizedSelected === normalizedDetected) {
+      note.innerHTML = `<span class="pass">✓ matches your location</span>`;
+    } else {
+      // Yellow flag stored silently — admin sees this during review
+      note.innerHTML = `<span class="warn">⚠ Double-check your country selection.</span>`;
+    }
+  };
+
+  countrySelect.addEventListener('change', update);
+  update();
+}
+
+// ============================================================
+// AUTH + FEEDBACK GATE
+// ============================================================
+(async function boot() {
+  const { data } = await supabase.auth.getSession();
+  session = data.session;
+
+  if (!session) { document.getElementById('auth-gate').classList.remove('hidden'); return; }
+
+  const { data: p } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+  profile = p;
+  tier = profile?.user_tier || 'free'; // sets top-level var
+
+  // Contribution gate — check how many missions completed vs tier requirement
+  let feedbackCount = 0;
+  try {
+    const { count } = await supabase
+      .from('feedback_sessions')
+      .select('id', { count: 'exact', head: true })
+      .eq('tester_id', session.user.id)
+      .eq('mission_completed', true);
+    feedbackCount = count || 0;
+  } catch {}
+
+  const isAdmin = profile?.is_admin;
+
+  // Tier requirements: how many missions must be completed before submitting
+  // Pack buyers (tier1+) have lower or zero gate requirements
+  // free = 5 missions required, tier1 = 5, tier2 = 1, tier3 = 0
+  // Once Stripe is live, pack purchase sets user_tier to tier1/2/3
+  const tierRequirements = { free: 5, tier1: 5, tier2: 1, tier3: 0 };
+  const required = tierRequirements[tier] ?? 5;
+
+  if (!isAdmin && feedbackCount < required) {
+    const gateEl = document.getElementById('feedback-gate');
+    if (document.getElementById('gate-count')) document.getElementById('gate-count').textContent = feedbackCount;
+    if (document.getElementById('gate-required')) document.getElementById('gate-required').textContent = required;
+    if (document.getElementById('gate-required-2')) document.getElementById('gate-required-2').textContent = required;
+    if (document.getElementById('gate-remaining')) document.getElementById('gate-remaining').textContent = required - feedbackCount;
+    if (document.getElementById('gate-note-required')) document.getElementById('gate-note-required').textContent = required;
+    if (gateEl) gateEl.classList.remove('hidden');
+    return;
+  }
+
+  // All clear — show the form
+  document.getElementById('form-wrap').classList.remove('hidden');
+  initCountryCheck();
+})();
+
+document.getElementById('btn-login')?.addEventListener('click', async () => {
+  await supabase.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: window.location.href } });
+});
+
+// UX helpers
+const urlInput = document.getElementById('project_url');
+urlInput?.addEventListener('focus', () => { if (!urlInput.value) urlInput.value = 'https://'; });
+urlInput?.addEventListener('blur',  () => { if (urlInput.value.trim() === 'https://') urlInput.value = ''; });
+
+// Mission templates — click to populate field
+document.querySelectorAll('.mission-tpl').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const field = document.getElementById('mission-field');
+    if (field) {
+      field.value = btn.dataset.tpl;
+      field.focus();
+      // Highlight briefly to show it was inserted
+      field.style.borderColor = 'var(--neon)';
+      setTimeout(() => { field.style.borderColor = ''; }, 1200);
+    }
+  });
+});
+
+function toggleConditional(triggerId, wrapId) {
+  const trigger = document.getElementById(triggerId);
+  const wrap = document.getElementById(wrapId);
+  if (!trigger || !wrap) return;
+  const input = wrap.querySelector('[data-cond-required]');
+  const update = () => {
+    const show = trigger.value === 'true';
+    wrap.classList.toggle('cond-hidden', !show);
+    if (show) input.setAttribute('required', '');
+    else { input.removeAttribute('required'); input.value = ''; }
+  };
+  trigger.addEventListener('change', update);
+  update();
+}
+toggleConditional('uses_ai', 'ai_details_wrap');
+toggleConditional('asks_for_login', 'creds_wrap');
+
+// ============================================================
+// CHECKS (unchanged from previous version — keeping all 12)
+// ============================================================
+function checkHttps(u) { const ok = u.protocol === 'https:'; return { passed: ok, note: ok ? 'Encrypted' : 'Not HTTPS', fix: 'Your site needs https://, not http://. Most hosts (Netlify, Vercel, Cloudflare) include free SSL.' }; }
+function checkValidUrl(u, raw) { try { new URL(raw); return { passed: true, note: u.hostname }; } catch { return { passed: false, note: 'Invalid URL', fix: 'Should look like https://yoursite.com — no typos, no spaces.' }; } }
+function checkNotIp(u) { const isIp = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(u.hostname); return { passed: !isIp, note: isIp ? 'Raw IP detected' : 'Proper domain', fix: 'Use a real domain, not an IP address.' }; }
+function checkNotShortener(u) { const shorteners = ['bit.ly','tinyurl.com','t.co','goo.gl','ow.ly','is.gd','buff.ly','rebrand.ly','cutt.ly','short.link']; const isShort = shorteners.some(s => u.hostname.endsWith(s)); return { passed: !isShort, note: isShort ? 'Shortener' : 'Direct link', fix: 'Link directly to your actual domain.' }; }
+function checkDomainTld(u) { const bad = ['.tk','.ml','.ga','.cf','.gq','.zip','.mov'].some(t => u.hostname.endsWith(t)); return { passed: !bad, note: bad ? 'Flagged TLD' : 'Domain OK', fix: 'Your TLD is frequently abused. Use .com/.io/.app/.dev.' }; }
+async function checkReachable(u) { const r = await new Promise(resolve => { const img = new Image(); const t = setTimeout(() => resolve(false), 5000); img.onload = () => { clearTimeout(t); resolve(true); }; img.onerror = () => { clearTimeout(t); resolve(true); }; img.src = u.origin + '/favicon.ico?_=' + Date.now(); }); return { passed: r, note: r ? 'Server responded' : 'No response', fix: 'Make sure your site is deployed and accessible.' }; }
+function checkPhishingKeywords(u) { const h = u.hostname.toLowerCase(); const brands = ['paypal','apple','google','microsoft','amazon','netflix','facebook','instagram','coinbase','metamask','binance','chase','wellsfargo','outlook','office365','dropbox','linkedin','dhl','fedex','usps']; const sufs = ['-secure','-login','-verify','-update','-account','-confirm','-support','-help','-service']; const wds = ['verify-','login-','secure-','account-','update-','signin-','reset-','unlock-']; let f = false, r = ''; for (const b of brands) { if (h.includes(b) && !h.endsWith(`${b}.com`) && !h.endsWith(`.${b}.com`)) { for (const s of sufs) { if (h.includes(b + s) || h.includes(s + b)) { f = true; r = `Contains "${b}" + "${s}"`; break; } } } if (f) break; } if (!f) for (const w of wds) { if (h.includes(w)) { f = true; r = `Suspicious prefix "${w}"`; break; } } return { passed: !f, note: f ? r : 'No phishing patterns', fix: 'URL contains phishing-style patterns. Contact us if this is legitimate.' }; }
+function checkHomograph(u) { const f = u.hostname.includes('xn--') || /[^\x00-\x7F]/.test(u.hostname); return { passed: !f, note: f ? 'Non-ASCII' : 'ASCII domain', fix: 'Use standard ASCII characters only.' }; }
+// ── URL CONTENT CHECK ─────────────────────────────────────────────────────
+function checkUrlContent(rawUrl) {
+  const BLOCKED_SLUGS = ['porn', 'xxx', 'sex', 'nude', 'naked', 'adult', 'fuck', 'shit', 'cock', 'pussy', 'ass', 'boobs', 'nsfw', 'hentai', 'escort', 'cam4', 'onlyfans', 'fetish'];
+  const lower = rawUrl.toLowerCase();
+  const found = BLOCKED_SLUGS.find(slug => lower.includes(slug));
+  if (found) {
+    return { passed: false, note: 'Blocked term in URL', fix: 'URLs containing adult or explicit content are not permitted on Jellar.' };
+  }
+  return { passed: true, note: 'URL content ok' };
+}
+
+async function checkDuplicateUrl(url) { try { const { data } = await supabase.from('projects').select('id').eq('project_url', url).in('status', ['live','pending_review','auto_approved','submitted']).limit(1); const e = data && data.length > 0; return { passed: !e, note: e ? 'Already submitted' : 'First time', fix: 'This URL is already submitted. Contact us if someone may be impersonating your project.' }; } catch { return { passed: true, note: 'Check skipped' }; } }
+async function checkAccountAge() { try { if (!session) return { passed: false, note: 'Not logged in', fix: 'Log in first.' }; const { data: p } = await supabase.from('profiles').select('created_at').eq('id', session.user.id).single(); if (!p) return { passed: true, note: 'Skipped' }; const age = Math.floor((Date.now() - new Date(p.created_at).getTime()) / 86400000); const ok = age >= MIN_ACCOUNT_AGE_DAYS; return { passed: ok, note: ok ? `Account ${age} days old` : `Only ${age} days old`, fix: `Account only ${age} day(s) old. Need ≥ ${MIN_ACCOUNT_AGE_DAYS}. Come back in ${MIN_ACCOUNT_AGE_DAYS - age} day(s).` }; } catch { return { passed: true, note: 'Skipped' }; } }
+async function checkContentMatches(url, answers) {
+  try {
+    const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) throw new Error('Proxy failed');
+    const json = await res.json();
+    const html = (json.contents || '').toLowerCase();
+    if (!html || html.length < 100) return { passed: null, note: 'Couldn\'t fetch page content', fix: 'Common with single-page apps. Manual review will verify.', soft: true };
+    const textOnly = html.replace(/<script[^>]*>[\s\S]*?<\/script>/g, ' ').replace(/<style[^>]*>[\s\S]*?<\/style>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;/g, ' ').replace(/\s+/g, ' ');
+    const stopWords = new Set(['the','and','for','with','that','this','have','from','they','your','what','does','will','into','site','page','make','been','just','like','only','very','about','some','want','when','much','more','than','them','then','also','their','there','these','those']);
+    const extract = (s) => (s || '').toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(w => w.length >= 4 && !stopWords.has(w));
+    const kws = [...extract(answers.one_liner), ...extract(answers.target_user), ...extract(answers.category)];
+    if (!kws.length) return { passed: null, note: 'Not enough keywords', soft: true };
+    const matched = kws.filter(k => textOnly.includes(k));
+    const ratio = matched.length / kws.length;
+    if (ratio >= 0.4) return { passed: true, note: `${matched.length}/${kws.length} keywords match` };
+    if (ratio >= 0.2) return { passed: null, note: `Weak: ${matched.length}/${kws.length} match`, fix: 'Page content only weakly matches your description. Manual review will verify.', soft: true };
+    return { passed: false, note: `Mismatch: ${matched.length}/${kws.length} match`, fix: `Expected words like: ${kws.slice(0, 5).join(', ')} — page text doesn't contain them. SPA apps get false-flagged here; contact us if so.` };
+  } catch { return { passed: null, note: 'Content scan unavailable', fix: 'Manual review will verify.', soft: true }; }
+}
+
+// ── GIBBERISH DETECTOR — warns admin, never blocks ────────────────────────
+function looksLikeGibberish(text) {
+  if (!text || text.length < 4) return false;
+  const lower = text.toLowerCase().replace(/[^a-z]/g, '');
+  if (lower.length < 3) return false;
+  // No vowels at all in a word 5+ chars
+  const vowels = (lower.match(/[aeiou]/g) || []).length;
+  if (lower.length >= 5 && vowels === 0) return true;
+  // Vowel ratio under 5% in a longer string
+  if (lower.length >= 8 && vowels / lower.length < 0.05) return true;
+  // 5+ consecutive consonants
+  if (/[^aeiou]{5,}/.test(lower)) return true;
+  // Keyboard-smash patterns: same char repeated 4+ times
+  if (/(.)\1{3,}/.test(lower)) return true;
+  // Very high ratio of rare letter combos (qz, zx, jq, xk)
+  const rareHits = (lower.match(/qz|zx|jq|xk|vq|wq|bz|xb|zb/g) || []).length;
+  if (rareHits >= 2) return true;
+  return false;
+}
+
+function checkGibberish(answers) {
+  const fields = [
+    { key: 'one_liner', label: 'one-liner' },
+    { key: 'target_user', label: 'target user' },
+  ];
+  // Also check title and mission from the form directly
+  const formFields = [
+    { name: 'title', label: 'title' },
+    { name: 'mission', label: 'mission' },
+    { name: 'tester_warnings', label: 'tester warnings' },
+  ];
+  const hits = [];
+  for (const f of fields) {
+    if (looksLikeGibberish(answers[f.key])) hits.push(f.label);
+  }
+  for (const f of formFields) {
+    const el = document.querySelector('[name="' + f.name + '"]');
+    if (el && looksLikeGibberish(el.value)) hits.push(f.label);
+  }
+  if (hits.length === 0) return { passed: true, note: 'Inputs look readable' };
+  return { passed: null, note: 'Possible gibberish in: ' + hits.join(', '), soft: true };
+}
+
+// ============================================================
+// RUN CHECKS + SUBMIT
+// ============================================================
+async function runAutomatedChecks(rawUrl, answers) {
+  const checks = {
+    https: { label: 'HTTPS encryption' }, valid_url: { label: 'URL format' },
+    not_ip: { label: 'Not a raw IP' }, not_shortener: { label: 'Not a shortener' },
+    domain_tld: { label: 'TLD allowed' }, phishing: { label: 'No phishing patterns' },
+    homograph: { label: 'No lookalike chars' }, url_content: { label: 'URL content allowed' },
+    account_age: { label: 'Account \u2265 ' + MIN_ACCOUNT_AGE_DAYS + ' days' }, duplicate: { label: 'Not already submitted' },
+    reachable: { label: 'Site reachable' }, content_match: { label: 'Content matches description' },
+    gibberish: { label: 'Input quality check' },
+  };
+  Object.values(checks).forEach(c => c.status = 'pending');
+  render();
+
+  let u; try { u = new URL(rawUrl); } catch { checks.valid_url = { ...checks.valid_url, status: 'fail', note: 'Invalid URL', fix: 'Should look like https://yoursite.com' }; render(); return finalize(); }
+
+  Object.assign(checks.https, await r(checkHttps(u)));
+  Object.assign(checks.valid_url, await r(checkValidUrl(u, rawUrl)));
+  Object.assign(checks.not_ip, await r(checkNotIp(u)));
+  Object.assign(checks.not_shortener, await r(checkNotShortener(u)));
+  Object.assign(checks.domain_tld, await r(checkDomainTld(u)));
+  Object.assign(checks.phishing, await r(checkPhishingKeywords(u)));
+  Object.assign(checks.homograph, await r(checkHomograph(u)));
+  Object.assign(checks.url_content, await r(checkUrlContent(rawUrl)));
+  Object.assign(checks.gibberish, await r(checkGibberish(answers)));
+  render();
+  checks.account_age.status = 'checking'; render(); Object.assign(checks.account_age, await r(await checkAccountAge())); render();
+  checks.duplicate.status = 'checking'; render(); Object.assign(checks.duplicate, await r(await checkDuplicateUrl(rawUrl))); render();
+  checks.reachable.status = 'checking'; render(); Object.assign(checks.reachable, await r(await checkReachable(u))); render();
+  checks.content_match.status = 'checking'; render(); Object.assign(checks.content_match, await r(await checkContentMatches(rawUrl, answers))); render();
+
+  return finalize();
+
+  function finalize() {
+    const passed = Object.values(checks).filter(c => c.status === 'pass').length;
+    const failed = Object.values(checks).filter(c => c.status === 'fail').length;
+    const warned = Object.values(checks).filter(c => c.status === 'warn').length;
+    const score = Math.round((passed / Object.keys(checks).length) * 100);
+    return { checks, score, passed, failed, warned, autoApproved: failed === 0 };
+  }
+  async function r(result) { let s; if (result.passed === true) s = 'pass'; else if (result.passed === false && !result.soft) s = 'fail'; else s = 'warn'; return { status: s, note: result.note, fix: result.fix || '' }; }
+  function render() {
+    document.getElementById('checks-section').classList.remove('hidden');
+    const entries = Object.entries(checks);
+    const total = entries.length;
+    const done = entries.filter(([,c]) => c.status && c.status !== 'checking').length;
+
+    // Update progress bar and counter
+    const bar = document.getElementById('checks-bar');
+    const prog = document.getElementById('checks-progress');
+    const tot = document.getElementById('checks-total');
+    if (bar) bar.style.width = (done / total * 100) + '%';
+    if (prog) prog.textContent = done;
+    if (tot) tot.textContent = total;
+
+    // Colour bar by any failures
+    const anyFail = entries.some(([,c]) => c.status === 'fail');
+    const anyWarn = entries.some(([,c]) => c.status === 'warn');
+    if (bar) bar.style.background = anyFail ? 'var(--hot)' : anyWarn ? 'var(--warn, #ffb347)' : 'var(--neon)';
+
+    // Render rows — name + badge only, no detail text exposed
+    document.getElementById('checks-list').innerHTML = entries.map(([_, c]) => {
+      let badge, badgeStyle;
+      if (!c.status || c.status === 'pending') {
+        badge = '···'; badgeStyle = 'color:var(--text-dim)';
+      } else if (c.status === 'checking') {
+        badge = 'Reviewing'; badgeStyle = 'color:var(--text-dim)';
+      } else if (c.status === 'pass') {
+        badge = '✓ Passed'; badgeStyle = 'color:var(--neon)';
+      } else if (c.status === 'fail') {
+        badge = '✕ Failed'; badgeStyle = 'color:var(--hot)';
+        // Only show fix text on failure — builder needs to know what to fix
+        if (c.fix) badge += `</span><div class="mono text-xs mt-1 pl-0" style="color:var(--hot);opacity:.8">${esc(c.fix)}</div><span style="display:none">`; 
+      } else if (c.status === 'warn') {
+        badge = '⚠ Warning'; badgeStyle = 'color:var(--warn, #ffb347)';
+      }
+      return `<div class="flex items-center justify-between gap-4 py-2 border-b border-[var(--line)] last:border-0">
+        <div class="mono text-xs text-[var(--text-dim)]">${esc(c.label)}</div>
+        <div class="mono text-xs text-right shrink-0" style="${badgeStyle}">${badge}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// Duration warning — show when user tries to enter more than 60 mins
+// Duration: number + unit dropdown → convert to minutes
+const UNIT_MULTIPLIERS = { minutes: 1, hours: 60, days: 1440, weeks: 10080 };
+
+function updateDuration() {
+  const val  = parseInt(document.getElementById('duration-value').value, 10);
+  const unit = document.getElementById('duration-unit').value;
+  const warning = document.getElementById('duration-warning');
+  const hidden  = document.getElementById('duration-input');
+  if (!val || isNaN(val) || val < 1) { hidden.value = ''; return; }
+  const mins = val * (UNIT_MULTIPLIERS[unit] || 1);
+  hidden.value = mins;
+  if (mins > 60) warning.classList.remove('hidden');
+  else warning.classList.add('hidden');
+}
+
+document.getElementById('duration-value').addEventListener('input', updateDuration);
+document.getElementById('duration-unit').addEventListener('change', updateDuration);
+
+// ── CONTENT SAFETY FILTERS ──────────────────────────────────────────────────
+const PROFANITY = ['fuck','shit','cunt','cock','pussy','nigger','nigga','faggot','fag','bitch','asshole','bastard','whore','slut','motherfucker','wanker','dickhead','twat','prick','bollocks','arsehole','arse','tits','porn','xxx','dildo','vibrator'];
+const PORN_URL_PATTERNS = ['porn','xxx','nude','naked','onlyfans','escort','xvideos','xhamster','pornhub','redtube','youporn','adult','nsfw','fetish','hentai','milf'];
+
+function containsProfanity(text) {
+  if (!text) return null;
+  const lower = text.toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
+  return PROFANITY.find(w => new RegExp(`\\b${w}\\b`).test(lower)) || null;
+}
+function urlContainsPorn(url) {
+  if (!url) return null;
+  const lower = url.toLowerCase();
+  return PORN_URL_PATTERNS.find(p => lower.includes(p)) || null;
+}
+
+// Hide checkbox errors as soon as user ticks them
+document.getElementById('attest-accept')?.addEventListener('change', function() {
+  if (this.checked) document.getElementById('attest-err')?.classList.add('hidden');
+});
+document.getElementById('terms-accept')?.addEventListener('change', function() {
+  if (this.checked) document.getElementById('terms-err')?.classList.add('hidden');
+});
+
+// CRITICAL — declare form before attaching submit listener
+JellarSecurity.injectHoneypots('#submit-form');
+const form = document.getElementById('submit-form');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  form.classList.add('show-errors');
+
+  // Bot protection
+  if (JellarSecurity.checkHoneypots('#submit-form')) { return; }
+  const secGuard = JellarSecurity.guardSubmit('project_submit');
+  if (!secGuard.allowed) { alert(secGuard.reason); return; }
+
+  // Explicit checkbox checks — browser :invalid is unreliable for checkboxes
+  const attestBox = document.getElementById('attest-accept');
+  const attestErr = document.getElementById('attest-err');
+  if (!attestBox.checked) {
+    attestErr.classList.remove('hidden');
+    attestBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  } else {
+    attestErr.classList.add('hidden');
+  }
+
+  const termsBox = document.getElementById('terms-accept');
+  const termsErr = document.getElementById('terms-err');
+  if (!termsBox.checked) {
+    termsErr.classList.remove('hidden');
+    termsBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  } else {
+    termsErr.classList.add('hidden');
+  }
+
+  if (!form.checkValidity()) {
+    const invalid = form.querySelector(':invalid');
+    if (invalid) { invalid.scrollIntoView({ behavior: 'smooth', block: 'center' }); invalid.focus(); }
+    return;
+  }
+  if (!session) return alert('Log in first');
+
+  // Declare banner early — used by porn check AND checks result below
+  const banner = document.getElementById('checks-result');
+
+  // Content safety — URL porn check
+  const rawUrl = (form.querySelector('[name="project_url"]')?.value || '').trim();
+  const pornFlag = urlContainsPorn(rawUrl);
+  if (pornFlag) {
+    banner.classList.remove('hidden');
+    banner.className = 'mt-6 p-4 border border-[var(--hot)]';
+    banner.innerHTML = '<div class="mono text-sm fail">\u2715 URL NOT ALLOWED</div><div class="text-sm mt-1">This URL contains content that isn\'t permitted on Jellar. Adult or NSFW projects are not accepted.</div>';
+    return;
+  }
+
+  // Content safety — profanity in text fields
+  const textFields = ['title','mission','one_liner','target_user','tester_warnings'];
+  for (const field of textFields) {
+    const val = form.querySelector(`[name="${field}"]`)?.value || '';
+    const hit = containsProfanity(val);
+    if (hit) {
+      const el = form.querySelector(`[name="${field}"]`);
+      if (el) {
+        el.style.borderColor = 'var(--hot)';
+        el.style.background = 'rgba(255,56,100,0.06)';
+        let errEl = el.parentNode.querySelector('.profanity-err');
+        if (!errEl) {
+          errEl = document.createElement('div');
+          errEl.className = 'profanity-err mono text-xs mt-1';
+          errEl.style.color = 'var(--hot)';
+          el.parentNode.insertBefore(errEl, el.nextSibling);
+        }
+        errEl.textContent = '✕ Profanity is not allowed on Jellar. Please remove it before submitting.';
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.focus();
+        el.addEventListener('input', function() {
+          if (!containsProfanity(this.value)) {
+            this.style.borderColor = '';
+            this.style.background = '';
+            const e = this.parentNode.querySelector('.profanity-err');
+            if (e) e.remove();
+          }
+        });
+      }
+      return;
+    }
+  } // end profanity for-loop
+
+  // Block submission if duration exceeds 60 minutes
+  const durationMins = parseInt(document.getElementById('duration-input').value, 10);
+  if (!durationMins || isNaN(durationMins)) {
+    alert('Please enter an expected time to complete.');
+    return;
+  }
+  if (durationMins > 60) {
+    const warning = document.getElementById('duration-warning');
+    warning.classList.remove('hidden');
+    warning.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    alert('Mission time must be 60 minutes or under to run checks. Please reduce the duration or see the Professional Audit option for longer sessions.');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  // Lock immediately — prevents any possibility of double-fire
+  btn.disabled = true;
+  btn.textContent = 'RUNNING CHECKS...';
+  form.onsubmit = (ev) => { ev.preventDefault(); return false; };
+
+  const fd = new FormData(form);
+  const url = fd.get('project_url');
+  const answers = { one_liner: fd.get('one_liner'), target_user: fd.get('target_user'), category: fd.get('category') };
+
+  const result = await runAutomatedChecks(url, answers);
+  banner.classList.remove('hidden');
+
+  if (!result.autoApproved) {
+    banner.className = 'mt-6 p-4 border border-[var(--hot)]';
+    banner.innerHTML = '<div class="mono text-sm fail">\u2715 ' + result.failed + ' CHECK(S) FAILED (' + result.score + '/100)</div><div class="text-sm mt-1">Read the notes above for each failed check \u2014 they tell you what to fix.</div>';
+    btn.disabled = false; btn.textContent = 'RUN CHECKS + SUBMIT \u2192';
+    return;
+  }
+
+  const warnMsg = result.warned > 0 ? ` (${result.warned} warning${result.warned > 1 ? 's' : ''})` : '';
+  const warnNote = result.warned > 0
+    ? `<div class="mono text-xs mt-2" style="color:var(--warn, #ffb347)">⚠ One or more checks flagged a warning — do not stress, this just means your submission will get a closer look from our team before going live. It will not block you.</div>`
+    : '';
+  banner.className = 'mt-6 p-4 border border-[var(--neon)] neon-border';
+  banner.innerHTML = `<div class="mono text-sm neon-text">✓ CHECKS PASSED (${result.score}/100)${warnMsg}</div>${warnNote}<div class="text-sm mt-2"><span class="spinner"></span> Saving to database...</div>`;
+  btn.textContent = 'SAVING...';
+
+  // Geocode using Open-Meteo geocoding API — no API key, CORS-friendly, browser-safe
+  let latitude = null, longitude = null;
+  try {
+    const cityQ = encodeURIComponent((fd.get('city_name') || '').trim());
+    const countryQ = encodeURIComponent((fd.get('country_name') || '').trim());
+    const geoRes = await fetch(
+      `https://geocoding-api.open-meteo.com/v1/search?name=${cityQ}&count=5&language=en&format=json`,
+      { signal: AbortSignal.timeout(5000) }
+    );
+    if (geoRes.ok) {
+      const geoData = await geoRes.json();
+      if (geoData.results?.length > 0) {
+        // Try to match country name for accuracy
+        const countryMatch = geoData.results.find(r =>
+          r.country?.toLowerCase().includes((fd.get('country_name') || '').toLowerCase().slice(0, 4))
+        ) || geoData.results[0];
+        latitude  = countryMatch.latitude;
+        longitude = countryMatch.longitude;
+      }
+    }
+  } catch { /* geocoding optional — globe marker skipped if lookup fails */ }
+
+  const submission_answers = {
+    one_liner: fd.get('one_liner'), target_user: fd.get('target_user'),
+    is_your_project: fd.get('is_your_project') === 'true',
+    uses_ai: fd.get('uses_ai') === 'true', ai_details: fd.get('ai_details') || null,
+    handles_user_data: fd.get('handles_user_data') === 'true',
+    asks_for_login: fd.get('asks_for_login') === 'true',
+    test_credentials: fd.get('test_credentials') || null,
+    payment_required: fd.get('payment_required') === 'true',
+    content_warning: fd.get('content_warning') === 'none' ? null : fd.get('content_warning'),
+    tester_warnings: fd.get('tester_warnings'),
+    // NEW: store IP country detection result for admin review
+    ip_country:        detectedCountry?.country_name || null,
+    ip_country_match:  detectedCountry ? (detectedCountry.country_name?.toLowerCase() === fd.get('country_name')?.toLowerCase()) : null,
+  };
+
+  const auto_checks_json = Object.fromEntries(
+    Object.entries(result.checks).map(([k, v]) => [k, { status: v.status, note: v.note }])
+  );
+
+  // Attach security fingerprint to submission
+  const _secFp = JellarSecurity.getFingerprint();
+
+  const { data: inserted, error } = await supabase.from('projects').insert({
+    builder_id: session.user.id,
+    title: fd.get('title'),
+    description: fd.get('one_liner'),
+    project_url: url,
+    mission: fd.get('mission'),
+    category: fd.get('category'),
+    expires_at: (() => {
+      const days = tier === 'tier3' ? 30 : tier === 'tier2' ? 14 : 7;
+      const d = new Date(); d.setDate(d.getDate() + days);
+      return d.toISOString();
+    })(),
+    project_stage: fd.get('project_stage'),
+    expected_duration_min: parseInt(fd.get('expected_duration_min'), 10),
+    city_name: fd.get('city_name'),
+    country_name: fd.get('country_name'),
+    latitude, longitude,
+    submission_answers, auto_checks: auto_checks_json,
+    auto_score: result.score,
+    status: 'pending_review',
+    // Required schema fields from v6
+    review_cap: tier === 'tier3' ? 30 : tier === 'tier2' ? 15 : 5,
+  }).select();
+
+  console.log('[submit] insert result:', { inserted, error });
+
+  if (error || !inserted) {
+    const msg = error?.message || 'Supabase returned no data — possible RLS or missing field.';
+    banner.className = 'mt-6 p-4 border border-[var(--hot)]';
+    banner.innerHTML = `
+      <div class="mono text-sm fail">✕ SUBMIT FAILED</div>
+      <div class="text-sm mt-1">${esc(msg)}</div>
+      <button onclick="openBugReport(${JSON.stringify(msg)})" class="mt-3 mono text-xs font-bold px-4 py-2 border border-[var(--hot)] text-[var(--hot)] hover:bg-[var(--hot)] hover:text-black transition">
+        🐛 REPORT THIS ERROR →
+      </button>`;
+    btn.disabled = false; btn.textContent = 'RUN CHECKS + SUBMIT →';
+    return;
+  }
+
+  // Success
+  const projectId = inserted?.[0]?.id || '';
+
+  banner.className = 'mt-6 p-6 border-2 border-[var(--neon)] neon-border';
+  const warnHtml = result.warned > 0
+    ? '<div class="mt-3 p-3 border mono text-xs" style="border-color:rgba(255,179,71,.4);background:rgba(255,179,71,.06);color:var(--warn,#ffb347)">'
+      + '⚠ One check flagged a warning — this will not block approval. Our team will review it and reach out if anything needs fixing.'
+      + '</div>'
+    : '';
+  // Replace entire form-wrap with success screen — form is gone, nothing can re-fire
+  const formWrap = document.getElementById('form-wrap');
+  formWrap.innerHTML = '<div class="max-w-[700px] mx-auto py-10">'
+    + '<div class="border-2 border-[var(--neon)] p-8" style="box-shadow:0 0 40px rgba(124,255,80,0.15)">'
+    + '<div class="mono text-lg neon-text font-bold mb-1">✓ SUBMITTED SUCCESSFULLY</div>'
+    + '<div class="text-sm text-[var(--text-dim)] mt-2">Your project is now in the review queue. We will check it manually — usually within 24 hours.</div>'
+    + '<div class="mono text-xs text-[var(--text-dim)] mt-2">Submission ID: ' + esc(projectId) + '</div>'
+    + warnHtml
+    + '<div class="mt-6 p-5 border border-[var(--line)] bg-[var(--bg)] text-sm">'
+    + '<div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-4">What happens next</div>'
+    + '<div class="space-y-3 text-[var(--text-dim)]">'
+    + '<div class="flex gap-3"><span class="mono neon-text shrink-0 font-bold">01</span> Our team reviews your submission — usually within 24hrs</div>'
+    + '<div class="flex gap-3"><span class="mono neon-text shrink-0 font-bold">02</span> Once approved, your project goes live on the Pulse Ladder</div>'
+    + '<div class="flex gap-3"><span class="mono neon-text shrink-0 font-bold">03</span> Testers run missions and you receive structured feedback</div>'
+    + '<div class="flex gap-3"><span class="mono neon-text shrink-0 font-bold">04</span> Share your mission link from your profile once it\'s live</div>'
+    + '</div></div>'
+    + '<div class="flex gap-3 flex-wrap mt-6">'
+    + '<a href="index.html" class="mono text-xs uppercase font-bold px-6 py-3 bg-[var(--neon)] text-black hover:shadow-[0_0_20px_var(--neon)] transition">← BACK TO PULSE</a>'
+    + '<a href="submit.html" class="mono text-xs uppercase px-6 py-3 border border-[var(--line)] hover:border-[var(--neon)] hover:neon-text transition">SUBMIT ANOTHER PROJECT</a>'
+    + '</div>'
+    + '</div>'
+    + '</div>';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+function esc(s) { if (s == null) return ''; return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+</script>
+
+<footer id="site-footer" class="border-t border-[var(--line)] py-8 px-6" style="background:var(--bg-2);display:none;opacity:0;transform:translateY(20px);transition:opacity 0.4s ease,transform 0.4s ease;">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Jellar</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="index.html" class="hover:neon-text transition">Pulse</a></div>
+          <div><a href="pricing.html" class="hover:neon-text transition">Pricing</a></div>
+          <div><a href="help.html" class="hover:neon-text transition">Knowledge Centre</a></div>
+          <div><a href="leaderboard.html" class="hover:neon-text transition">Leaderboard</a></div>
+        </div>
+      </div>
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Platform</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="submit.html" class="hover:neon-text transition">Submit a Project</a></div>
+          <div><a href="profile.html" class="hover:neon-text transition">Your Profile</a></div>
+          <div><a href="settings.html" class="hover:neon-text transition">Settings</a></div>
+          <div class="pt-1 text-[10px] border-t border-[var(--line)] mt-2" style="color:var(--hot)">Web projects only — no iOS or Android apps</div>
+        </div>
+      </div>
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Legal</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="privacy.html" class="hover:neon-text transition">Privacy Policy</a></div>
+          <div><a href="terms.html" class="hover:neon-text transition">Terms &amp; Conditions</a></div>
+          <div><a href="#" onclick="event.preventDefault();openBugReport()" class="hover:neon-text transition">Contact / Report Issue</a></div>
+        </div>
+      </div>
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Other Tools</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="https://popcornpasswords.com" target="_blank" rel="noopener" class="hover:neon-text transition">Fun Password Generator</a></div>
+          <div class="mt-3">
+            <a href="https://x.com/socialhighwy" target="_blank" rel="noopener" class="hover:neon-text transition">𝕏 Follow us on X</a>
+          </div>
+        </div>
+        <div class="mt-4 text-[10px] text-[var(--text-dim)] leading-relaxed">
+          Prices in local currency are indicative. All transactions in USD via Stripe. Amount may vary at payment due to exchange rates.
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-[var(--line)] pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+      <div class="mono text-xs text-[var(--text-dim)]">© Jellar. Built for vibe coders.</div>
+      <div class="flex gap-6 mono text-xs text-[var(--text-dim)]">
+        <a href="privacy.html" class="hover:neon-text transition">Privacy</a>
+        <a href="terms.html" class="hover:neon-text transition">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- ── SITE FOOTER ──────────────────────────────────────────────────────────── -->
+<footer class="border-t border-[var(--line)] py-8 px-6 mt-16" style="background:var(--bg-2)">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Jellar</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="index.html" class="hover:neon-text transition">Pulse</a></div>
+          <div><a href="pricing.html" class="hover:neon-text transition">Pricing</a></div>
+          <div><a href="help.html" class="hover:neon-text transition">Knowledge Centre</a></div>
+          <div><a href="leaderboard.html" class="hover:neon-text transition">Leaderboard</a></div>
+        </div>
+      </div>
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Platform</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="submit.html" class="hover:neon-text transition">Submit a Project</a></div>
+          <div><a href="profile.html" class="hover:neon-text transition">Your Profile</a></div>
+          <div><a href="settings.html" class="hover:neon-text transition">Settings</a></div>
+          <div class="pt-1 text-[10px] border-t border-[var(--line)] mt-2" style="color:var(--hot)">Web projects only — no iOS or Android apps</div>
+        </div>
+      </div>
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Legal</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="privacy.html" class="hover:neon-text transition">Privacy Policy</a></div>
+          <div><a href="terms.html" class="hover:neon-text transition">Terms &amp; Conditions</a></div>
+          <div><a href="#" onclick="event.preventDefault();openBugReport()" class="hover:neon-text transition">Contact / Report Issue</a></div>
+        </div>
+      </div>
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Other Tools</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="https://popcornpasswords.com" target="_blank" rel="noopener" class="hover:neon-text transition">Fun Password Generator</a></div>
+          <div><a href="https://x.com/socialhighwy" target="_blank" rel="noopener" class="hover:neon-text transition">𝕏 Follow us on X</a></div>
+        </div>
+        <div class="mt-4 text-[10px] text-[var(--text-dim)] leading-relaxed">
+          Prices in local currency are indicative. All transactions in USD via Stripe. Amount may vary at payment due to exchange rates.
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-[var(--line)] pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+      <div class="mono text-xs text-[var(--text-dim)]">© Jellar. Built for vibe coders.</div>
+      <div class="flex gap-6 mono text-xs text-[var(--text-dim)]">
+        <a href="privacy.html" class="hover:neon-text transition">Privacy</a>
+        <a href="terms.html" class="hover:neon-text transition">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- ── BUG REPORT BUTTON (floating, every page) ─────────────────────────── -->
+<button id="bug-report-btn" onclick="openBugReport()"
+  style="position:fixed;bottom:20px;right:20px;z-index:999;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:8px 14px;border:1px solid var(--hot);color:var(--hot);background:var(--bg-2);cursor:pointer;opacity:.7;transition:opacity .2s"
+  onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='.7'">
+  🐛 Report Bug
+</button>
+
+<!-- Bug report modal -->
+<div id="bug-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center">
+  <div style="background:var(--bg-2);border:1px solid var(--hot);padding:28px;max-width:480px;width:90%;max-height:80vh;overflow-y:auto">
+    <div class="mono text-xs uppercase tracking-widest mb-4" style="color:var(--hot)">🐛 Report a Bug</div>
+    <p class="text-sm text-[var(--text-dim)] mb-4">Something broken? Tell us what happened. Diagnostic info is captured automatically.</p>
+    <div class="space-y-3">
+      <div>
+        <label class="mono text-xs uppercase text-[var(--text-dim)] block mb-1">What were you trying to do?<span style="color:var(--hot)">*</span></label>
+        <input type="text" id="bug-what" placeholder="e.g. Submitting a project after checks passed" style="background:var(--bg);border:1px solid var(--line);color:var(--text);padding:8px 10px;width:100%;font-family:inherit;font-size:13px">
+      </div>
+      <div>
+        <label class="mono text-xs uppercase text-[var(--text-dim)] block mb-1">What went wrong?</label>
+        <textarea id="bug-desc" rows="3" placeholder="Describe what happened — error messages, unexpected behaviour, where it got stuck..." style="background:var(--bg);border:1px solid var(--line);color:var(--text);padding:8px 10px;width:100%;font-family:inherit;font-size:13px;resize:vertical"></textarea>
+      </div>
+      <div>
+        <label class="mono text-xs uppercase text-[var(--text-dim)] block mb-1">Severity</label>
+        <select id="bug-severity" style="background:var(--bg);border:1px solid var(--line);color:var(--text);padding:8px 10px;width:100%;font-family:inherit;font-size:13px">
+          <option value="low">Low — minor annoyance</option>
+          <option value="medium" selected>Medium — something doesn't work</option>
+          <option value="high">High — can't complete a key action</option>
+          <option value="critical">Critical — platform is broken for me</option>
+        </select>
+      </div>
+    </div>
+    <div class="mono text-xs text-[var(--text-dim)] mt-3 p-2 border border-[var(--line)]">
+      Auto-captured: page URL · browser · timestamp · your username
+    </div>
+    <div class="flex gap-3 mt-4">
+      <button onclick="submitBugReport()" class="mono font-bold text-xs px-5 py-2 flex-1" style="background:var(--hot);color:#000">SEND REPORT →</button>
+      <button onclick="closeBugReport()" class="mono text-xs px-4 py-2 border border-[var(--line)] text-[var(--text-dim)]">CANCEL</button>
+    </div>
+    <div id="bug-sent" class="hidden mono text-xs mt-3" style="color:var(--neon)">✓ Report sent. We'll investigate.</div>
+    <div id="bug-err" class="hidden mono text-xs mt-3" style="color:var(--hot)"></div>
+  </div>
+</div>
+
+<script>
+// Bug report widget — works on any page, auto-captures context
+window.openBugReport = function(prefillError) {
+  document.getElementById('bug-modal').style.display = 'flex';
+  document.getElementById('bug-sent').classList.add('hidden');
+  document.getElementById('bug-err').classList.add('hidden');
+  if (prefillError) {
+    document.getElementById('bug-what').value = 'Submitting a project — got an error after checks passed';
+    document.getElementById('bug-desc').value = 'Error: ' + prefillError;
+    document.getElementById('bug-severity').value = 'high';
+  } else {
+    document.getElementById('bug-what').value = '';
+    document.getElementById('bug-desc').value = '';
+    document.getElementById('bug-severity').value = 'medium';
+  }
+};
+window.closeBugReport = function() {
+  document.getElementById('bug-modal').style.display = 'none';
+};
+window.submitBugReport = async function() {
+  const what = document.getElementById('bug-what').value.trim();
+  if (!what) { document.getElementById('bug-err').textContent = 'Please describe what you were doing.'; document.getElementById('bug-err').classList.remove('hidden'); return; }
+  const desc    = document.getElementById('bug-desc').value.trim();
+  const severity = document.getElementById('bug-severity').value;
+
+  // Grab session for user context — may not exist
+  let username = null, userEmail = null, userId = null;
+  try {
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    const _sb = createClient('https://csfuhpljjfcrxpsvoqjx.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzZnVocGxqamZjcnhwc3ZvcWp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjA3OTksImV4cCI6MjA5MTczNjc5OX0.WBkYhEi75xBqDWP8BWjzIQeqUgFHKt1JPCf-X-tAcAI');
+    const { data: { session: s } } = await _sb.auth.getSession();
+    if (s) { userId = s.user.id; userEmail = s.user.email; }
+    if (userId) {
+      const { data: p } = await _sb.from('profiles').select('username').eq('id', userId).single();
+      username = p?.username || null;
+    }
+
+    const diagnostics = JSON.stringify({
+      url: window.location.href,
+      page: document.title,
+      browser: navigator.userAgent,
+      timestamp: new Date().toISOString(),
+      viewport: `${window.innerWidth}x${window.innerHeight}`,
+    });
+
+    const { error } = await _sb.from('bug_reports').insert({
+      user_id: userId,
+      username,
+      user_email: userEmail,
+      page: window.location.pathname,
+      what_doing: what,
+      error_description: desc,
+      severity,
+      diagnostics,
+      status: 'open',
+    });
+
+    if (error) throw error;
+    document.getElementById('bug-sent').classList.remove('hidden');
+    document.getElementById('bug-what').value = '';
+    document.getElementById('bug-desc').value = '';
+    setTimeout(closeBugReport, 2500);
+  } catch(e) {
+    document.getElementById('bug-err').textContent = 'Could not send: ' + (e.message || 'unknown error');
+    document.getElementById('bug-err').classList.remove('hidden');
+  }
+};
+// Close modal on backdrop click
+document.getElementById('bug-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeBugReport();
+});
+</script>
+
+
+<!-- ============================================================
+     JELLAR TUTORIAL SYSTEM
+     ============================================================ -->
+<style>
+.jtut-overlay {
+  position: fixed; inset: 0; z-index: 9000;
+  pointer-events: none;
+}
+.jtut-backdrop {
+  position: fixed; inset: 0; z-index: 9001;
+  background: rgba(0,0,0,0); transition: background .3s;
+  pointer-events: none;
+}
+.jtut-backdrop.active { background: rgba(0,0,0,.65); pointer-events: all; }
+.jtut-highlight {
+  position: fixed; z-index: 9002;
+  box-shadow: 0 0 0 4px #7cff50, 0 0 0 9999px rgba(0,0,0,.65);
+  border-radius: 4px;
+  pointer-events: none;
+  transition: all .35s cubic-bezier(.4,0,.2,1);
+  animation: jtut-pulse 2s ease-in-out infinite;
+}
+@keyframes jtut-pulse {
+  0%,100% { box-shadow: 0 0 0 4px #7cff50, 0 0 0 9999px rgba(0,0,0,.65); }
+  50%      { box-shadow: 0 0 0 8px rgba(124,255,80,.4), 0 0 0 9999px rgba(0,0,0,.65); }
+}
+.jtut-card {
+  position: fixed; z-index: 9003;
+  background: #0a0e14; border: 1px solid #7cff50;
+  padding: 20px 22px; max-width: 320px; width: 90vw;
+  font-family: 'Space Grotesk', sans-serif;
+  box-shadow: 0 0 40px rgba(124,255,80,.15);
+  transition: all .3s cubic-bezier(.4,0,.2,1);
+}
+.jtut-card-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
+  color: #7cff50; margin-bottom: 6px;
+}
+.jtut-card-title { font-size: 15px; font-weight: 700; color: #e6edf3; margin-bottom: 8px; }
+.jtut-card-body  { font-size: 13px; color: #7a8896; line-height: 1.6; margin-bottom: 16px; }
+.jtut-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.jtut-btn {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .05em;
+  padding: 8px 14px; border: 1px solid; cursor: pointer; background: transparent;
+  transition: all .15s;
+}
+.jtut-btn-next  { border-color: #7cff50; color: #7cff50; }
+.jtut-btn-next:hover  { background: #7cff50; color: #000; }
+.jtut-btn-back  { border-color: #1a2028; color: #7a8896; }
+.jtut-btn-back:hover  { border-color: #7a8896; color: #e6edf3; }
+.jtut-btn-exit  { border-color: #1a2028; color: #7a8896; font-size: 10px; padding: 6px 10px; }
+.jtut-btn-exit:hover  { border-color: #ff3864; color: #ff3864; }
+.jtut-progress {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #7a8896;
+}
+.jtut-trigger {
+  position: fixed; bottom: 72px; right: 20px; z-index: 8999;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #0a0e14; border: 1px solid #1a2028;
+  font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700;
+  color: #7a8896; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.jtut-trigger:hover { border-color: #7cff50; color: #7cff50; }
+.jtut-trigger.first-time {
+  border-color: #7cff50; color: #7cff50;
+  box-shadow: 0 0 0 0 rgba(124,255,80,.6);
+  animation: jtut-ring 1.8s ease-out infinite;
+}
+@keyframes jtut-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(124,255,80,.6); }
+  70%  { box-shadow: 0 0 0 12px rgba(124,255,80,0); }
+  100% { box-shadow: 0 0 0 0 rgba(124,255,80,0); }
+}
+</style>
+
+<div id="jtut-backdrop" class="jtut-backdrop"></div>
+<div id="jtut-highlight" class="jtut-highlight" style="display:none"></div>
+<div id="jtut-card" class="jtut-card" style="display:none">
+  <div class="jtut-card-label" id="jtut-label"></div>
+  <div class="jtut-card-title" id="jtut-title"></div>
+  <div class="jtut-card-body"  id="jtut-body"></div>
+  <div class="jtut-card-footer">
+    <button class="jtut-btn jtut-btn-exit" onclick="JTut.exit()">✕ Exit</button>
+    <div class="jtut-progress" id="jtut-progress"></div>
+    <div style="display:flex;gap:6px">
+      <button class="jtut-btn jtut-btn-back" id="jtut-back" onclick="JTut.back()">← Back</button>
+      <button class="jtut-btn jtut-btn-next" id="jtut-next" onclick="JTut.next()">Next →</button>
+    </div>
+  </div>
+</div>
+<button class="jtut-trigger" id="jtut-trigger" onclick="JTut.start()" title="Show tutorial">?</button>
+
+<script>
+const JTut = (() => {
+  let steps = [], current = 0, tutKey = '';
+
+  function init(pageKey, pageSteps) {
+    tutKey = 'jtut_seen_' + pageKey;
+    steps = pageSteps;
+    const trigger = document.getElementById('jtut-trigger');
+    if (!localStorage.getItem(tutKey)) {
+      trigger.classList.add('first-time');
+    }
+  }
+
+  function start() {
+    document.getElementById('jtut-trigger').classList.remove('first-time');
+    localStorage.setItem(tutKey, '1');
+    current = 0;
+    document.getElementById('jtut-backdrop').classList.add('active');
+    show(current);
+  }
+
+  function show(i) {
+    const step = steps[i];
+    const card = document.getElementById('jtut-card');
+    const hl   = document.getElementById('jtut-highlight');
+
+    document.getElementById('jtut-label').textContent    = 'Step ' + (i+1) + ' of ' + steps.length;
+    document.getElementById('jtut-title').textContent    = step.title;
+    document.getElementById('jtut-body').textContent     = step.body;
+    document.getElementById('jtut-progress').textContent = (i+1) + ' / ' + steps.length;
+    document.getElementById('jtut-back').style.visibility = i === 0 ? 'hidden' : 'visible';
+    document.getElementById('jtut-next').textContent = i === steps.length - 1 ? 'Done ✓' : 'Next →';
+
+    // Highlight target element
+    const el = step.selector ? document.querySelector(step.selector) : null;
+    if (el) {
+      const r = el.getBoundingClientRect();
+      const pad = 6;
+      hl.style.display = 'block';
+      hl.style.left   = (r.left - pad) + 'px';
+      hl.style.top    = (r.top  - pad) + 'px';
+      hl.style.width  = (r.width  + pad*2) + 'px';
+      hl.style.height = (r.height + pad*2) + 'px';
+
+      // Position card — prefer below, flip up if too close to bottom
+      const cardW = 320, cardH = 200, margin = 16;
+      let cx = r.left, cy = r.bottom + margin;
+      if (cy + cardH > window.innerHeight - 20) cy = r.top - cardH - margin;
+      if (cx + cardW > window.innerWidth  - 20) cx = window.innerWidth - cardW - 20;
+      if (cx < 10) cx = 10;
+      card.style.left = cx + 'px';
+      card.style.top  = cy + 'px';
+    } else {
+      // No target — centre card
+      hl.style.display = 'none';
+      card.style.left = '50%';
+      card.style.top  = '50%';
+      card.style.transform = 'translate(-50%,-50%)';
+    }
+    card.style.display = 'block';
+    card.style.transform = el ? '' : 'translate(-50%,-50%)';
+  }
+
+  function next() {
+    if (current < steps.length - 1) { current++; show(current); }
+    else exit();
+  }
+
+  function back() {
+    if (current > 0) { current--; show(current); }
+  }
+
+  function exit() {
+    document.getElementById('jtut-card').style.display = 'none';
+    document.getElementById('jtut-highlight').style.display = 'none';
+    document.getElementById('jtut-backdrop').classList.remove('active');
+  }
+
+  // Close on backdrop click
+  document.getElementById('jtut-backdrop').addEventListener('click', exit);
+
+  return { init, start, next, back, exit };
+})();
+</script>
+
+<script>
+JTut.init('submit', [
+  {
+    selector: null,
+    title: 'Submitting Your Project',
+    body: 'This form lists your project on Jellar’s Pulse Ladder so real testers can find it and give you structured feedback. Let’s walk through each section.'
+  },
+  {
+    selector: '#project_url',
+    title: 'Your Project URL',
+    body: 'Must be a live HTTPS URL — not a localhost or staging link. The URL goes through 13 automated safety checks before it can be listed. This protects testers.'
+  },
+  {
+    selector: '[name="title"]',
+    title: 'Project Title',
+    body: 'Keep it clear and honest. Testers see this in the ladder. Don’t oversell — if it doesn’t match what they find, that’s valuable signal in itself.'
+  },
+  {
+    selector: '#mission-templates',
+    title: 'Mission Templates',
+    body: 'Pick a template to pre-fill your mission brief, or write your own. A good mission tells the tester exactly what to do in 1-3 specific steps. Vague missions get vague feedback.'
+  },
+  {
+    selector: '#mission-field',
+    title: 'The Mission Brief',
+    body: 'This is what every tester sees before they start. Be specific: “Sign up, create a project, and try to invite a team member” beats “just look around” every time.'
+  },
+  {
+    selector: '#checks-section',
+    title: '13 Pre-flight Checks',
+    body: 'When you submit, Jellar runs 13 automated checks: HTTPS, no phishing patterns, no IP addresses, site reachability, content matching your description, and more. Takes about 10 seconds.'
+  },
+]);
+</script>
+
+</body>
+</html>

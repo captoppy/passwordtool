@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jellar — Welcome! Let's set up your profile</title>
+<meta name="robots" content="noindex">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  .jellar-wordmark{font-family:"Cinzel",serif;font-weight:900;letter-spacing:.12em;color:#ffffff;text-shadow:0 0 8px rgba(255,255,255,.15);}
+  :root{--bg:#05070a;--bg-2:#0a0e14;--line:#1a2028;--neon:#7cff50;--hot:#ff3864;--ice:#38d7ff;--gold:#ffd24a;--text:#e6edf3;--text-dim:#7a8896;}
+  html,body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .neon-text{color:var(--neon);}
+  .pulse-dot{width:10px;height:10px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px var(--neon);display:inline-block;}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(124,255,80,.008) 0px,rgba(124,255,80,.008) 1px,transparent 1px,transparent 3px);z-index:0;}
+
+  /* Steps */
+  .step{display:none;}
+  .step.active{display:block;}
+  .step-indicator{display:flex;gap:6px;justify-content:center;margin-bottom:32px;}
+  .step-dot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:background .2s;}
+  .step-dot.done{background:rgba(124,255,80,.4);}
+  .step-dot.active{background:var(--neon);box-shadow:0 0 8px var(--neon);}
+
+  /* Inputs */
+  input[type="text"]{background:var(--bg);border:1px solid var(--line);color:var(--text);padding:12px 16px;width:100%;font-family:inherit;font-size:16px;transition:border-color .15s;}
+  input[type="text"]:focus{outline:none;border-color:var(--neon);}
+  input[type="text"].error{border-color:var(--hot);}
+
+  /* Chip selectors */
+  .chip-grid{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{padding:8px 14px;border:1px solid var(--line);background:var(--bg);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim);transition:all .15s;user-select:none;}
+  .chip:hover{border-color:var(--neon);color:var(--text);}
+  .chip.selected{border-color:var(--neon);color:var(--neon);background:rgba(124,255,80,.08);}
+  .chip.selected-ice{border-color:var(--ice);color:var(--ice);background:rgba(56,215,255,.08);}
+
+  /* Buttons */
+  .btn-primary{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:14px 28px;background:var(--neon);color:#000;border:none;cursor:pointer;width:100%;transition:box-shadow .15s;}
+  .btn-primary:hover{box-shadow:0 0 24px rgba(124,255,80,.5);}
+  .btn-primary:disabled{background:var(--line);color:var(--text-dim);cursor:not-allowed;box-shadow:none;}
+  .btn-back{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;text-transform:uppercase;padding:10px 20px;background:transparent;border:1px solid var(--line);color:var(--text-dim);cursor:pointer;transition:all .15s;}
+  .btn-back:hover{border-color:var(--neon);color:var(--neon);}
+
+  /* Field label */
+  .field-label{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);margin-bottom:8px;display:block;}
+  .field-helper{font-size:12px;color:var(--text-dim);margin-top:6px;}
+  .error-text{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--hot);margin-top:6px;}
+
+  /* Card */
+  .ob-card{border:1px solid var(--line);background:var(--bg-2);padding:32px;}
+
+  /* Avatar */
+  .avatar-ring{width:64px;height:64px;border-radius:50%;border:2px solid var(--neon);object-fit:cover;}
+</style>
+
+<!-- BOT PROTECTION -->
+<script>
+// ============================================================
+// JELLAR BOT PROTECTION LAYER v1.0
+// Included in mission.html, submit.html, onboarding.html
+// ============================================================
+
+const JellarSecurity = (() => {
+
+  // ── 1. FINGERPRINT ──────────────────────────────────────
+  // Collect passive signals — no user impact, just data
+  const fp = {
+    mouseMovements: 0,
+    keystrokes: 0,
+    touchEvents: 0,
+    focusEvents: 0,
+    pageLoadTime: Date.now(),
+    lastActivity: Date.now(),
+    tabSwitches: 0,
+    scrollEvents: 0,
+    humanScore: 0, // 0-100
+  };
+
+  document.addEventListener('mousemove', () => { fp.mouseMovements++; fp.lastActivity = Date.now(); }, { passive: true });
+  document.addEventListener('keydown',   () => { fp.keystrokes++;     fp.lastActivity = Date.now(); }, { passive: true });
+  document.addEventListener('touchstart',() => { fp.touchEvents++;    fp.lastActivity = Date.now(); }, { passive: true });
+  document.addEventListener('focus',     () => { fp.focusEvents++;    fp.lastActivity = Date.now(); }, { passive: true, capture: true });
+  document.addEventListener('scroll',    () => { fp.scrollEvents++;   fp.lastActivity = Date.now(); }, { passive: true });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) fp.tabSwitches++; });
+
+  // ── 2. HUMAN SCORE ──────────────────────────────────────
+  function computeHumanScore() {
+    let score = 0;
+    const elapsed = (Date.now() - fp.pageLoadTime) / 1000;
+
+    // Mouse movement (bots don't move mouse)
+    if (fp.mouseMovements > 10)  score += 25;
+    else if (fp.mouseMovements > 3) score += 12;
+
+    // Keystrokes (bots inject values, don't type)
+    if (fp.keystrokes > 20) score += 20;
+    else if (fp.keystrokes > 5) score += 10;
+
+    // Time on page (bots are fast)
+    if (elapsed > 30)  score += 20;
+    else if (elapsed > 10) score += 10;
+
+    // Touch (mobile humans)
+    if (fp.touchEvents > 0) score += 15;
+
+    // Scroll (bots rarely scroll)
+    if (fp.scrollEvents > 2) score += 10;
+
+    // Focus events (clicking into fields)
+    if (fp.focusEvents > 2) score += 10;
+
+    fp.humanScore = Math.min(100, score);
+    return fp.humanScore;
+  }
+
+  // ── 3. ENVIRONMENT CHECKS ───────────────────────────────
+  function isHeadlessBrowser() {
+    const ua = navigator.userAgent.toLowerCase();
+    const headlessSignals = [
+      navigator.webdriver === true,
+      ua.includes('headless'),
+      ua.includes('phantomjs'),
+      ua.includes('selenium'),
+      ua.includes('puppeteer'),
+      !window.chrome && ua.includes('chrome') && !ua.includes('android'),
+      navigator.languages === undefined || navigator.languages.length === 0,
+      !navigator.plugins || navigator.plugins.length === 0,
+    ];
+    return headlessSignals.filter(Boolean).length >= 2;
+  }
+
+  function isTorOrVPN() {
+    // Can't detect reliably client-side — handled server-side via Supabase/Netlify
+    return false;
+  }
+
+  // ── 4. RATE LIMITING (localStorage) ─────────────────────
+  const RATE_LIMITS = {
+    'project_submit':   { max: 3,  window: 3600000,  key: 'rl_proj_submit'   }, // 3/hr
+    'feedback_submit':  { max: 10, window: 3600000,  key: 'rl_feedback'      }, // 10/hr
+    'onboarding':       { max: 5,  window: 86400000, key: 'rl_onboarding'    }, // 5/day
+    'bug_report':       { max: 10, window: 3600000,  key: 'rl_bug'           }, // 10/hr
+  };
+
+  function checkRateLimit(action) {
+    const cfg = RATE_LIMITS[action];
+    if (!cfg) return { allowed: true };
+    try {
+      const stored = JSON.parse(localStorage.getItem(cfg.key) || '{"count":0,"window_start":0}');
+      const now = Date.now();
+      // Reset window if expired
+      if (now - stored.window_start > cfg.window) {
+        stored.count = 0;
+        stored.window_start = now;
+      }
+      if (stored.count >= cfg.max) {
+        const resetIn = Math.ceil((cfg.window - (now - stored.window_start)) / 60000);
+        return { allowed: false, resetIn, message: 'Too many attempts. Try again in ' + resetIn + ' minute' + (resetIn !== 1 ? 's' : '') + '.' };
+      }
+      stored.count++;
+      localStorage.setItem(cfg.key, JSON.stringify(stored));
+      return { allowed: true };
+    } catch(e) {
+      return { allowed: true }; // fail open if localStorage broken
+    }
+  }
+
+  // ── 5. HONEYPOT SETUP ───────────────────────────────────
+  // Call this after DOM ready to inject hidden fields
+  function injectHoneypots(formSelector) {
+    const form = document.querySelector(formSelector);
+    if (!form) return;
+
+    // Field 1: hidden text input with plausible name — bots auto-fill, humans won't see it
+    const hp1 = document.createElement('div');
+    hp1.setAttribute('aria-hidden', 'true');
+    hp1.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;tab-index:-1';
+    hp1.innerHTML = '<label for="jl_website">Website</label><input type="text" id="jl_website" name="jl_website" autocomplete="off" tabindex="-1" value="">';
+    form.appendChild(hp1);
+
+    // Field 2: fake email field
+    const hp2 = document.createElement('div');
+    hp2.setAttribute('aria-hidden', 'true');
+    hp2.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;tab-index:-1';
+    hp2.innerHTML = '<label for="jl_confirm_email">Confirm Email</label><input type="email" id="jl_confirm_email" name="jl_confirm_email" autocomplete="off" tabindex="-1" value="">';
+    form.appendChild(hp2);
+  }
+
+  function checkHoneypots(formSelector) {
+    const form = document.querySelector(formSelector);
+    if (!form) return false;
+    const hp1 = form.querySelector('[name="jl_website"]');
+    const hp2 = form.querySelector('[name="jl_confirm_email"]');
+    const triggered = (hp1 && hp1.value !== '') || (hp2 && hp2.value !== '');
+    if (triggered) console.warn('[Security] Honeypot triggered');
+    return triggered;
+  }
+
+  // ── 6. SUBMIT GUARD ─────────────────────────────────────
+  // Call before any Supabase insert. Returns {allowed, reason}
+  function guardSubmit(action) {
+    // Headless browser check
+    if (isHeadlessBrowser()) {
+      return { allowed: false, reason: 'Automated browser detected. Please use a regular browser.' };
+    }
+
+    // Rate limit check
+    const rl = checkRateLimit(action);
+    if (!rl.allowed) {
+      return { allowed: false, reason: rl.message };
+    }
+
+    // Human score check (only for high-value actions)
+    const highValueActions = ['project_submit', 'feedback_submit'];
+    if (highValueActions.includes(action)) {
+      const score = computeHumanScore();
+      if (score < 15) {
+        return { allowed: false, reason: 'Please interact with the page before submitting.' };
+      }
+    }
+
+    return { allowed: true, humanScore: fp.humanScore, fingerprint: getFingerprint() };
+  }
+
+  function getFingerprint() {
+    return {
+      mouse: fp.mouseMovements,
+      keys: fp.keystrokes,
+      scroll: fp.scrollEvents,
+      touch: fp.touchEvents,
+      elapsed: Math.floor((Date.now() - fp.pageLoadTime) / 1000),
+      humanScore: computeHumanScore(),
+      headless: isHeadlessBrowser(),
+      ua: navigator.userAgent.slice(0, 100),
+      lang: navigator.language,
+      tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      screen: window.screen.width + 'x' + window.screen.height,
+      cookieEnabled: navigator.cookieEnabled,
+    };
+  }
+
+  // ── 7. CONTENT VALIDATORS ───────────────────────────────
+  function hasRepeatedContent(text1, text2, threshold = 0.65) {
+    if (!text1 || !text2) return false;
+    const words1 = text1.toLowerCase().split(/\s+/);
+    const words2 = text2.toLowerCase().split(/\s+/);
+    const set1 = new Set(words1);
+    const overlap = words2.filter(w => set1.has(w)).length;
+    return overlap / Math.max(words1.length, words2.length) > threshold;
+  }
+
+  function isTooShort(text, minWords = 5) {
+    if (!text) return true;
+    return text.trim().split(/\s+/).filter(w => w.length > 1).length < minWords;
+  }
+
+  function looksLikeSpam(text) {
+    if (!text) return false;
+    const spamPatterns = [
+      /(.)\1{6,}/,          // repeated chars: aaaaaaa
+      /^[^a-zA-Z]*$/,       // no letters at all
+      /(buy|cheap|click|free|winner|prize|urgent|http|www\.)/i,
+      /[A-Z]{10,}/,         // ALL CAPS run
+    ];
+    return spamPatterns.some(p => p.test(text));
+  }
+
+  return {
+    guardSubmit,
+    injectHoneypots,
+    checkHoneypots,
+    computeHumanScore,
+    getFingerprint,
+    hasRepeatedContent,
+    isTooShort,
+    looksLikeSpam,
+    isHeadlessBrowser,
+    fp,
+  };
+})();
+
+</script>
+</head>
+<body class="relative z-10 flex flex-col min-h-screen">
+
+<header class="border-b border-[var(--line)] bg-[var(--bg-2)]/80 backdrop-blur">
+  <div class="max-w-[600px] mx-auto px-6 py-4 flex items-center gap-3">
+    <div class="pulse-dot"></div>
+    <span class="jellar-wordmark">JELLAR</span>
+  </div>
+</header>
+
+<!-- Not logged in -->
+<div id="auth-gate" class="hidden max-w-[500px] mx-auto px-6 py-20 text-center">
+  <h1 class="text-2xl font-bold">You need to sign in first</h1>
+  <a href="signin.html" class="inline-block mt-6 mono font-bold px-6 py-3 bg-[var(--neon)] text-black">SIGN IN &rarr;</a>
+</div>
+
+<main id="ob-wrap" class="hidden flex-1 flex items-start justify-center px-6 py-12">
+  <div class="w-full max-w-[560px]">
+
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div class="mono text-xs uppercase tracking-widest text-[var(--neon)] mb-2">Welcome to Jellar</div>
+      <h1 class="text-3xl font-bold">Set up your profile</h1>
+      <p class="text-sm text-[var(--text-dim)] mt-2">Takes about 60 seconds. This helps us match you to the right projects.</p>
+    </div>
+
+    <!-- Step indicators -->
+    <div class="step-indicator">
+      <div class="step-dot active" id="dot-1"></div>
+      <div class="step-dot" id="dot-2"></div>
+      <div class="step-dot" id="dot-3"></div>
+      <div class="step-dot" id="dot-4"></div>
+    </div>
+
+    <!-- STEP 1: Username -->
+    <div class="step active ob-card" id="step-1">
+      <div class="flex items-center gap-4 mb-6 pb-6 border-b border-[var(--line)]">
+        <img id="ob-avatar" class="avatar-ring" src="" alt="">
+        <div>
+          <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)]">Step 1 of 4</div>
+          <div class="text-lg font-bold mt-1">Choose your username</div>
+        </div>
+      </div>
+      <label class="field-label" for="username-input">Your handle on Jellar</label>
+      <input type="text" id="username-input" maxlength="30" placeholder="your_handle" autocomplete="off" spellcheck="false">
+      <div class="field-helper">Letters, numbers, and underscores only. Max 30 characters.</div>
+      <div id="username-error" class="error-text hidden"></div>
+      <div id="username-checking" class="mono text-xs text-[var(--text-dim)] mt-2 hidden">Checking availability...</div>
+      <div id="username-ok" class="mono text-xs neon-text mt-2 hidden">&checkmark; Available</div>
+      <button class="btn-primary mt-6" id="btn-next-1">NEXT &rarr;</button>
+    </div>
+
+    <!-- STEP 2: Builder or Tester? -->
+    <div class="step ob-card" id="step-2">
+      <div class="mb-6 pb-6 border-b border-[var(--line)]">
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)]">Step 2 of 4</div>
+        <div class="text-lg font-bold mt-1">What brings you to Jellar?</div>
+        <div class="text-sm text-[var(--text-dim)] mt-1">Pick all that apply — you can be both.</div>
+      </div>
+      <div class="chip-grid mb-6" id="role-chips">
+        <div class="chip" data-val="builder">🔨 I'm building something</div>
+        <div class="chip" data-val="tester">🧪 I want to test projects</div>
+        <div class="chip" data-val="both">⚡ Both</div>
+      </div>
+      <div id="role-error" class="error-text hidden mb-4">Please pick at least one.</div>
+      <div class="flex gap-3">
+        <button class="btn-back" id="btn-back-2">&larr; BACK</button>
+        <button class="btn-primary" id="btn-next-2">NEXT &rarr;</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: What you build / are interested in -->
+    <div class="step ob-card" id="step-3">
+      <div class="mb-6 pb-6 border-b border-[var(--line)]">
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)]">Step 3 of 4</div>
+        <div class="text-lg font-bold mt-1">What kind of tools do you build or love?</div>
+        <div class="text-sm text-[var(--text-dim)] mt-1">We use this to match you with relevant projects. Pick as many as you like.</div>
+      </div>
+      <div class="chip-grid mb-6" id="interest-chips">
+        <div class="chip" data-val="saas">SaaS / Web App</div>
+        <div class="chip" data-val="ai">AI / LLM Tools</div>
+        <div class="chip" data-val="ecommerce">E-commerce</div>
+        <div class="chip" data-val="developer_tools">Developer Tools</div>
+        <div class="chip" data-val="design_tools">Design Tools</div>
+        <div class="chip" data-val="productivity">Productivity</div>
+        <div class="chip" data-val="marketing">Marketing / Growth</div>
+        <div class="chip" data-val="finance">Finance / Fintech</div>
+        <div class="chip" data-val="education">Education</div>
+        <div class="chip" data-val="health">Health / Wellness</div>
+        <div class="chip" data-val="social">Social / Community</div>
+        <div class="chip" data-val="gaming">Games / Fun</div>
+        <div class="chip" data-val="no_code">No-code / Low-code</div>
+        <div class="chip" data-val="data">Data / Analytics</div>
+        <div class="chip" data-val="other">Other</div>
+      </div>
+      <div id="interest-error" class="error-text hidden mb-4">Please pick at least one interest.</div>
+      <div class="flex gap-3">
+        <button class="btn-back" id="btn-back-3">&larr; BACK</button>
+        <button class="btn-primary" id="btn-next-3">NEXT &rarr;</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Experience level + primary stack -->
+    <div class="step ob-card" id="step-4">
+      <div class="mb-6 pb-6 border-b border-[var(--line)]">
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)]">Step 4 of 4</div>
+        <div class="text-lg font-bold mt-1">Almost done — one more thing</div>
+      </div>
+
+      <label class="field-label mb-3 block">How would you describe your experience level?</label>
+      <div class="chip-grid mb-6" id="level-chips">
+        <div class="chip" data-val="vibe_coder">Vibe coder — AI does the heavy lifting</div>
+        <div class="chip" data-val="hobbyist">Hobbyist — I build for fun</div>
+        <div class="chip" data-val="indie">Indie maker — side projects are my thing</div>
+        <div class="chip" data-val="professional">Professional developer</div>
+        <div class="chip" data-val="non_technical">Non-technical — I just love testing things</div>
+      </div>
+
+      <label class="field-label mt-4 mb-3 block">What&apos;s your primary tool or stack? <span class="normal-case font-normal text-[var(--text-dim)]">(optional)</span></label>
+      <div class="chip-grid mb-6" id="stack-chips">
+        <div class="chip" data-val="cursor">Cursor</div>
+        <div class="chip" data-val="lovable">Lovable</div>
+        <div class="chip" data-val="bolt">Bolt</div>
+        <div class="chip" data-val="v0">v0</div>
+        <div class="chip" data-val="replit">Replit</div>
+        <div class="chip" data-val="claude">Claude</div>
+        <div class="chip" data-val="chatgpt">ChatGPT</div>
+        <div class="chip" data-val="react">React / Next.js</div>
+        <div class="chip" data-val="vue">Vue / Nuxt</div>
+        <div class="chip" data-val="python">Python</div>
+        <div class="chip" data-val="supabase">Supabase</div>
+        <div class="chip" data-val="firebase">Firebase</div>
+        <div class="chip" data-val="netlify">Netlify</div>
+        <div class="chip" data-val="wordpress">WordPress</div>
+        <div class="chip" data-val="webflow">Webflow</div>
+        <div class="chip" data-val="framer">Framer</div>
+        <div class="chip" data-val="shopify">Shopify</div>
+        <div class="chip" data-val="other">Other</div>
+      </div>
+
+      <div id="level-error" class="error-text hidden mb-4">Please pick your experience level.</div>
+      <div class="flex gap-3">
+        <button class="btn-back" id="btn-back-4">&larr; BACK</button>
+        <button class="btn-primary" id="btn-finish">FINISH &amp; ENTER JELLAR &rarr;</button>
+      </div>
+      <div id="finish-error" class="error-text hidden mt-3"></div>
+    </div>
+
+    <!-- COMPLETE -->
+    <div class="step ob-card text-center" id="step-complete">
+      <div class="text-4xl mb-4">⚡</div>
+      <div class="mono text-xs uppercase tracking-widest neon-text mb-2">Profile complete</div>
+      <h2 class="text-2xl font-bold mb-2" id="complete-heading">Welcome to Jellar</h2>
+      <p class="text-sm text-[var(--text-dim)] mb-6">Your profile is set up. Start by testing a project to earn your first Vibe Credits — or submit your own build.</p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="index.html" class="mono font-bold px-6 py-3 bg-[var(--neon)] text-black hover:shadow-[0_0_20px_var(--neon)] transition">START TESTING &rarr;</a>
+        <a href="submit.html" class="mono font-bold px-6 py-3 border border-[var(--line)] text-[var(--text-dim)] hover:border-[var(--neon)] hover:neon-text transition">SUBMIT A PROJECT</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const supabase = createClient(
+  'https://csfuhpljjfcrxpsvoqjx.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzZnVocGxqamZjcnhwc3ZvcWp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjA3OTksImV4cCI6MjA5MTczNjc5OX0.WBkYhEi75xBqDWP8BWjzIQeqUgFHKt1JPCf-X-tAcAI'
+);
+
+const BLOCKED_USERNAMES = ['fuck','shit','cunt','bitch','asshole','cock','pussy','dick','prick','wanker','bastard','whore','slut','nigger','faggot','porn','xxx','admin','jellar','support','moderator','mod'];
+
+let session = null;
+let currentStep = 1;
+const state = { username: '', roles: [], interests: [], levelArr: [], stacks: [] };
+
+// ── BOOT ──────────────────────────────────────────────────────────────
+(async function boot() {
+  const { data: { session: s } } = await supabase.auth.getSession();
+  session = s;
+  if (!session) { document.getElementById('auth-gate').classList.remove('hidden'); return; }
+
+  // Load profile — may be null for brand new Google/GitHub sign-ins
+  const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+
+  // If onboarding already done, go to pulse
+  if (profile?.onboarding_complete === true) {
+    window.location.href = 'index.html';
+    return;
+  }
+  // Otherwise fall through to show onboarding (profile may be null or incomplete)
+
+  document.getElementById('ob-wrap').classList.remove('hidden');
+
+  // Pre-fill avatar
+  const avatarEl = document.getElementById('ob-avatar');
+  avatarEl.src = profile?.avatar_url || session.user.user_metadata?.avatar_url || '';
+  avatarEl.onerror = () => { avatarEl.style.display = 'none'; };
+
+  // Pre-fill username from existing profile, OAuth metadata, or email prefix
+  const rawSuggested = profile?.username
+    || session.user.user_metadata?.user_name
+    || session.user.user_metadata?.preferred_username
+    || session.user.user_metadata?.name?.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '')
+    || session.user.email?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_]/g, '_')
+    || '';
+  const suggested = rawSuggested.slice(0, 30);
+  const inputEl = document.getElementById('username-input');
+  inputEl.value = suggested;
+  // Trigger live validation so user sees green tick if suggestion is already good
+  if (suggested) setTimeout(() => validateUsername(suggested), 300);
+
+  setupChips('role-chips', state.roles, 'selected', 1);
+  setupChips('interest-chips', state.interests, 'selected', null);
+  // Level uses its own dedicated array so state.level gets updated correctly
+  setupChips('level-chips', state.levelArr, 'selected', 1);
+  setupChips('stack-chips', state.stacks, 'selected', null);
+})();
+
+// ── CHIP LOGIC ────────────────────────────────────────────────────────
+function setupChips(containerId, selectedArr, selectedClass, maxSelect) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const val = chip.dataset.val;
+      if (maxSelect === 1) {
+        // Single select
+        container.querySelectorAll('.chip').forEach(c => c.classList.remove(selectedClass));
+        selectedArr.length = 0;
+        chip.classList.add(selectedClass);
+        selectedArr.push(val);
+      } else {
+        // Multi-select
+        if (chip.classList.contains(selectedClass)) {
+          chip.classList.remove(selectedClass);
+          const idx = selectedArr.indexOf(val);
+          if (idx > -1) selectedArr.splice(idx, 1);
+        } else {
+          chip.classList.add(selectedClass);
+          selectedArr.push(val);
+        }
+      }
+    });
+  });
+}
+
+// ── USERNAME VALIDATION ───────────────────────────────────────────────
+let usernameTimer = null;
+document.getElementById('username-input').addEventListener('input', (e) => {
+  clearTimeout(usernameTimer);
+  const val = e.target.value.trim();
+  document.getElementById('username-error').classList.add('hidden');
+  document.getElementById('username-ok').classList.add('hidden');
+  document.getElementById('username-checking').classList.add('hidden');
+  e.target.classList.remove('error');
+  if (!val) return;
+  usernameTimer = setTimeout(() => validateUsername(val), 500);
+});
+
+async function validateUsername(val) {
+  const errEl = document.getElementById('username-error');
+  const okEl  = document.getElementById('username-ok');
+  const input = document.getElementById('username-input');
+  errEl.classList.add('hidden'); okEl.classList.add('hidden');
+
+  if (!/^[a-zA-Z0-9_]{2,30}$/.test(val)) {
+    errEl.textContent = '\u2715 Letters, numbers, and underscores only. Min 2, max 30 characters.';
+    errEl.classList.remove('hidden'); input.classList.add('error'); return false;
+  }
+  if (BLOCKED_USERNAMES.some(w => val.toLowerCase().includes(w))) {
+    errEl.textContent = '\u2715 That username is not allowed.';
+    errEl.classList.remove('hidden'); input.classList.add('error'); return false;
+  }
+  document.getElementById('username-checking').classList.remove('hidden');
+  const { data } = await supabase.from('profiles').select('id').eq('username', val).maybeSingle();
+  document.getElementById('username-checking').classList.add('hidden');
+  if (data && data.id !== session?.user?.id) {
+    errEl.textContent = '\u2715 That username is already taken.';
+    errEl.classList.remove('hidden'); input.classList.add('error'); return false;
+  }
+  okEl.classList.remove('hidden'); input.classList.remove('error');
+  return true;
+}
+
+// ── STEP NAVIGATION ───────────────────────────────────────────────────
+function goToStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  document.querySelectorAll('.step-dot').forEach((d, i) => {
+    d.classList.remove('active', 'done');
+    if (i + 1 < n) d.classList.add('done');
+    else if (i + 1 === n) d.classList.add('active');
+  });
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Step 1 → 2
+document.getElementById('btn-next-1').addEventListener('click', async () => {
+  const val = document.getElementById('username-input').value.trim();
+  const ok = await validateUsername(val);
+  if (!ok) return;
+  state.username = val;
+  goToStep(2);
+});
+
+// Step 2 → 3
+document.getElementById('btn-next-2').addEventListener('click', () => {
+  const errEl = document.getElementById('role-error');
+  if (state.roles.length === 0) { errEl.classList.remove('hidden'); return; }
+  errEl.classList.add('hidden');
+  goToStep(3);
+});
+document.getElementById('btn-back-2').addEventListener('click', () => goToStep(1));
+
+// Step 3 → 4
+document.getElementById('btn-next-3').addEventListener('click', () => {
+  const errEl = document.getElementById('interest-error');
+  if (state.interests.length === 0) { errEl.classList.remove('hidden'); return; }
+  errEl.classList.add('hidden');
+  goToStep(4);
+});
+document.getElementById('btn-back-3').addEventListener('click', () => goToStep(2));
+
+// Step 4 → finish
+document.getElementById('btn-back-4').addEventListener('click', () => goToStep(3));
+document.getElementById('btn-finish').addEventListener('click', async () => {
+  // Bot protection
+  const secGuard = JellarSecurity.guardSubmit('onboarding');
+  if (!secGuard.allowed) { alert(secGuard.reason); return; }
+  if (JellarSecurity.isHeadlessBrowser()) { alert('Automated browser detected. Please use a regular browser.'); return; }
+
+  const errEl = document.getElementById('finish-error');
+  const levelErr = document.getElementById('level-error');
+  errEl.classList.add('hidden'); levelErr.classList.add('hidden');
+
+  const level = state.levelArr[0] || '';
+  if (!level) { levelErr.classList.remove('hidden'); return; }
+
+  const btn = document.getElementById('btn-finish');
+  btn.disabled = true; btn.textContent = 'SAVING...';
+
+  const upsertData = {
+    id:                  session.user.id,   // required for upsert
+    username:            state.username,
+    what_i_build:        state.stacks.join(','),
+    interests:           state.interests.join(','),
+    experience_level:    level,
+    roles:               state.roles.join(','),
+    onboarding_complete: true,
+    username_set_by_user: true,
+    avatar_url: session.user.user_metadata?.avatar_url
+             || session.user.user_metadata?.picture
+             || null,
+  };
+
+  // Use upsert — works whether or not the profile row already exists
+  const { error } = await supabase
+    .from('profiles')
+    .upsert(upsertData, { onConflict: 'id' });
+
+  if (error) {
+    errEl.textContent = '\u2715 Save failed: ' + error.message + ' (code: ' + error.code + ')';
+    errEl.classList.remove('hidden');
+    btn.disabled = false; btn.textContent = 'FINISH & ENTER JELLAR \u2192';
+    console.error('[onboarding] upsert error:', error);
+    return;
+  }
+
+  // Show completion — user clicks their choice (no auto-redirect)
+  document.querySelector('.step-indicator').style.display = 'none';
+  document.getElementById('complete-heading').textContent = 'Welcome, ' + state.username + '!';
+  // Update the START TESTING link to respect ?next= param
+  const nextPage = new URLSearchParams(window.location.search).get('next') || 'index.html';
+  const startBtn = document.querySelector('#step-complete a[href="index.html"]');
+  if (startBtn) startBtn.href = nextPage;
+  goToStep('complete');
+});
+</script>
+
+<!-- Bug report widget -->
+<div style="position:fixed;bottom:20px;right:20px;z-index:100">
+  <button id="ob-bug-btn" class="mono text-xs px-3 py-2 border border-[var(--line)] bg-[var(--bg-2)] text-[var(--text-dim)] hover:border-[var(--hot)] hover:text-[var(--hot)] transition">🐛 Report issue</button>
+  <div id="ob-bug-modal" class="hidden" style="position:absolute;bottom:44px;right:0;width:280px;border:1px solid var(--line);background:var(--bg-2);padding:16px">
+    <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Report an issue</div>
+    <textarea id="ob-bug-text" rows="3" placeholder="What went wrong? What were you doing?" style="width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);padding:8px;font-family:inherit;font-size:12px;resize:none"></textarea>
+    <div class="flex gap-2 mt-2">
+      <button id="ob-bug-send" class="mono text-xs font-bold px-4 py-2 bg-[var(--neon)] text-black flex-1">SEND</button>
+      <button id="ob-bug-cancel" class="mono text-xs px-3 py-2 border border-[var(--line)] text-[var(--text-dim)]">✕</button>
+    </div>
+    <div id="ob-bug-sent" class="hidden mono text-xs neon-text mt-2">✓ Sent. Thanks!</div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const _sb = createClient('https://csfuhpljjfcrxpsvoqjx.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzZnVocGxqamZjcnhwc3ZvcWp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjA3OTksImV4cCI6MjA5MTczNjc5OX0.WBkYhEi75xBqDWP8BWjzIQeqUgFHKt1JPCf-X-tAcAI');
+document.getElementById('ob-bug-btn').addEventListener('click',()=>{ document.getElementById('ob-bug-modal').classList.toggle('hidden'); });
+document.getElementById('ob-bug-cancel').addEventListener('click',()=>{ document.getElementById('ob-bug-modal').classList.add('hidden'); });
+document.getElementById('ob-bug-send').addEventListener('click', async ()=>{
+  const txt = document.getElementById('ob-bug-text').value.trim();
+  if (!txt) return;
+  const { data:{ session } } = await _sb.auth.getSession();
+  await _sb.from('bug_reports').insert({ page:'onboarding.html', what_doing:'onboarding flow', error_description: txt, severity:'bug', user_id: session?.user?.id||null, username: session?.user?.user_metadata?.user_name||null, user_email: session?.user?.email||null });
+  document.getElementById('ob-bug-sent').classList.remove('hidden');
+  document.getElementById('ob-bug-send').disabled = true;
+  setTimeout(()=>document.getElementById('ob-bug-modal').classList.add('hidden'),2000);
+});
+</script>

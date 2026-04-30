@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jellar — Pricing</title>
+<meta name="description" content="Buy real human feedback for your build. No subscription. Pay for reviews, get reviews.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  .jellar-wordmark { font-family: "Cinzel", serif; font-weight: 900; letter-spacing: .12em; color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,.15); }
+  :root {
+    --bg:#05070a; --bg-2:#0a0e14; --line:#1a2028;
+    --neon:#7cff50; --hot:#ff3864; --ice:#38d7ff; --gold:#ffd24a;
+    --text:#e6edf3; --text-dim:#7a8896;
+  }
+  html,body { background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-serif; }
+  .mono { font-family:'JetBrains Mono',monospace; }
+  .neon-text { color:var(--neon); text-shadow:0 0 12px rgba(124,255,80,.6); }
+  .pulse-dot { width:10px; height:10px; border-radius:50%; background:var(--neon); box-shadow:0 0 10px var(--neon); display:inline-block; }
+
+  /* Cards */
+  .pack-card { border:1px solid var(--line); background:var(--bg-2); padding:28px; position:relative; transition:border-color .2s, box-shadow .2s; }
+  .pack-card:hover { border-color:rgba(124,255,80,.4); }
+  .pack-card.featured { border-color:var(--neon); box-shadow:0 0 40px rgba(124,255,80,.1); }
+  .popular-badge { position:absolute; top:-1px; left:50%; transform:translateX(-50%); font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; padding:3px 14px; background:var(--neon); color:#000; white-space:nowrap; }
+
+  /* Price display */
+  .price-big { font-family:'JetBrains Mono',monospace; font-size:48px; font-weight:800; line-height:1; color:var(--neon); }
+  .price-later { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text-dim); text-decoration:line-through; }
+  .founding-badge { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.08em; padding:2px 8px; background:rgba(255,210,74,.12); color:var(--gold); border:1px solid rgba(255,210,74,.3); margin-top:6px; }
+
+  /* Check marks */
+  .chk { color:var(--neon); margin-right:8px; font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .crs { color:var(--text-dim); margin-right:8px; }
+
+  /* CTA buttons */
+  .btn-pack { display:block; width:100%; text-align:center; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; padding:13px; margin-top:24px; cursor:pointer; transition:all .15s; text-decoration:none; border:1px solid; }
+  .btn-neon { border-color:var(--neon); color:var(--neon); }
+  .btn-neon:hover { background:var(--neon); color:#000; box-shadow:0 0 20px rgba(124,255,80,.4); }
+  .btn-dim { border-color:var(--line); color:var(--text-dim); }
+  .btn-dim:hover { border-color:var(--neon); color:var(--neon); }
+
+  /* Currency select */
+  .currency-select { background:var(--bg-2); border:1px solid var(--line); color:var(--text); font-family:'JetBrains Mono',monospace; font-size:12px; padding:6px 10px; cursor:pointer; outline:none; }
+  .currency-select:focus { border-color:var(--neon); }
+
+  /* Comparison table */
+  .comparison-row td { padding:10px 12px; border-bottom:1px solid var(--line); font-size:14px; }
+  .comparison-row td:first-child { color:var(--text-dim); }
+  .comparison-row td:not(:first-child) { text-align:center; font-family:'JetBrains Mono',monospace; font-size:13px; }
+  .col-head { font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.06em; padding:10px 12px; text-align:center; }
+
+  /* Info link */
+  .info-link { display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border:1px solid var(--line); border-radius:50%; font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text-dim); text-decoration:none; vertical-align:middle; margin-left:4px; transition:all .15s; }
+  .info-link:hover { border-color:var(--neon); color:var(--neon); }
+
+  /* Scanline overlay */
+  body::before { content:""; position:fixed; inset:0; pointer-events:none; background:repeating-linear-gradient(0deg,rgba(124,255,80,.008) 0px,rgba(124,255,80,.008) 1px,transparent 1px,transparent 3px); z-index:0; }
+
+  /* Free path */
+  .free-path { border:1px dashed rgba(124,255,80,.3); background:rgba(124,255,80,.03); padding:24px; }
+
+  /* Founding timer */
+  @keyframes blink { 0%,100%{opacity:1}50%{opacity:.4} }
+  .blink { animation:blink 1.2s ease-in-out infinite; }
+</style>
+</head>
+<body class="min-h-screen relative z-10">
+
+<header class="border-b border-[var(--line)] bg-[var(--bg-2)]/80 backdrop-blur sticky top-0 z-30">
+  <div class="max-w-[1100px] mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="pulse-dot"></div>
+      <a href="index.html" class="jellar-wordmark">JELLAR</a>
+    </div>
+    <div class="flex items-center gap-4 mono text-xs uppercase">
+      <a href="index.html" class="text-[var(--text-dim)] hover:neon-text transition">Pulse</a>
+      <a href="submit.html" class="text-[var(--text-dim)] hover:neon-text transition">Submit</a>
+      <a href="help.html" class="text-[var(--text-dim)] hover:neon-text transition">Help</a>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1100px] mx-auto px-6 py-16 relative z-10">
+
+  <!-- HERO -->
+  <div class="text-center mb-4">
+    <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Pricing</div>
+    <h1 class="text-4xl md:text-5xl font-bold">Pay for reviews.<br>Not a subscription.</h1>
+    <p class="text-[var(--text-dim)] mt-4 text-lg max-w-[520px] mx-auto">Buy a pack of real human feedback. No recurring charges. No lock-in. Get your signal, ship your thing.</p>
+  </div>
+
+  <!-- FOUNDING BANNER -->
+  <div class="border border-[rgba(255,210,74,.4)] bg-[rgba(255,210,74,.04)] p-4 text-center mb-10 max-w-[640px] mx-auto">
+    <div class="mono text-xs uppercase tracking-widest mb-1" style="color:var(--gold)">
+      <span class="blink">★</span> Founding Prices — Early Access Only
+    </div>
+    <p class="text-sm text-[var(--text-dim)]">These prices are only available right now, while we're in early access. <strong class="text-[var(--text)]">Once founding prices close, they close for good — new buyers pay the higher price, no exceptions.</strong> Buy now and save.</p>
+  </div>
+
+  <!-- CURRENCY -->
+  <div class="flex items-center justify-center gap-3 mono text-xs uppercase text-[var(--text-dim)] mb-10">
+    <span>Show prices in:</span>
+    <select class="currency-select" id="currency-select">
+      <option value="USD">USD $</option>
+      <option value="AUD">AUD A$</option>
+      <option value="GBP">GBP £</option>
+      <option value="EUR">EUR €</option>
+      <option value="CAD">CAD CA$</option>
+      <option value="NZD">NZD NZ$</option>
+      <option value="SGD">SGD S$</option>
+    </select>
+    <span id="rate-note" class="normal-case text-[10px]"></span>
+  </div>
+
+  <!-- REVIEW PACKS — 4 cards including free -->
+  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+
+    <!-- FREE PATH -->
+    <div class="pack-card" style="border-style:dashed;border-color:rgba(124,255,80,.3);background:rgba(124,255,80,.02);">
+      <div class="mono text-xs uppercase tracking-widest mb-1" style="color:var(--text-dim)">Free Path</div>
+      <div class="mono text-xs font-bold mb-1" style="color:var(--text-dim)">Base position on Ladder</div>
+      <div class="mono text-xs mb-4" style="color:var(--text-dim)">Earn your spot by testing first</div>
+      <div class="price-big" style="color:var(--text)">$0</div>
+      <div class="mono text-xs mt-2 mb-1" style="color:var(--neon)">Complete 5 missions → unlock listing</div>
+      <div class="mt-6 mb-1 mono text-xs uppercase tracking-widest text-[var(--text-dim)]">What you get</div>
+      <ul class="space-y-3 text-sm mt-3">
+        <li><span class="chk">✓</span><strong>5 verified human reviews</strong></li>
+        <li><span class="chk">✓</span>Structured feedback per review</li>
+        <li><span class="chk">✓</span>Friction points + magic moments</li>
+        <li><span class="chk">✓</span>Star rating + written summary</li>
+        <li><span class="chk">✓</span>Listed on Pulse Ladder</li>
+        <li class="text-[var(--text-dim)]"><span class="crs">·</span>Base position — paid packs rank above</li>
+        <li class="text-[var(--text-dim)]"><span class="crs">·</span>7-day listing window</li>
+        <li class="text-[var(--text-dim)]"><span class="crs">·</span>No AI pattern summary</li>
+        <li class="text-[var(--text-dim)]"><span class="crs">·</span>No Pulse Boost eligibility</li>
+      </ul>
+      <a href="index.html" class="btn-pack" style="border-color:rgba(124,255,80,.3);color:var(--text-dim);">START TESTING MISSIONS →</a>
+      <div class="mono text-xs mt-3 text-center" style="color:var(--text-dim)">No payment ever required</div>
+    </div>
+
+    <!-- STARTER -->
+    <div class="pack-card">
+      <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-1">Starter Pack</div>
+      <div class="mono text-xs font-bold mb-1" style="color:var(--neon)">★ GOOD — Starter position on Ladder</div>
+      <div class="mono text-xs text-[var(--text-dim)] mb-4">Skip the free plan requirements · List straight away</div>
+      <div class="price-big" id="price-starter">$15</div>
+      <div class="price-later mt-1" id="later-starter">After launch: $19</div>
+      <div class="founding-badge">Founding price — buy now and save</div>
+      <div class="mt-6 mb-1 mono text-xs uppercase tracking-widest text-[var(--text-dim)]">What you get</div>
+      <ul class="space-y-3 text-sm mt-3">
+        <li><span class="chk">✓</span><strong>5 verified human reviews</strong> <a href="help.html#reviews" class="info-link">?</a></li>
+        <li><span class="chk">✓</span>Structured feedback per review <a href="help.html#quality" class="info-link">?</a></li>
+        <li><span class="chk">✓</span>Friction points + magic moments</li>
+        <li><span class="chk">✓</span>Star rating + written summary</li>
+        <li><span class="chk">✓</span>Listed on Pulse Ladder <a href="help.html#ladder" class="info-link">?</a></li>
+        <li><span class="chk">✓</span>14-day listing window</li>
+        <li><span class="chk">✓</span><strong>No review requirement</strong> — skip the free plan's 2-review gate and list immediately</li>
+        <li class="text-[var(--text-dim)]"><span class="crs">·</span>Starter band on Ladder (above free listings)</li>
+      </ul>
+      <a href="mailto:hello@jellar.io?subject=Starter Pack" class="btn-pack btn-dim">GET 5 REVIEWS →</a>
+    </div>
+
+    <!-- SIGNAL — featured -->
+    <div class="pack-card featured">
+      <div class="popular-badge">Most popular</div>
+      <div class="mono text-xs uppercase tracking-widest neon-text mb-1">Signal Pack</div>
+      <div class="mono text-xs font-bold mb-1" style="color:var(--neon)">★★ BETTER — Signal position on Ladder</div>
+      <div class="mono text-xs text-[var(--text-dim)] mb-4">The sweet spot for most builders</div>
+      <div class="price-big" id="price-signal">$39</div>
+      <div class="price-later mt-1" id="later-signal">After launch: $49</div>
+      <div class="founding-badge">Founding price — buy now and save</div>
+      <div class="mt-6 mb-1 mono text-xs uppercase tracking-widest text-[var(--text-dim)]">What you get</div>
+      <ul class="space-y-3 text-sm mt-3">
+        <li><span class="chk">✓</span><strong>15 verified human reviews</strong></li>
+        <li><span class="chk">✓</span>Structured feedback per review</li>
+        <li><span class="chk">✓</span>Friction points + magic moments</li>
+        <li><span class="chk">✓</span>Star rating + written summary</li>
+        <li><span class="chk">✓</span>Listed on Pulse Ladder</li>
+        <li><span class="chk">✓</span>21-day listing window</li>
+        <li><span class="chk">✓</span><strong>Mid-tier band on Ladder</strong> — ranked above Starter and free listings</li>
+        <li><span class="chk">✓</span>AI pattern summary across all reviews <a href="help.html#ai-summary" class="info-link">?</a></li>
+      </ul>
+      <a href="mailto:hello@jellar.io?subject=Signal Pack" class="btn-pack btn-neon">GET 15 REVIEWS →</a>
+    </div>
+
+    <!-- LAUNCH -->
+    <div class="pack-card">
+      <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-1">Launch Pack</div>
+      <div class="mono text-xs font-bold mb-1" style="color:var(--neon)">★★★ BEST — Top position on Ladder</div>
+      <div class="mono text-xs text-[var(--text-dim)] mb-4">Serious launch prep</div>
+      <div class="price-big" id="price-launch">$79</div>
+      <div class="price-later mt-1" id="later-launch">After launch: $99</div>
+      <div class="founding-badge">Founding price — buy now and save</div>
+      <div class="mt-6 mb-1 mono text-xs uppercase tracking-widest text-[var(--text-dim)]">What you get</div>
+      <ul class="space-y-3 text-sm mt-3">
+        <li><span class="chk">✓</span><strong>30 verified human reviews</strong></li>
+        <li><span class="chk">✓</span>Structured feedback per review</li>
+        <li><span class="chk">✓</span>Friction points + magic moments</li>
+        <li><span class="chk">✓</span>Star rating + written summary</li>
+        <li><span class="chk">✓</span>Listed on Pulse Ladder</li>
+        <li><span class="chk">✓</span>30-day listing window</li>
+        <li><span class="chk">✓</span><strong>Top non-sponsored band on Ladder</strong> — highest visibility of all paid packs</li>
+        <li><span class="chk">✓</span>AI pattern summary across all reviews</li>
+        <li><span class="chk">✓</span>Priority admin review + onboarding</li>
+      </ul>
+      <a href="mailto:hello@jellar.io?subject=Launch Pack" class="btn-pack btn-dim">GET 30 REVIEWS →</a>
+    </div>
+  </div>
+
+  <!-- SMALL PRINT under cards -->
+  <div class="mono text-xs text-[var(--text-dim)] text-center mb-16">
+    All packs are one-time payments. Reviews are delivered as testers complete missions — typically within 48–72 hours of going live.
+  </div>
+
+  <!-- PULSE BOOST -->
+  <div class="border bg-[var(--bg-2)] p-6 mb-6" style="border-color:rgba(56,215,255,.35); box-shadow:0 0 30px rgba(56,215,255,.06);">
+    <div class="flex flex-col md:flex-row md:items-center gap-6">
+      <div class="flex-1">
+        <div class="mono text-xs uppercase tracking-widest mb-2" style="color:var(--ice)">⚡ Pulse Boost — Visibility bump</div>
+        <h3 class="text-xl font-bold mb-1">Already listed? Move up the Ladder.</h3>
+        <p class="text-sm text-[var(--text-dim)] max-w-[480px] mt-2">A 48–72 hour visibility boost that pushes your project higher on the Pulse Ladder — without buying a full pack. Great for relaunches, post-update pushes, or just when traffic goes quiet.</p>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><span class="chk">✓</span>48–72 hour elevated position on Ladder</li>
+          <li><span class="chk">✓</span>Testers see you first during boost window</li>
+          <li><span class="chk">✓</span>No new submission required — works on existing listing</li>
+          <li><span class="chk">✓</span>Can stack on any review pack</li>
+        </ul>
+      </div>
+      <div class="shrink-0 text-center">
+        <div class="mono font-bold text-3xl mb-1" style="color:var(--ice)" id="price-boost">$15</div>
+        <div class="mono text-xs text-[var(--text-dim)] mb-1 line-through" id="later-boost">After launch: $25</div>
+        <div class="founding-badge mb-4">Founding price</div>
+        <a href="mailto:hello@jellar.io?subject=Pulse Boost" class="inline-block mono font-bold px-8 py-4 border transition" style="border-color:var(--ice);color:var(--ice);min-width:160px;">ADD BOOST →</a>
+        <div class="mono text-xs text-[var(--text-dim)] mt-2">One-time. No subscription.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPONSORED SLOT -->
+  <div class="border bg-[var(--bg-2)] p-6 mb-16" style="border-color:rgba(255,210,74,.3); box-shadow:0 0 30px rgba(255,210,74,.06);">
+    <div class="flex flex-col md:flex-row md:items-center gap-6">
+      <div class="flex-1">
+        <div class="mono text-xs uppercase tracking-widest mb-2" style="color:var(--gold)">🔥 Sponsored Slot — Maximum exposure</div>
+        <h3 class="text-xl font-bold mb-1">Gold position. Every eye on your build.</h3>
+        <p class="text-sm text-[var(--text-dim)] max-w-[480px] mt-2">The absolute top of the Ladder for 7 days — above every tier, visible to every tester who visits. Plus a feature in the next Jellar Monthly newsletter, sent to our entire builder community.</p>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><span class="chk">✓</span>7 days at the very top of the Pulse Ladder</li>
+          <li><span class="chk">✓</span>Gold project card — stands out instantly</li>
+          <li><span class="chk">✓</span>Gold globe marker — visible on the world map</li>
+          <li><span class="chk">✓</span>Up to 50 reviews during slot</li>
+          <li style="color:var(--gold)"><span style="color:var(--gold);margin-right:8px">★★</span><strong>Testers earn DOUBLE KARMA</strong> — 2× credits pulls testers to your mission first</li>
+          <li><span class="chk">✓</span><strong>Featured in Jellar Monthly</strong> — your project, name, and link in the next newsletter issue sent to our full builder subscriber list</li>
+        </ul>
+      </div>
+      <div class="shrink-0 text-center">
+        <div class="mono text-xs uppercase text-[var(--text-dim)] mb-2">Adding at launch</div>
+        <a href="mailto:hello@jellar.io?subject=Sponsored%20Slot%20Enquiry" class="inline-block mono font-bold px-8 py-4 border transition" style="border-color:var(--gold);color:var(--gold);min-width:160px;">REGISTER INTEREST →</a>
+        <div class="mono text-xs text-[var(--text-dim)] mt-2">Limited slots. Reply within 24hrs.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FREE PATH -->
+  <!-- LADDER ORDER EXPLAINER -->
+  <div class="mb-16 max-w-[640px] mx-auto">
+    <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] text-center mb-4">How the Live Ladder is ranked</div>
+    <p class="text-sm text-[var(--text-dim)] text-center mb-6">The Ladder shows the top 20 active projects. Your band determines where you appear. Within each band, projects are sorted by builder karma — highest karma first.</p>
+    <div class="space-y-2">
+      <div class="flex items-center gap-3 px-4 py-3 border" style="border-color:rgba(255,210,74,.5);background:rgba(255,210,74,.06)">
+        <span class="mono text-xs font-bold w-5 text-center" style="color:var(--gold)">1</span>
+        <span class="mono text-xs font-bold" style="color:var(--gold)">🔥 SPONSORED</span>
+        <span class="mono text-xs text-[var(--text-dim)] ml-auto">Gold card · double karma for testers · newsletter feature</span>
+      </div>
+      <div class="flex items-center gap-3 px-4 py-3 border" style="border-color:rgba(56,215,255,.4);background:rgba(56,215,255,.04)">
+        <span class="mono text-xs font-bold w-5 text-center" style="color:var(--ice)">2</span>
+        <span class="mono text-xs font-bold" style="color:var(--ice)">⚡ PULSE BOOST</span>
+        <span class="mono text-xs text-[var(--text-dim)] ml-auto">48–72hr elevated position · $15</span>
+      </div>
+      <div class="flex items-center gap-3 px-4 py-3 border" style="border-color:rgba(124,255,80,.4);background:rgba(124,255,80,.04)">
+        <span class="mono text-xs font-bold w-5 text-center" style="color:var(--neon)">3</span>
+        <span class="mono text-xs font-bold neon-text">★★★ LAUNCH PACK</span>
+        <span class="mono text-xs text-[var(--text-dim)] ml-auto">BEST · 30 reviews · $79</span>
+      </div>
+      <div class="flex items-center gap-3 px-4 py-3 border border-[var(--line)]" style="background:rgba(124,255,80,.02)">
+        <span class="mono text-xs font-bold w-5 text-center neon-text">4</span>
+        <span class="mono text-xs font-bold neon-text">★★ SIGNAL PACK</span>
+        <span class="mono text-xs text-[var(--text-dim)] ml-auto">BETTER · 15 reviews · $39</span>
+      </div>
+      <div class="flex items-center gap-3 px-4 py-3 border border-[var(--line)]">
+        <span class="mono text-xs font-bold w-5 text-center text-[var(--text-dim)]">5</span>
+        <span class="mono text-xs font-bold text-[var(--text-dim)]">★ STARTER PACK</span>
+        <span class="mono text-xs text-[var(--text-dim)] ml-auto">GOOD · 5 reviews · $15</span>
+      </div>
+      <div class="flex items-center gap-3 px-4 py-3 border border-dashed border-[var(--line)]">
+        <span class="mono text-xs font-bold w-5 text-center text-[var(--text-dim)]">6</span>
+        <span class="mono text-xs text-[var(--text-dim)]">FREE (2 reviews earned)</span>
+        <span class="mono text-xs text-[var(--text-dim)] ml-auto">Base · 5 reviews · $0</span>
+      </div>
+    </div>
+    <p class="mono text-xs text-[var(--text-dim)] text-center mt-4">Only the top 20 projects across all bands appear on the Ladder at any time.</p>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="mb-16">
+    <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] text-center mb-6">Full comparison</div>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse border border-[var(--line)]">
+        <thead>
+          <tr class="border-b border-[var(--line)] bg-[var(--bg-2)]">
+            <th class="col-head text-left text-[var(--text-dim)]">Feature</th>
+            <th class="col-head text-[var(--text-dim)]">Free<br><span class="text-[10px] font-normal">(5 missions first)</span></th>
+            <th class="col-head neon-text">Starter<br><span class="text-[10px] font-normal text-[var(--text-dim)]" id="th-starter">$15</span></th>
+            <th class="col-head neon-text">Signal<br><span class="text-[10px] font-normal text-[var(--text-dim)]" id="th-signal">$39</span></th>
+            <th class="col-head neon-text">Launch<br><span class="text-[10px] font-normal text-[var(--text-dim)]" id="th-launch">$79</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="comparison-row"><td>Verified human reviews</td><td>5</td><td>5</td><td>15</td><td>30</td></tr>
+          <tr class="comparison-row"><td>Structured feedback (friction / magic / summary)</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+          <tr class="comparison-row"><td>Listing window</td><td>7 days</td><td>14 days</td><td>21 days</td><td>30 days</td></tr>
+          <tr class="comparison-row"><td>Ladder position</td><td>Base</td><td>Base</td><td>Mid</td><td>Top</td></tr>
+          <tr class="comparison-row"><td>AI pattern summary</td><td>—</td><td>—</td><td>✓</td><td>✓</td></tr>
+          <tr class="comparison-row"><td>Priority admin review</td><td>—</td><td>—</td><td>—</td><td>✓</td></tr>
+          <tr class="comparison-row"><td>Pulse Boost eligible</td><td>—</td><td>✓</td><td>✓</td><td>✓</td></tr>
+          <tr class="comparison-row"><td>Sponsored slot eligible</td><td>—</td><td>Ask us</td><td>Ask us</td><td>Ask us</td></tr>
+          <tr class="comparison-row"><td>Test other projects &amp; earn karma</td><td>Always free</td><td>Always free</td><td>Always free</td><td>Always free</td></tr>
+          <tr class="comparison-row"><td>One-time payment (no recurring)</td><td>—</td><td>✓</td><td>✓</td><td>✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PROFESSIONAL AUDIT -->
+  <div id="audit" class="border bg-[var(--bg-2)] p-6 mb-16" style="border-color:#f97316; box-shadow:0 0 30px rgba(249,115,22,.08); scroll-margin-top:160px;">
+    <div class="flex flex-col md:flex-row md:items-center gap-6">
+      <div class="flex-1">
+        <div class="mono text-xs uppercase tracking-widest mb-2" style="color:#f97316">Professional Audit &amp; Review</div>
+        <h3 class="text-xl font-bold mb-2">Need a deeper look?</h3>
+        <p class="text-sm text-[var(--text-dim)] max-w-[480px]">Beyond community testing — a hands-on expert review of your build. UX flows, conversion blockers, a written audit with prioritised recommendations.</p>
+        <ul class="mt-3 space-y-1 text-sm">
+          <li><span class="chk">✓</span>Expert human review of your full build</li>
+          <li><span class="chk">✓</span>Written audit with prioritised fixes</li>
+          <li><span class="chk">✓</span>UX, copy, conversion, and trust analysis</li>
+          <li><span class="chk">✓</span>Turnaround discussed on enquiry</li>
+        </ul>
+      </div>
+      <div class="shrink-0 text-center">
+        <a href="mailto:hello@jellar.io?subject=Professional%20Audit%20Enquiry" class="inline-block mono font-bold px-8 py-4 border transition text-center" style="min-width:160px;border-color:#f97316;color:#f97316;">ENQUIRE →</a>
+        <div class="mono text-xs text-[var(--text-dim)] mt-2">Pricing on request</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTER CTA -->
+  <div class="border border-[var(--line)] bg-[var(--bg-2)] p-8 text-center mb-16">
+    <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-2">Just here to test?</div>
+    <h2 class="text-2xl font-bold">Testers are always free.</h2>
+    <p class="text-[var(--text-dim)] mt-3 max-w-[480px] mx-auto">Sign in with GitHub, pick a mission, earn karma and credits. No payment ever required to test other people's builds.</p>
+    <a href="index.html" class="inline-block mt-6 mono font-bold px-8 py-3 bg-[var(--neon)] text-black hover:shadow-[0_0_20px_var(--neon)] transition">BROWSE MISSIONS →</a>
+  </div>
+
+  <!-- FAQ -->
+  <div class="max-w-[640px] mx-auto">
+    <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] text-center mb-6">Common questions</div>
+    <div class="border border-[var(--line)]">
+      <div class="p-5 border-b border-[var(--line)]">
+        <div class="font-semibold mb-1">Is this really one-time? No subscription?</div>
+        <p class="text-sm text-[var(--text-dim)]">Yes. You buy a pack, get your reviews, done. No recurring charges, no cancellation drama. We'll introduce subscriptions later for power users, but that's not the model right now.</p>
+      </div>
+      <div class="p-5 border-b border-[var(--line)]">
+        <div class="font-semibold mb-1">How long until my reviews come in?</div>
+        <p class="text-sm text-[var(--text-dim)]">Once your project is live on the Ladder, reviews typically come in within 48–72 hours. Larger packs may take a few days longer depending on tester activity.</p>
+      </div>
+      <div class="p-5 border-b border-[var(--line)]">
+        <div class="font-semibold mb-1">What makes a review "verified"?</div>
+        <p class="text-sm text-[var(--text-dim)]">Every review requires a minimum 3-minute dwell time on your project, a star rating, at least one friction point or magic moment, and a written summary. Thin or copy-paste reviews are flagged and don't count toward your pack.</p>
+      </div>
+      <div class="p-5 border-b border-[var(--line)]">
+        <div class="font-semibold mb-1">Can I buy more reviews after my pack runs out?</div>
+        <p class="text-sm text-[var(--text-dim)]">Yes. Buy another pack at any time. Each new pack refreshes your listing window and can upgrade your Ladder position.</p>
+      </div>
+      <div class="p-5 border-b border-[var(--line)]">
+        <div class="font-semibold mb-1">What currency will I be charged in?</div>
+        <p class="text-sm text-[var(--text-dim)]">Stripe charges in USD. The currency switcher above is indicative — your bank applies conversion at checkout. Actual charge is in USD.</p>
+      </div>
+      <div class="p-5 border-b border-[var(--line)]">
+        <div class="font-semibold mb-1">What's the free path — is it really free?</div>
+        <p class="text-sm text-[var(--text-dim)]">Complete 5 approved missions as a tester and you can list your own project for free (base position, 5 reviews, 7 days). It's real, but it's limited intentionally. Paid packs always rank above free listings.</p>
+      </div>
+      <div class="p-5 border-b border-[var(--line)]">
+        <div class="font-semibold mb-1">What is the Jellar Monthly newsletter?</div>
+        <p class="text-sm text-[var(--text-dim)]">A regular newsletter sent to our full builder and tester community. Sponsored slot buyers get their project featured in the next issue — name, link, and a short description. Great for extra reach beyond the Ladder.</p>
+      </div>
+      <div class="p-5">
+        <div class="font-semibold mb-1">When do payments go live?</div>
+        <p class="text-sm text-[var(--text-dim)]">Stripe Checkout activates at launch. During the MVP period, email us to reserve your founding price — we'll lock it in and invoice when Stripe is live.</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="border-t border-[var(--line)] py-8 px-6 mt-16" style="background:var(--bg-2)">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Jellar</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="index.html" class="hover:neon-text transition">Pulse</a></div>
+          <div><a href="pricing.html" class="hover:neon-text transition">Pricing</a></div>
+          <div><a href="help.html" class="hover:neon-text transition">Knowledge Centre</a></div>
+          <div><a href="leaderboard.html" class="hover:neon-text transition">Leaderboard</a></div>
+        </div>
+      </div>
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Platform</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="submit.html" class="hover:neon-text transition">Submit a Project</a></div>
+          <div><a href="profile.html" class="hover:neon-text transition">Your Profile</a></div>
+          <div><a href="settings.html" class="hover:neon-text transition">Settings</a></div>
+          <div class="pt-1 text-[10px] border-t border-[var(--line)] mt-2" style="color:var(--hot)">Web projects only — no iOS or Android apps</div>
+        </div>
+      </div>
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Legal</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="privacy.html" class="hover:neon-text transition">Privacy Policy</a></div>
+          <div><a href="terms.html" class="hover:neon-text transition">Terms &amp; Conditions</a></div>
+          <div><a href="mailto:hello@jellar.io" class="hover:neon-text transition">Contact Us</a></div>
+        </div>
+      </div>
+      <div>
+        <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">Other Tools</div>
+        <div class="space-y-2 text-xs text-[var(--text-dim)]">
+          <div><a href="https://popcornpasswords.com" target="_blank" rel="noopener" class="hover:neon-text transition">Fun Password Generator</a></div>
+          <div><a href="https://x.com/socialhighwy" target="_blank" rel="noopener" class="hover:neon-text transition">𝕏 Follow us on X</a></div>
+        </div>
+        <div class="mt-4 text-[10px] text-[var(--text-dim)] leading-relaxed">Prices in local currency are indicative. All transactions in USD via Stripe.</div>
+      </div>
+    </div>
+    <div class="border-t border-[var(--line)] pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+      <div class="mono text-xs text-[var(--text-dim)]">© Jellar. Built for vibe coders.</div>
+      <div class="flex gap-6 mono text-xs text-[var(--text-dim)]">
+        <a href="privacy.html" class="hover:neon-text transition">Privacy</a>
+        <a href="terms.html" class="hover:neon-text transition">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const RATES   = {USD:1, AUD:1.55, GBP:0.79, EUR:0.92, CAD:1.37, NZD:1.69, SGD:1.34};
+const SYMBOLS = {USD:'$', AUD:'A$', GBP:'£', EUR:'€', CAD:'CA$', NZD:'NZ$', SGD:'S$'};
+const COUNTRY_CURRENCY = {
+  AU:'AUD', GB:'GBP', IE:'EUR', DE:'EUR', FR:'EUR', IT:'EUR', ES:'EUR',
+  NL:'EUR', BE:'EUR', AT:'EUR', PT:'EUR', FI:'EUR', GR:'EUR',
+  CA:'CAD', NZ:'NZD', SG:'SGD',
+};
+
+// Base USD prices
+const PACKS = {
+  starter: { now:15, later:19 },
+  signal:  { now:39, later:49 },
+  launch:  { now:79, later:99 },
+  boost:   { now:15, later:25 },
+};
+
+let cur = 'USD';
+
+function fmt(usd) {
+  const s = SYMBOLS[cur] || '$';
+  const r = RATES[cur] || 1;
+  const p = usd * r;
+  return s + (Number.isInteger(p) ? p : p.toFixed(0));
+}
+
+function update() {
+  document.getElementById('rate-note').textContent = cur !== 'USD' ? '≈ indicative · charged in USD' : '';
+  // Packs
+  Object.entries(PACKS).forEach(([key, val]) => {
+    const el = document.getElementById('price-' + key);
+    const el2 = document.getElementById('later-' + key);
+    if (el)  el.textContent  = fmt(val.now);
+    if (el2) el2.textContent = 'After launch: ' + fmt(val.later);
+  });
+  // Comparison headers
+  document.getElementById('th-starter').textContent = fmt(15);
+  document.getElementById('th-signal').textContent  = fmt(39);
+  document.getElementById('th-launch').textContent  = fmt(79);
+}
+
+function setCurrency(code) {
+  if (RATES[code]) cur = code;
+  const sel = document.getElementById('currency-select');
+  if (sel) sel.value = cur;
+}
+
+document.getElementById('currency-select').addEventListener('change', e => {
+  cur = e.target.value; update();
+});
+
+// IP geolocation
+(async () => {
+  try {
+    const res  = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3000) });
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    const detected = COUNTRY_CURRENCY[data.country_code];
+    if (detected) setCurrency(detected);
+  } catch {
+    const loc = navigator.language || '';
+    if (loc.startsWith('en-AU')) setCurrency('AUD');
+    else if (loc.startsWith('en-GB')) setCurrency('GBP');
+    else if (loc.startsWith('en-NZ')) setCurrency('NZD');
+    else if (loc.startsWith('en-CA')) setCurrency('CAD');
+    else if (loc.startsWith('en-SG')) setCurrency('SGD');
+  }
+  update();
+})();
+</script>
+</body>
+</html>

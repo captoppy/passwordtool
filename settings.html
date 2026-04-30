@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jellar — Settings</title>
+<meta name="robots" content="noindex">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  .jellar-wordmark{font-family:"Cinzel",serif;font-weight:900;letter-spacing:.12em;color:#ffffff;text-shadow:0 0 8px rgba(255,255,255,.15);}
+  :root{--bg:#05070a;--bg-2:#0a0e14;--line:#1a2028;--neon:#7cff50;--hot:#ff3864;--ice:#38d7ff;--gold:#ffd24a;--text:#e6edf3;--text-dim:#7a8896;}
+  html,body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .neon-text{color:var(--neon);}
+  .pulse-dot{width:10px;height:10px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px var(--neon);display:inline-block;}
+  .card{border:1px solid var(--line);background:var(--bg-2);padding:24px;margin-bottom:16px;}
+  .field-label{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);margin-bottom:6px;}
+  input[type="text"]{background:var(--bg);border:1px solid var(--line);color:var(--text);padding:10px 12px;width:100%;font-family:inherit;font-size:14px;transition:border-color .15s;}
+  input[type="text"]:focus{outline:none;border-color:var(--neon);}
+  .btn-primary{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:10px 20px;background:var(--neon);color:#000;border:none;cursor:pointer;transition:box-shadow .15s;}
+  .btn-primary:hover{box-shadow:0 0 20px rgba(124,255,80,.5);}
+  .btn-primary:disabled{background:var(--line);color:var(--text-dim);cursor:not-allowed;}
+  .btn-outline{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:10px 20px;background:transparent;cursor:pointer;transition:all .15s;}
+  .msg-success{color:var(--neon);font-family:'JetBrains Mono',monospace;font-size:12px;margin-top:8px;}
+  .msg-error{color:var(--hot);font-family:'JetBrains Mono',monospace;font-size:12px;margin-top:8px;}
+  .helper{font-size:12px;color:var(--text-dim);margin-top:4px;}
+  .nav-tab{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:8px 16px;border:1px solid var(--line);color:var(--text-dim);text-decoration:none;transition:all .15s;}
+  .nav-tab:hover,.nav-tab.active{border-color:var(--neon);color:var(--neon);}
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="border-b border-[var(--line)] bg-[var(--bg-2)]/80 backdrop-blur sticky top-0 z-30">
+  <div class="max-w-[700px] mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="pulse-dot"></div>
+      <a href="index.html" class="jellar-wordmark">JELLAR</a>
+    </div>
+    <div class="flex items-center gap-4 mono text-xs uppercase">
+      <a href="account.html" class="text-[var(--text-dim)] hover:neon-text transition">Account</a>
+      <a href="profile.html" class="text-[var(--text-dim)] hover:neon-text transition">Profile</a>
+      <a href="index.html" class="text-[var(--text-dim)] hover:neon-text transition">&larr; Pulse</a>
+    </div>
+  </div>
+</header>
+
+<div id="auth-gate" class="hidden max-w-[500px] mx-auto px-6 py-20 text-center">
+  <div class="mono text-xs uppercase tracking-widest text-[var(--hot)]">Not signed in</div>
+  <h1 class="text-2xl font-bold mt-2">Sign in to access settings</h1>
+  <a href="index.html" class="inline-block mt-6 mono font-bold px-6 py-3 border border-[var(--neon)] neon-text">&larr; BACK TO PULSE</a>
+</div>
+
+<main id="settings-wrap" class="hidden max-w-[700px] mx-auto px-6 py-10">
+
+  <div class="flex gap-2 mb-8">
+    <a href="account.html" class="nav-tab">Account</a>
+    <a href="settings.html" class="nav-tab active">Settings</a>
+  </div>
+
+  <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)]">Preferences</div>
+  <h1 class="text-3xl font-bold mt-1 mb-8">Settings</h1>
+
+  <!-- USERNAME + AVATAR -->
+  <div class="card">
+    <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-5">Profile</div>
+
+    <!-- Avatar -->
+    <div class="flex items-center gap-4 mb-5 pb-5 border-b border-[var(--line)]">
+      <div class="relative">
+        <img id="s-avatar" class="w-16 h-16 rounded-full border-2 border-[var(--line)] object-cover" src="" alt="">
+        <label for="avatar-upload" class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[var(--neon)] flex items-center justify-center cursor-pointer hover:shadow-[0_0_10px_var(--neon)] transition" title="Change avatar">
+          <span style="font-size:12px;line-height:1;color:#000;font-weight:900">+</span>
+        </label>
+        <input type="file" id="avatar-upload" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden">
+      </div>
+      <div>
+        <div id="s-username-display" class="font-semibold text-lg"></div>
+        <div id="s-github" class="mono text-xs text-[var(--text-dim)]"></div>
+        <div class="mono text-xs text-[var(--text-dim)] mt-1">Click + to change your avatar &middot; <span id="s-avatar-source"></span></div>
+        <div id="avatar-msg" class="mono text-xs mt-1 hidden"></div>
+      </div>
+    </div>
+
+    <label class="field-label" for="username-input">Change Username</label>
+    <div class="flex gap-2">
+      <input type="text" id="username-input" maxlength="30" placeholder="your_handle" autocomplete="off">
+      <button class="btn-primary shrink-0" id="btn-save-username">SAVE</button>
+    </div>
+    <div class="helper">Letters, numbers, and underscores only. Max 30 characters.</div>
+    <div id="username-msg" class="hidden"></div>
+  </div>
+
+  <!-- MATCHED TO YOU PREFERENCES -->
+  <div class="card">
+    <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-1">Matched To You</div>
+    <div class="text-sm text-[var(--text-dim)] mb-4">Update your interests, role, and stack so Jellar can match you to the right projects.</div>
+    <div id="prefs-summary" class="mono text-xs text-[var(--text-dim)] mb-4 leading-relaxed"></div>
+    <a href="onboarding.html?next=settings.html" class="inline-block mono font-bold text-xs px-5 py-3 border border-[var(--neon)] neon-text hover:bg-[var(--neon)] hover:text-black transition">
+      EDIT INTERESTS &amp; STACK &rarr;
+    </a>
+  </div>
+
+  <!-- NEWSLETTER -->
+  <div class="card">
+    <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-4">Jellar Monthly Newsletter</div>
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <div class="text-sm font-medium">Email newsletter</div>
+        <div class="text-xs text-[var(--text-dim)] mt-1">Top builders, what they're shipping, vibe coding news — delivered monthly.</div>
+      </div>
+      <button id="btn-unsub" class="btn-outline border border-[var(--line)] text-[var(--text-dim)] hover:border-[var(--hot)] hover:text-[var(--hot)] shrink-0">UNSUBSCRIBE</button>
+    </div>
+    <div id="unsub-msg" class="hidden mono text-xs mt-3"></div>
+  </div>
+
+  <!-- MFA -->
+  <div class="card" style="border-color:rgba(56,215,255,.2)">
+    <div class="mono text-xs uppercase tracking-widest mb-1" style="color:var(--ice)">Two-Factor Authentication <span class="ml-2 px-2 py-0.5 border border-[var(--line)] text-[8px] text-[var(--text-dim)]">COMING SOON</span></div>
+    <p class="text-sm text-[var(--text-dim)] mt-2 mb-4">Add an extra layer of security with Google Authenticator or any TOTP app. Once enabled, you will need your code every time you sign in.</p>
+    <div class="opacity-50 pointer-events-none">
+      <div class="border border-[var(--line)] p-4 flex items-center justify-between gap-4">
+        <div>
+          <div class="text-sm font-medium">Authenticator app (TOTP)</div>
+          <div class="text-xs text-[var(--text-dim)] mt-1">Works with Google Authenticator, Authy, 1Password, and any TOTP-compatible app.</div>
+        </div>
+        <button class="btn-outline border shrink-0" style="border-color:var(--ice);color:var(--ice);font-size:10px;padding:8px 14px;">ENABLE</button>
+      </div>
+    </div>
+    <div class="mono text-xs mt-3 text-[var(--text-dim)]">MFA activates at launch once Supabase Auth MFA is configured.</div>
+  </div>
+
+  <!-- DANGER ZONE -->
+  <div class="card" style="border-color:rgba(255,56,100,.3)">
+    <div class="mono text-xs uppercase tracking-widest mb-4" style="color:var(--hot)">Danger Zone</div>
+    <div class="flex items-center justify-between gap-4 pb-4 border-b border-[var(--line)]">
+      <div>
+        <div class="text-sm font-medium">Sign out</div>
+        <div class="text-xs text-[var(--text-dim)]">Signs you out on this device.</div>
+      </div>
+      <button id="btn-signout" class="btn-outline border border-[var(--hot)] text-[var(--hot)] hover:bg-[var(--hot)] hover:text-black shrink-0">SIGN OUT</button>
+    </div>
+    <div class="flex items-center justify-between gap-4 pt-4">
+      <div>
+        <div class="text-sm font-medium">Delete account &amp; all data</div>
+        <div class="text-xs text-[var(--text-dim)] mt-1">Permanently deletes your profile, reviews, credits, and all associated data. This cannot be undone.</div>
+      </div>
+      <button id="btn-delete-account" class="btn-outline border border-[var(--hot)] text-[var(--hot)] hover:bg-[var(--hot)] hover:text-black shrink-0" style="background:rgba(255,56,100,.08)">DELETE ACCOUNT</button>
+    </div>
+    <div id="delete-confirm-wrap" class="hidden mt-4 p-4 border border-[var(--hot)] bg-[var(--hot)]/5">
+      <p class="text-sm font-bold mb-2" style="color:var(--hot)">Are you absolutely sure?</p>
+      <p class="text-xs text-[var(--text-dim)] mb-3">Type <strong>DELETE</strong> to confirm. This removes everything permanently and cannot be undone.</p>
+      <div class="flex gap-2">
+        <input type="text" id="delete-confirm-input" placeholder="Type DELETE" style="background:var(--bg);border:1px solid var(--hot);color:var(--text);padding:8px 12px;font-family:inherit;font-size:13px;">
+        <button id="btn-delete-confirm" class="mono text-xs font-bold px-4 py-2 bg-[var(--hot)] text-black transition shrink-0">CONFIRM DELETE</button>
+      </div>
+      <div id="delete-msg" class="mono text-xs mt-2 hidden"></div>
+    </div>
+  </div>
+
+</main>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const supabase = createClient(
+  'https://csfuhpljjfcrxpsvoqjx.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzZnVocGxqamZjcnhwc3ZvcWp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjA3OTksImV4cCI6MjA5MTczNjc5OX0.WBkYhEi75xBqDWP8BWjzIQeqUgFHKt1JPCf-X-tAcAI'
+);
+
+// Auth guard — redirect to sign in if not logged in
+(async () => {
+  const { data: { session: _gs } } = await supabase.auth.getSession();
+  if (!_gs) {
+    const next = encodeURIComponent(window.location.pathname.split('/').pop() || window.location.href);
+    window.location.replace('signin.html?next=' + next);
+    return;
+  }
+})();
+
+const { data: { session } } = await supabase.auth.getSession();
+if (!session) {
+  document.getElementById('auth-gate').classList.remove('hidden');
+} else {
+  document.getElementById('settings-wrap').classList.remove('hidden');
+  const { data: p } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+  if (p) {
+    document.getElementById('s-avatar').src = p.avatar_url
+      || session.user.user_metadata?.avatar_url
+      || session.user.user_metadata?.picture
+      || 'https://api.dicebear.com/7.x/identicon/svg?seed=' + encodeURIComponent(p.username || session.user.id);
+    document.getElementById('s-avatar-source').textContent = p.avatar_url ? 'Custom avatar' : 'Using your sign-in avatar';
+    document.getElementById('s-username-display').textContent = p.username || 'vibe_user';
+    document.getElementById('s-github').textContent = p.github_handle ? '@' + p.github_handle : '';
+    document.getElementById('username-input').value = p.username || '';
+    // Show current prefs summary
+    const prefParts = [];
+    if (p.roles) prefParts.push('Role: ' + p.roles);
+    if (p.interests) prefParts.push('Interests: ' + p.interests);
+    if (p.what_i_build) prefParts.push('Stack: ' + p.what_i_build);
+    if (p.experience_level) prefParts.push('Level: ' + p.experience_level);
+    const prefEl = document.getElementById('prefs-summary');
+    if (prefEl) prefEl.textContent = prefParts.length ? prefParts.join(' · ') : 'No preferences set yet — click below to set them up.';
+  } else {
+    const prefEl = document.getElementById('prefs-summary');
+    if (prefEl) prefEl.textContent = 'No preferences set yet — click below to set them up.';
+  }
+}
+
+document.getElementById('btn-save-username').addEventListener('click', async () => {
+  const val = document.getElementById('username-input').value.trim();
+  const msg = document.getElementById('username-msg');
+  msg.className = ''; msg.classList.remove('hidden');
+  if (!val) { msg.className = 'msg-error'; msg.textContent = '\u2715 Username cannot be empty.'; return; }
+  if (!/^[a-zA-Z0-9_]{1,30}$/.test(val)) { msg.className = 'msg-error'; msg.textContent = '\u2715 Letters, numbers, and underscores only (max 30 chars).'; return; }
+  const BLOCKED = ['fuck','shit','cunt','bitch','asshole','cock','pussy','dick','prick','wanker','bastard','whore','slut','nigger','faggot','porn','xxx'];
+  if (BLOCKED.some(w => val.toLowerCase().includes(w))) { msg.className = 'msg-error'; msg.textContent = '\u2715 That username is not allowed.'; return; }
+  const btn = document.getElementById('btn-save-username');
+  btn.disabled = true; btn.textContent = 'SAVING...';
+  const { error } = await supabase.from('profiles').update({ username: val }).eq('id', session.user.id);
+  btn.disabled = false; btn.textContent = 'SAVE';
+  if (error) {
+    msg.className = 'msg-error';
+    msg.textContent = error.code === '23505' ? '\u2715 That username is already taken.' : '\u2715 ' + error.message;
+  } else {
+    msg.className = 'msg-success'; msg.textContent = '\u2713 Username saved. Refreshing...';
+    document.getElementById('s-username-display').textContent = val;
+    // Reload after a moment so the header and all pages pick up the new username
+    setTimeout(() => window.location.reload(), 1000);
+  }
+});
+
+document.getElementById('btn-unsub').addEventListener('click', async () => {
+  const msg = document.getElementById('unsub-msg');
+  msg.classList.remove('hidden'); msg.style.color = 'var(--text-dim)'; msg.textContent = 'Unsubscribing...';
+  const { error } = await supabase.from('newsletter_subscribers').delete().eq('email', session.user.email);
+  if (error) { msg.style.color = 'var(--hot)'; msg.textContent = '\u2715 Could not unsubscribe: ' + error.message; }
+  else { msg.style.color = 'var(--neon)'; msg.textContent = '\u2713 Unsubscribed from Jellar Monthly.'; document.getElementById('btn-unsub').disabled = true; }
+});
+
+// Avatar upload — converts to base64 data URL and saves to profile
+document.getElementById('avatar-upload').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const msg = document.getElementById('avatar-msg');
+  msg.classList.remove('hidden'); msg.style.color = 'var(--text-dim)'; msg.textContent = 'Uploading...';
+
+  // Size check — 2MB max
+  if (file.size > 2 * 1024 * 1024) {
+    msg.style.color = 'var(--hot)'; msg.textContent = '\u2715 File too large. Max 2MB.'; return;
+  }
+
+  // Convert to base64 data URL for storage in profiles.avatar_url
+  // For production, swap this for a Supabase Storage upload
+  const reader = new FileReader();
+  reader.onload = async (ev) => {
+    const dataUrl = ev.target.result;
+
+    // Preview immediately
+    document.getElementById('s-avatar').src = dataUrl;
+    document.getElementById('s-avatar-source').textContent = 'Custom avatar';
+
+    // Save to profile
+    const { error } = await supabase
+      .from('profiles')
+      .update({ avatar_url: dataUrl })
+      .eq('id', session.user.id);
+
+    if (error) {
+      msg.style.color = 'var(--hot)'; msg.textContent = '\u2715 Upload failed: ' + error.message;
+    } else {
+      msg.style.color = 'var(--neon)'; msg.textContent = '\u2713 Avatar updated.';
+      setTimeout(() => msg.classList.add('hidden'), 2500);
+    }
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('btn-signout').addEventListener('click', async () => {
+  await supabase.auth.signOut(); window.location.href = 'landing.html';
+});
+
+document.getElementById('btn-delete-account').addEventListener('click', () => {
+  document.getElementById('delete-confirm-wrap').classList.remove('hidden');
+  document.getElementById('delete-confirm-input').focus();
+});
+
+document.getElementById('btn-delete-confirm').addEventListener('click', async () => {
+  const val = document.getElementById('delete-confirm-input').value.trim();
+  const msg = document.getElementById('delete-msg');
+  if (val !== 'DELETE') { msg.className = 'mono text-xs mt-2'; msg.style.color = 'var(--hot)'; msg.textContent = 'Type DELETE exactly to confirm.'; msg.classList.remove('hidden'); return; }
+  const uid = session.user.id;
+  msg.className = 'mono text-xs mt-2'; msg.style.color = 'var(--text-dim)'; msg.textContent = 'Deleting your data...'; msg.classList.remove('hidden');
+  try {
+    await supabase.from('feedback_sessions').delete().eq('tester_id', uid);
+    await supabase.from('credit_ledger').delete().eq('profile_id', uid);
+    await supabase.from('projects').delete().eq('builder_id', uid);
+    await supabase.from('newsletter_subscribers').delete().eq('profile_id', uid);
+    await supabase.from('profiles').delete().eq('id', uid);
+    await supabase.auth.signOut();
+    window.location.href = 'index.html';
+  } catch(e) { msg.style.color = 'var(--hot)'; msg.textContent = 'Error: ' + e.message + '. Contact hello@jellar.io.'; }
+});
+</script>
+
+<footer class="border-t border-[var(--line)] py-8 px-6 mt-16" style="background:var(--bg-2)">
+  <div class="max-w-[700px] mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+    <div class="mono text-xs text-[var(--text-dim)]">&copy; Jellar. Built for vibe coders.</div>
+    <div class="flex gap-6 mono text-xs text-[var(--text-dim)]">
+      <a href="privacy.html" class="hover:neon-text transition">Privacy</a>
+      <a href="terms.html" class="hover:neon-text transition">Terms</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

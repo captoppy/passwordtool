@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jellar — Sign In</title>
+<meta name="robots" content="noindex">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  .jellar-wordmark{font-family:"Cinzel",serif;font-weight:900;letter-spacing:.12em;color:#ffffff;text-shadow:0 0 8px rgba(255,255,255,.15);}
+  :root{--bg:#05070a;--bg-2:#0a0e14;--line:#1a2028;--neon:#7cff50;--hot:#ff3864;--ice:#38d7ff;--gold:#ffd24a;--text:#e6edf3;--text-dim:#7a8896;}
+  html,body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .neon-text{color:var(--neon);}
+  .pulse-dot{width:10px;height:10px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px var(--neon);display:inline-block;}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(124,255,80,.008) 0px,rgba(124,255,80,.008) 1px,transparent 1px,transparent 3px);z-index:0;}
+  .signin-card{border:1px solid var(--line);background:var(--bg-2);padding:40px;}
+  .provider-btn{display:flex;align-items:center;gap:12px;width:100%;padding:14px 20px;border:1px solid var(--line);background:var(--bg);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim);transition:all .15s;text-align:left;}
+  .provider-btn:hover{border-color:var(--neon);color:var(--text);}
+  .provider-btn.google:hover{border-color:var(--ice);color:var(--ice);}
+  .provider-btn:disabled{opacity:.5;cursor:not-allowed;}
+  .provider-icon{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .divider{display:flex;align-items:center;gap:12px;margin:20px 0;}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
+  .divider span{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);text-transform:uppercase;}
+  .error-msg{color:var(--hot);font-family:'JetBrains Mono',monospace;font-size:12px;margin-top:12px;text-align:center;}
+  .loading-msg{color:var(--neon);font-family:'JetBrains Mono',monospace;font-size:12px;margin-top:12px;text-align:center;}
+</style>
+</head>
+<body class="relative z-10 flex flex-col min-h-screen">
+
+<header class="border-b border-[var(--line)] bg-[var(--bg-2)]/80 backdrop-blur">
+  <div class="max-w-[1000px] mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="pulse-dot"></div>
+      <a href="index.html" class="jellar-wordmark">JELLAR</a>
+    </div>
+    <a href="landing.html" class="mono text-xs uppercase text-[var(--text-dim)] hover:neon-text transition">&larr; Back</a>
+  </div>
+</header>
+
+<main class="flex-1 flex items-center justify-center px-6 py-16">
+  <div class="w-full max-w-[420px]">
+
+    <div class="text-center mb-8">
+      <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-2">Welcome to Jellar</div>
+      <h1 class="text-3xl font-bold">Sign in</h1>
+      <p class="text-sm text-[var(--text-dim)] mt-2">New to Jellar? Signing in creates your account automatically.</p>
+    </div>
+
+    <div class="signin-card">
+
+      <!-- Already signed in state -->
+      <div id="already-in" class="hidden text-center">
+        <div class="mono text-xs neon-text mb-2">&checkmark; You&apos;re signed in</div>
+        <p class="text-sm text-[var(--text-dim)] mb-4">You already have an active session.</p>
+        <a href="index.html" class="mono font-bold text-xs px-6 py-3 bg-[var(--neon)] text-black inline-block hover:shadow-[0_0_20px_var(--neon)] transition">&larr; BACK TO PULSE</a>
+      </div>
+
+      <div id="signin-options">
+        <!-- GitHub -->
+        <button id="btn-github" class="provider-btn mb-3">
+          <span class="provider-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          </span>
+          <span class="flex-1">Continue with GitHub</span>
+          <span class="text-[10px] text-[var(--text-dim)] normal-case font-normal">Builders &amp; devs</span>
+        </button>
+
+        <div class="divider"><span>or</span></div>
+
+        <!-- Google -->
+        <button id="btn-google" class="provider-btn google mb-6">
+          <span class="provider-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          </span>
+          <span class="flex-1">Continue with Google</span>
+          <span class="text-[10px] text-[var(--text-dim)] normal-case font-normal">Testers &amp; builders</span>
+        </button>
+
+        <!-- Status messages -->
+        <div id="status-msg" class="hidden"></div>
+
+        <!-- Fine print -->
+        <div class="pt-4 border-t border-[var(--line)]">
+          <p class="mono text-xs text-[var(--text-dim)] text-center leading-relaxed">
+            By signing in you agree to Jellar&apos;s
+            <a href="terms.html" class="hover:neon-text transition">Terms</a> and
+            <a href="privacy.html" class="hover:neon-text transition">Privacy Policy</a>.
+            You must be 18 or older to use Jellar.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- What you can do -->
+    <div class="mt-6 border border-[var(--line)] bg-[var(--bg-2)] p-5">
+      <div class="mono text-xs uppercase tracking-widest text-[var(--text-dim)] mb-3">What you get with an account</div>
+      <div class="space-y-2 text-sm text-[var(--text-dim)]">
+        <div><span class="neon-text">✓</span> Test live projects and earn Vibe Credits</div>
+        <div><span class="neon-text">✓</span> Build karma as a Trusted or Elite Reviewer</div>
+        <div><span class="neon-text">✓</span> List your own builds and get structured feedback</div>
+        <div><span class="neon-text">✓</span> See matched projects based on your skills</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const supabase = createClient(
+  'https://csfuhpljjfcrxpsvoqjx.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzZnVocGxqamZjcnhwc3ZvcWp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjA3OTksImV4cCI6MjA5MTczNjc5OX0.WBkYhEi75xBqDWP8BWjzIQeqUgFHKt1JPCf-X-tAcAI'
+);
+
+// If already signed in, route correctly
+const _next = new URLSearchParams(window.location.search).get('next') || 'index.html';
+const { data: { session } } = await supabase.auth.getSession();
+if (session) {
+  const { data: profile } = await supabase.from('profiles').select('onboarding_complete').eq('id', session.user.id).maybeSingle();
+  if (!profile || profile.onboarding_complete !== true) {
+    // New user — go to onboarding, then after onboarding complete go to next
+    window.location.href = 'onboarding.html?next=' + encodeURIComponent(_next);
+  } else {
+    // Fully onboarded — go directly to requested page
+    window.location.replace(_next);
+  }
+}
+
+function showStatus(msg, isError) {
+  const el = document.getElementById('status-msg');
+  el.className = isError ? 'error-msg' : 'loading-msg';
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+function setLoading(loading) {
+  document.getElementById('btn-github').disabled = loading;
+  document.getElementById('btn-google').disabled = loading;
+}
+
+document.getElementById('btn-github').addEventListener('click', async () => {
+  setLoading(true);
+  showStatus('Connecting to GitHub...', false);
+  const redirectTo = window.location.origin + '/onboarding.html';
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'github',
+    options: { redirectTo }
+  });
+  if (error) { showStatus('\u2715 ' + error.message, true); setLoading(false); }
+});
+
+document.getElementById('btn-google').addEventListener('click', async () => {
+  setLoading(true);
+  showStatus('Connecting to Google...', false);
+  const redirectTo = window.location.origin + '/onboarding.html';
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo }
+  });
+  if (error) { showStatus('\u2715 ' + error.message, true); setLoading(false); }
+});
+</script>
+
+</body>
+</html>
