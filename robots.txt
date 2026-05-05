@@ -1,30 +1,3 @@
-# ============================================================================
-# VibeWorld — robots.txt
-# ============================================================================
-# This file tells search engine crawlers what they can and can't index.
-# Goes in the ROOT of your deployed site (same level as index.html).
-# ============================================================================
-
 User-agent: *
 Allow: /
-
-# Block crawlers from internal/admin pages — these shouldn't appear in search
-Disallow: /admin.html
-Disallow: /onboarding.html
-Disallow: /settings.html
-
-# Point crawlers to the sitemap
-Sitemap: https://vibeworld.app/sitemap.xml
-
-# ============================================================================
-# Block specific badly-behaved crawlers that hammer sites for no SEO benefit
-# ============================================================================
-
-# AI training scrapers (optional — uncomment if you don't want your content
-# used to train AI models). Many of these ignore robots.txt anyway.
-# User-agent: GPTBot
-# Disallow: /
-# User-agent: ClaudeBot
-# Disallow: /
-# User-agent: CCBot
-# Disallow: /
+Sitemap: https://popcornpasswords.com/sitemap.xml
